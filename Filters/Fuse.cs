@@ -8,21 +8,19 @@ namespace Forge.Filters {
 
 		public float Threshold = 0f;
 
-		private Geometry _inputGeo;
+		private Geometry _geometry;
 
 		public void Input(Geometry geometry) {
-			_inputGeo = geometry;
+			_geometry = geometry.Copy();
 		}
 
 		public Geometry Output() {
 			List<Vector3> vertices = new List<Vector3>();
 			List<Vector3> normals = new List<Vector3>();
 			List<Vector2> uv = new List<Vector2>();
-			int[] triangles = new int[_inputGeo.Triangles.Length];
-			System.Array.Copy(_inputGeo.Triangles, triangles, _inputGeo.Triangles.Length);
 
-			for (int v = 0; v < _inputGeo.Vertices.Length; v++) {
-				Vector3 vertex = _inputGeo.Vertices[v];
+			for (int v = 0; v < _geometry.Vertices.Length; v++) {
+				Vector3 vertex = _geometry.Vertices[v];
 
 				int index = vertices.FindIndex(delegate(Vector3 existing) {
 					if (Threshold <= 0)
@@ -34,27 +32,24 @@ namespace Forge.Filters {
 				if (index < 0) {
 					index = vertices.Count;
 					vertices.Add(vertex);
-					normals.Add(_inputGeo.Normals[v]);
+					normals.Add(_geometry.Normals[v]);
 					uv.Add(new Vector2(0f, 0f));
 				} else {
-					normals[index] = Vector3.Lerp(_inputGeo.Normals[v], normals[index], .5f).normalized;
+					normals[index] = Vector3.Lerp(_geometry.Normals[v], normals[index], .5f).normalized;
 				}
 
-				for (int t = 0; t < triangles.Length; t++) {
-					if (triangles[t] == v) {
-						triangles[t] = index;
+				for (int t = 0; t < _geometry.Triangles.Length; t++) {
+					if (_geometry.Triangles[t] == v) {
+						_geometry.Triangles[t] = index;
 					}
 				}
 			}
 
-			Geometry output = new Geometry() {
-				Vertices = vertices.ToArray(),
-				Normals = normals.ToArray(),
-				UV = uv.ToArray(),
-				Triangles = triangles
-			};
-
-			return output;
+			_geometry.Vertices = vertices.ToArray();
+			_geometry.Normals = normals.ToArray();
+			_geometry.UV = uv.ToArray();
+			
+			return _geometry;
 		}
 
 		public static Geometry Process(Geometry geometry) {

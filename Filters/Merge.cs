@@ -33,7 +33,7 @@ namespace Forge.Filters {
 			if (_geometries == null) {
 				_geometries = new List<Geometry>();
 			}
-			_geometries.Add(geometry);
+			_geometries.Add(geometry.Copy());
 		}
 
 		public Geometry Output() {

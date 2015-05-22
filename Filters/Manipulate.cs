@@ -7,7 +7,7 @@ namespace Forge.Filters {
 		private Geometry _geometry;
 
 		public void Input(Geometry geometry) {
-			_geometry = geometry;
+			_geometry = geometry.Copy();
 		}
 
 		public Geometry Output() {
