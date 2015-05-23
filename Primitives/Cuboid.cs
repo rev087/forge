@@ -15,29 +15,29 @@ namespace Forge.Primitives {
 			bottom.Center = new Vector3(Center.x, Center.y - Size.y/2, Center.z);
 			bottom.Size = new Vector2(Size.x, Size.z);
 
-			// West wall
-			Square west = new Square();
-			west.OrientationPlane = OrientationPlane.YZ;
-			west.Center = new Vector3(Center.x - Size.x/2, Center.y, Center.z);
-			west.Size = new Vector2(Size.y, Size.z);
+			// Right wall
+			Square right = new Square();
+			right.OrientationPlane = OrientationPlane.YZ;
+			right.Center = new Vector3(Center.x - Size.x/2, Center.y, Center.z);
+			right.Size = new Vector2(Size.y, Size.z);
 
-			// East wall
-			Square east = new Square();
-			east.OrientationPlane = OrientationPlane.YZ;
-			east.Center = new Vector3(Center.x + Size.x/2, Center.y, Center.z);
-			east.Size = new Vector2(Size.y, Size.z);
+			// Left wall
+			Square left = new Square();
+			left.OrientationPlane = OrientationPlane.YZ;
+			left.Center = new Vector3(Center.x + Size.x/2, Center.y, Center.z);
+			left.Size = new Vector2(Size.y, Size.z);
 
-			// South wall
-			Square south = new Square();
-			south.OrientationPlane = OrientationPlane.XY;
-			south.Center = new Vector3(Center.x, Center.y, Center.z - Size.z/2);
-			south.Size = new Vector2(Size.x, Size.y);
+			// Back wall
+			Square back = new Square();
+			back.OrientationPlane = OrientationPlane.XY;
+			back.Center = new Vector3(Center.x, Center.y, Center.z - Size.z/2);
+			back.Size = new Vector2(Size.x, Size.y);
 
-			// North wall
-			Square north = new Square();
-			north.OrientationPlane = OrientationPlane.XY;
-			north.Center = new Vector3(Center.x, Center.y, Center.z + Size.z/2);
-			north.Size = new Vector2(Size.x, Size.y);
+			// Front wall
+			Square front = new Square();
+			front.OrientationPlane = OrientationPlane.XY;
+			front.Center = new Vector3(Center.x, Center.y, Center.z + Size.z/2);
+			front.Size = new Vector2(Size.x, Size.y);
 
 			// Top
 			Square top = new Square();
@@ -47,10 +47,10 @@ namespace Forge.Primitives {
 			// Merge all sides
 			Merge merge = new Merge();
 			merge.Input(Reverse.Process(bottom.Output()));
-			merge.Input(Reverse.Process(west.Output()));
-			merge.Input(east.Output());
-			merge.Input(south.Output());
-			merge.Input(Reverse.Process(north.Output()));
+			merge.Input(Reverse.Process(right.Output()));
+			merge.Input(left.Output());
+			merge.Input(Reverse.Process(back.Output()));
+			merge.Input(front.Output());
 			merge.Input(top.Output());
 
 			// Fuse vertices

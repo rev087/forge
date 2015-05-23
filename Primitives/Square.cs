@@ -57,10 +57,17 @@ namespace Forge.Primitives {
 			};
 
 			// Triangles
-			geo.Triangles = new int [] {
-				0, 1, 2,
-				2, 3, 0
-			};
+			if (OrientationPlane != OrientationPlane.XY) {
+				geo.Triangles = new int [] {
+					0, 1, 2,
+					2, 3, 0
+				};
+			} else {
+				geo.Triangles = new int [] {
+					0, 2, 1,
+					2, 0, 3
+				};
+			}
 
 			return geo;
 		}
