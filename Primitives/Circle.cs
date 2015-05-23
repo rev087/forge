@@ -6,7 +6,7 @@ namespace Forge.Primitives {
 
 		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
 		public int Segments = 8;
-		public bool Filled = true;
+		public bool Filled = false;
 		public Vector3 Center = Vector3.zero;
 		public float Radius = .5f;
 
