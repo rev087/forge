@@ -6,6 +6,12 @@ namespace Forge.Filters {
 
 	public class Reverse {
 
+		public Reverse() {}
+
+		public Reverse(Geometry geometry) {
+			Input(geometry);
+		}
+
 		private Geometry _geometry;
 
 		public void Input(Geometry geometry) {

@@ -6,6 +6,12 @@ namespace Forge.Filters {
 
 		private Geometry _geometry;
 
+		public Manipulate() {}
+
+		public Manipulate(Geometry geometry) {
+			Input(geometry);
+		}
+
 		public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}

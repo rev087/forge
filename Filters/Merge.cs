@@ -7,25 +7,11 @@ namespace Forge.Filters {
 
 		private List<Geometry> _geometries = null;
 
-		private int VertexCount {
-			get {
-				if (_geometries == null) return 0;
-				int count = 0;
-				foreach (Geometry geo in _geometries) {
-					count += geo.Vertices.Length;
-				}
-				return count;
-			}
-		}
+		public Merge() {}
 
-		private int FaceCount {
-			get {
-				if (_geometries == null) return 0;
-				int count = 0;
-				foreach (Geometry geo in _geometries) {
-					count += geo.Triangles.Length;
-				}
-				return count;
+		public Merge(params Geometry[] geometries) {
+			foreach (Geometry geometry in geometries) {
+				Input(geometry);
 			}
 		}
 
@@ -44,7 +30,7 @@ namespace Forge.Filters {
 			result.Vertices = new Vector3 [vertexCount];
 			result.Normals = new Vector3 [vertexCount];
 			result.UV = new Vector2 [vertexCount];
-			result.Triangles = new int [FaceCount];
+			result.Triangles = new int [FaceCount()];
 
 			int vCount = 0;
 			int tCount = 0;
@@ -75,6 +61,26 @@ namespace Forge.Filters {
 				merge.Input(geometries[i]);
 			}
 			return merge.Output();
+		}
+
+		private int VertexCount {
+			get {
+				if (_geometries == null) return 0;
+				int count = 0;
+				foreach (Geometry geo in _geometries) {
+					count += geo.Vertices.Length;
+				}
+				return count;
+			}
+		}
+
+		private int FaceCount (){
+			if (_geometries == null) return 0;
+			int count = 0;
+			foreach (Geometry geo in _geometries) {
+				count += geo.Triangles.Length;
+			}
+			return count;
 		}
 
 	}

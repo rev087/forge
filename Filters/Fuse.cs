@@ -10,6 +10,12 @@ namespace Forge.Filters {
 
 		private Geometry _geometry;
 
+		public Fuse(){}
+
+		public Fuse(Geometry geometry) {
+			Input(geometry);
+		}
+
 		public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}
