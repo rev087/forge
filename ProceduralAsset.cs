@@ -63,13 +63,6 @@ namespace Forge {
 			Shader shader = Shader.Find("Standard");
 			shader.hideFlags = HideFlags.HideAndDontSave;
 
-			// Material
-			// if (GetComponent<MeshRenderer>().sharedMaterial == null) {
-			// 	Material mat = new Material(Shader.Find("Standard"));
-			// 	mat.hideFlags = HideFlags.HideAndDontSave;
-			// 	GetComponent<MeshRenderer>().sharedMaterial = mat;
-			// }
-
 			IsBuilt = true;
 		}
 
