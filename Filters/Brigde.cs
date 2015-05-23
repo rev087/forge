@@ -25,7 +25,7 @@ namespace Forge.Filters {
 
 		public Geometry Output() {
 		
-			int vertexCount = Mathf.Max(_a.Vertices.Length, _b.Vertices.Length);
+			int vertexCount = Mathf.Min(_a.Vertices.Length, _b.Vertices.Length);
 
 			Geometry geometry = new Geometry();
 			geometry.Vertices = new Vector3[vertexCount * 2];
