@@ -16,13 +16,13 @@ namespace Forge {
 
 		[HideInInspector] public Mesh Mesh = null;
 
-		[HideInInspector] public static bool DisplayVertices = false;
-		[HideInInspector] public static bool DisplayVertexIndex = false;
-		[HideInInspector] public static bool DisplayVertexNormal = false;
+		[HideInInspector] public bool DisplayVertices = false;
+		[HideInInspector] public bool DisplayVertexIndex = false;
+		[HideInInspector] public bool DisplayVertexNormal = false;
 
-		[HideInInspector] public static bool DisplayFaces = false;
-		[HideInInspector] public static bool DisplayFaceIndex = false;
-		[HideInInspector] public static bool DisplayFaceNormal = false;
+		[HideInInspector] public bool DisplayFaces = false;
+		[HideInInspector] public bool DisplayFaceIndex = false;
+		[HideInInspector] public bool DisplayFaceNormal = false;
 
 		private System.Diagnostics.Stopwatch Stopwatch = null;
 		[HideInInspector] public long BuildMilliseconds = 0;
@@ -46,8 +46,8 @@ namespace Forge {
 			Geometry geo = Build();
 			BuildMilliseconds = Stopwatch.ElapsedMilliseconds;
 			Stopwatch.Reset();
-			VertexCount = geo.Vertices.Length;
-			TriangleCount = geo.Triangles.Length / 3;
+			VertexCount = (geo.Vertices != null) ? geo.Vertices.Length : 0;
+			TriangleCount = (geo.Triangles != null) ? geo.Triangles.Length / 3 : 0;
 
 			// Mesh
 			Mesh = (Mesh == null) ? new Mesh() : Mesh;

@@ -30,16 +30,16 @@ namespace Forge.EditorUtils {
 			if (ShowDisplayControls) {
 				GUILayout.BeginHorizontal();
 				EditorGUILayout.LabelField("Vertex", GUILayout.Width(40f));
-				ProceduralAsset.DisplayVertices = GUILayout.Toggle(ProceduralAsset.DisplayVertices, "Position", "button");
-				ProceduralAsset.DisplayVertexIndex = GUILayout.Toggle(ProceduralAsset.DisplayVertexIndex, "Index", "button");
-				ProceduralAsset.DisplayVertexNormal = GUILayout.Toggle(ProceduralAsset.DisplayVertexNormal, "Normal", "button");
+				Asset.DisplayVertices = GUILayout.Toggle(Asset.DisplayVertices, "Position", "button");
+				Asset.DisplayVertexIndex = GUILayout.Toggle(Asset.DisplayVertexIndex, "Index", "button");
+				Asset.DisplayVertexNormal = GUILayout.Toggle(Asset.DisplayVertexNormal, "Normal", "button");
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 				EditorGUILayout.LabelField("Face", GUILayout.Width(40f));
-				ProceduralAsset.DisplayFaces = GUILayout.Toggle(ProceduralAsset.DisplayFaces, "Position", "button");
-				ProceduralAsset.DisplayFaceIndex = GUILayout.Toggle(ProceduralAsset.DisplayFaceIndex, "Index", "button");
-				ProceduralAsset.DisplayFaceNormal = GUILayout.Toggle(ProceduralAsset.DisplayFaceNormal, "Normal", "button");
+				Asset.DisplayFaces = GUILayout.Toggle(Asset.DisplayFaces, "Position", "button");
+				Asset.DisplayFaceIndex = GUILayout.Toggle(Asset.DisplayFaceIndex, "Index", "button");
+				Asset.DisplayFaceNormal = GUILayout.Toggle(Asset.DisplayFaceNormal, "Normal", "button");
 				GUILayout.EndHorizontal();
 			}
 
