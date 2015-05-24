@@ -79,6 +79,7 @@ namespace Forge.EditorUtils {
 
 		void OnSceneGUI() {
 
+			if (Asset.MeshDisplay == null) Asset.MeshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
 			if (IconLoader == null) IconLoader = new IconLoader();
 
 			float height = 32f * 8;
