@@ -17,10 +17,12 @@ namespace Forge {
 		[HideInInspector] public Mesh Mesh = null;
 
 		[HideInInspector] public bool DisplayVertices = false;
+		[HideInInspector] public bool DisplayVertexPosition = false;
 		[HideInInspector] public bool DisplayVertexIndex = false;
 		[HideInInspector] public bool DisplayVertexNormal = false;
 
 		[HideInInspector] public bool DisplayFaces = false;
+		[HideInInspector] public bool DisplayFacePosition = false;
 		[HideInInspector] public bool DisplayFaceIndex = false;
 		[HideInInspector] public bool DisplayFaceNormal = false;
 
@@ -79,10 +81,12 @@ namespace Forge {
 			if (_meshDisplay == null) _meshDisplay = new MeshDisplay();
 
 			_meshDisplay.DisplayVertices = DisplayVertices;
+			_meshDisplay.DisplayVertexPosition = DisplayVertexPosition;
 			_meshDisplay.DisplayVertexIndex = DisplayVertexIndex;
 			_meshDisplay.DisplayVertexNormal = DisplayVertexNormal;
 			
 			_meshDisplay.DisplayFaces = DisplayFaces;
+			_meshDisplay.DisplayFacePosition = DisplayFacePosition;
 			_meshDisplay.DisplayFaceIndex = DisplayFaceIndex;
 			_meshDisplay.DisplayFaceNormal = DisplayFaceNormal;
 			

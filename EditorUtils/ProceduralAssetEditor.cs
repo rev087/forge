@@ -30,14 +30,16 @@ namespace Forge.EditorUtils {
 			if (ShowDisplayControls) {
 				GUILayout.BeginHorizontal();
 				EditorGUILayout.LabelField("Vertex", GUILayout.Width(40f));
-				Asset.DisplayVertices = GUILayout.Toggle(Asset.DisplayVertices, "Position", "button");
+				Asset.DisplayVertices = GUILayout.Toggle(Asset.DisplayVertices, "Dot", "button");
+				Asset.DisplayVertexPosition = GUILayout.Toggle(Asset.DisplayVertexPosition, "Position", "button");
 				Asset.DisplayVertexIndex = GUILayout.Toggle(Asset.DisplayVertexIndex, "Index", "button");
 				Asset.DisplayVertexNormal = GUILayout.Toggle(Asset.DisplayVertexNormal, "Normal", "button");
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 				EditorGUILayout.LabelField("Face", GUILayout.Width(40f));
-				Asset.DisplayFaces = GUILayout.Toggle(Asset.DisplayFaces, "Position", "button");
+				Asset.DisplayFaces = GUILayout.Toggle(Asset.DisplayFaces, "Dot", "button");
+				Asset.DisplayFacePosition = GUILayout.Toggle(Asset.DisplayFacePosition, "Position", "button");
 				Asset.DisplayFaceIndex = GUILayout.Toggle(Asset.DisplayFaceIndex, "Index", "button");
 				Asset.DisplayFaceNormal = GUILayout.Toggle(Asset.DisplayFaceNormal, "Normal", "button");
 				GUILayout.EndHorizontal();

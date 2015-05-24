@@ -10,10 +10,12 @@ namespace Forge.EditorUtils {
 	public class MeshDisplay {
 
 		public bool DisplayVertices = false;
+		public bool DisplayVertexPosition = false;
 		public bool DisplayVertexIndex = false;
 		public bool DisplayVertexNormal = false;
 
 		public bool DisplayFaces = false;
+		public bool DisplayFacePosition = false;
 		public bool DisplayFaceIndex = false;
 		public bool DisplayFaceNormal = false;
 
@@ -37,66 +39,88 @@ namespace Forge.EditorUtils {
 				_shadowStyle.contentOffset = new Vector2(1f, 1f);
 			}
 
-			if (mesh != null && (DisplayVertexNormal || DisplayVertices || DisplayVertexIndex)) {
+			if (mesh != null && (DisplayVertices || DisplayVertexPosition || DisplayVertexNormal || DisplayVertexIndex)) {
 
 				// Vertex based handles
 				for (int i = 0; i < mesh.vertices.Length; i++) {
 
 					Vector3 origin = transform.TransformPoint(mesh.vertices[i]);
-					Vector3 dir = Vector3.ClampMagnitude(mesh.normals[i], .25f);
+					Vector3 camPos = SceneView.lastActiveSceneView.camera.transform.position;
+					float camDist = Vector3.Distance(origin, camPos);
 
 					Handles.color = Color.cyan;
 
 					// Normals
 					if (DisplayVertexNormal) {
-						Handles.DrawAAPolyLine(origin, origin + dir);
+						Vector3 normalEnd = Vector3.ClampMagnitude(mesh.normals[i], camDist / 20);
+						Handles.DrawAAPolyLine(origin, origin + normalEnd);
 					}
 
 					// Vertices
 					if (DisplayVertices) {
-						Handles.DotCap(i*2, origin, Quaternion.identity, 0.01f);
+						Handles.DotCap(i * 2, origin, Quaternion.identity, camDist / 180);
 					}
 
-					// Vertex Index
-					if (DisplayVertexIndex) {
-						Handles.Label(origin, ""+i, _shadowStyle);
-						Handles.Label(origin, ""+i, _vertStyle);
+					// Vertex Index and Position
+					if (DisplayVertexIndex || DisplayVertexPosition) {
+						string label = "";
+						if (DisplayVertexIndex) {
+							label += i + "\n";
+						}
+						if (DisplayVertexPosition) {
+							label += mesh.vertices[i].ToString() + "\n";
+						}
+						Handles.Label(origin, label, _shadowStyle);
+						Handles.Label(origin, label, _vertStyle);
 					}
 
 				} // vertices
 				
 			} // if
 
-			if (mesh != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal)) {
+			if (mesh != null && (DisplayFaces || DisplayFacePosition || DisplayFaceIndex || DisplayFaceNormal)) {
 
 				// Triangle based handles
 				for (int a = 0; a <= mesh.triangles.Length - 3; a += 3) {
 
 					// Faces
-					if (true) {
-						Handles.color = Color.red;
-						Vector3 aVert = mesh.vertices[mesh.triangles[a]];
-						Vector3 bVert = mesh.vertices[mesh.triangles[a+1]];
-						Vector3 cVert = mesh.vertices[mesh.triangles[a+2]];
+					Handles.color = Color.red;
+					Vector3 aVert = mesh.vertices[mesh.triangles[a]];
+					Vector3 bVert = mesh.vertices[mesh.triangles[a+1]];
+					Vector3 cVert = mesh.vertices[mesh.triangles[a+2]];
 
-						Vector3 mid = transform.TransformPoint((aVert + bVert + cVert) / 3);
-						Vector3 normal = Vector3.ClampMagnitude(Vector3.Cross(bVert-aVert, cVert-aVert), .25f);
+					Vector3 mid = transform.TransformPoint((aVert + bVert + cVert) / 3);
+					Vector3 camPos = SceneView.lastActiveSceneView.camera.transform.position;
+					float camDist = Vector3.Distance(mid, camPos);
 
-						int nth = a / 3;
-						int id = mesh.vertices.Length * 2 + nth;
+					int nth = a / 3;
+					int id = mesh.vertices.Length * 2 + nth;
 
-						if (DisplayFaces) {
-							Handles.DotCap(id, mid, Quaternion.identity, 0.01f);
-						}
+					if (DisplayFaces) {
+						Handles.DotCap(id, mid, Quaternion.identity, camDist / 180);
+					}
 
-						if (DisplayFaceNormal) {
-							Handles.DrawAAPolyLine(mid, mid + normal);
-						}
+					if (DisplayFaceNormal) {
+						Vector3 normal = Vector3.ClampMagnitude(Vector3.Cross(bVert-aVert, cVert-aVert), camDist / 20);
+						Handles.DrawAAPolyLine(mid, mid + normal);
+					}
 
+					if (DisplayFaceIndex) {
+						Handles.Label(mid, "" + nth, _shadowStyle);
+						Handles.Label(mid, "" + nth, _faceStyle);
+					}
+
+					// Vertex Index and Position
+					if (DisplayFaceIndex || DisplayFacePosition) {
+						string label = "";
 						if (DisplayFaceIndex) {
-							Handles.Label(mid, "" + nth, _shadowStyle);
-							Handles.Label(mid, "" + nth, _faceStyle);
+							label += nth + "\n";
 						}
+						if (DisplayFacePosition) {
+							label += mid + "\n";
+						}
+						Handles.Label(mid, label, _shadowStyle);
+						Handles.Label(mid, label, _faceStyle);
 					}
 
 				} // triangles
