@@ -8,8 +8,8 @@ namespace Forge.Primitives {
 		public float Radius = 0.5f;
 		public float Height = 1f;
 		public int Segments = 8;
-		public bool CapTop = false;
-		public bool CapBottom = false;
+		public bool CapTop = true;
+		public bool CapBottom = true;
 		public Vector3 Center = Vector3.zero;
 		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
 
@@ -46,7 +46,7 @@ namespace Forge.Primitives {
 
 			Merge merge = new Merge();
 
-			if (OrientationPlane != OrientationPlane.XZ) {
+			if (OrientationPlane == OrientationPlane.XY) {
 				merge.Input(Reverse.Process(bridge.Output()));
 			} else {
 				merge.Input(bridge.Output());
