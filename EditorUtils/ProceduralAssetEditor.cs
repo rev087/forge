@@ -9,7 +9,8 @@ namespace Forge.EditorUtils {
 	[CustomEditor(typeof(ProceduralAsset), true)]
 	public class ProceduralAssetEditor : Editor {
 
-		private static bool ShowDisplayControls = true;
+		private static IconLoader IconLoader = null;
+
 		private static bool ShowStatistics = true;
 		private static bool ShowDataFile = true;
 
@@ -23,26 +24,6 @@ namespace Forge.EditorUtils {
 
 			if (GUI.changed || GUILayout.Button("Build")) {
 				Asset.Generate();
-			}
-
-			// Display Controls
-			ShowDisplayControls = EditorGUILayout.Foldout(ShowDisplayControls, "Display");
-			if (ShowDisplayControls) {
-				GUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Vertex", GUILayout.Width(40f));
-				Asset.DisplayVertices = GUILayout.Toggle(Asset.DisplayVertices, "Dot", "button");
-				Asset.DisplayVertexPosition = GUILayout.Toggle(Asset.DisplayVertexPosition, "Position", "button");
-				Asset.DisplayVertexIndex = GUILayout.Toggle(Asset.DisplayVertexIndex, "Index", "button");
-				Asset.DisplayVertexNormal = GUILayout.Toggle(Asset.DisplayVertexNormal, "Normal", "button");
-				GUILayout.EndHorizontal();
-
-				GUILayout.BeginHorizontal();
-				EditorGUILayout.LabelField("Face", GUILayout.Width(40f));
-				Asset.DisplayFaces = GUILayout.Toggle(Asset.DisplayFaces, "Dot", "button");
-				Asset.DisplayFacePosition = GUILayout.Toggle(Asset.DisplayFacePosition, "Position", "button");
-				Asset.DisplayFaceIndex = GUILayout.Toggle(Asset.DisplayFaceIndex, "Index", "button");
-				Asset.DisplayFaceNormal = GUILayout.Toggle(Asset.DisplayFaceNormal, "Normal", "button");
-				GUILayout.EndHorizontal();
 			}
 
 			// Statistics
@@ -94,6 +75,34 @@ namespace Forge.EditorUtils {
 			} else {
 				Debug.Log("No mesh data");
 			}
+		}
+
+		void OnSceneGUI() {
+
+			if (IconLoader == null) IconLoader = new IconLoader();
+
+			float height = 32f * 8;
+			float width = 32f;
+			Tools.hidden = true;
+
+			var rect = new Rect(Screen.width - width - 10, Screen.height/2 - height/2, width, height);
+
+			GUILayout.BeginArea(rect);
+
+			// Vertex Display
+			Asset.MeshDisplay.DisplayVertices = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertices, IconLoader.Icons["vertex"], "button");
+			Asset.MeshDisplay.DisplayVertexNormal = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexNormal, IconLoader.Icons["vertexNormal"], "button");
+			Asset.MeshDisplay.DisplayVertexIndex = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexIndex, IconLoader.Icons["vertexIndex"], "button");
+			Asset.MeshDisplay.DisplayVertexPosition = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexPosition, IconLoader.Icons["vertexPosition"], "button");
+
+			// Face Display
+			Asset.MeshDisplay.DisplayFaces = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaces, IconLoader.Icons["face"], "button");
+			Asset.MeshDisplay.DisplayFaceNormal = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceNormal, IconLoader.Icons["faceNormal"], "button");
+			Asset.MeshDisplay.DisplayFaceIndex = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceIndex, IconLoader.Icons["faceIndex"], "button");
+
+			// Origin
+			Asset.MeshDisplay.DisplayOrigin = GUILayout.Toggle(Asset.MeshDisplay.DisplayOrigin, IconLoader.Icons["origin"], "button");
+			GUILayout.EndArea();
 		}
 
 	}
