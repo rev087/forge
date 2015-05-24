@@ -7,8 +7,6 @@ using Forge.EditorUtils;
 
 namespace Forge {
 
-	public enum OrientationPlane {XY, XZ, YZ};
-
 	[RequireComponent(typeof(MeshFilter))]
 	[RequireComponent(typeof(MeshRenderer))]
 
