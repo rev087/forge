@@ -17,6 +17,8 @@ When appropriate, they can receive one ore more geometries as input by implement
 - __Cuboid__
 - __Circle__
 - __Cylinder__
+- __Hemisphere__
+- __Sphere__
 
 ### Filters
 
@@ -25,3 +27,5 @@ When appropriate, they can receive one ore more geometries as input by implement
 - __Fuse__: Fuses vertices together based on a threshold distance, creating contiguous surfaces and averaging their normals. Results in a "smooth" shaded surface.
 - __Reverse__: Reverses the order of vertices in each triangle face, inverting the face normal.
 - __Bridge__: Receives two sets of geometry A and B, and returns a new geometry with quad faces connecting every two vertices from each set. Basis for extrude operations.
+- __Converge__: Adds a vertex at the specified point and creates triangle faces from every two original vertices to that new point. Creates shapes like pyramids and cones.
+- __Mirror__: Outputs the mirrored image of a geometry along a specified axis.
