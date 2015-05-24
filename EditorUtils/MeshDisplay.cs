@@ -56,6 +56,12 @@ namespace Forge.EditorUtils {
 						Handles.DrawAAPolyLine(origin, origin + normalEnd);
 					}
 
+					// "Edges"
+					// if (i < mesh.vertices.Length - 1) {
+					// 	Vector3 next = transform.TransformPoint(mesh.vertices[i+1]);
+					// 	Handles.DrawAAPolyLine(origin, next);
+					// }
+
 					// Vertices
 					if (DisplayVertices) {
 						Handles.DotCap(i * 2, origin, Quaternion.identity, camDist / 180);
