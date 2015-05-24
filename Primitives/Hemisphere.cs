@@ -45,8 +45,6 @@ namespace Forge.Primitives {
 
 			}
 
-			Geometry hGeo = hemisphere.Output();
-
 			return Fuse.Process(hemisphere.Output());
 		}
 
