@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 namespace Forge.Filters {
@@ -22,7 +21,6 @@ namespace Forge.Filters {
 
 		public Geometry Output() {
 			List<Vector3> vertices = new List<Vector3>();
-			List<Vector3> normals = new List<Vector3>();
 			List<Vector2> uv = new List<Vector2>();
 
 			for (int v = 0; v < _geometry.Vertices.Length; v++) {
@@ -38,10 +36,7 @@ namespace Forge.Filters {
 				if (index < 0) {
 					index = vertices.Count;
 					vertices.Add(vertex);
-					normals.Add(_geometry.Normals[v]);
 					uv.Add(new Vector2(0f, 0f));
-				} else {
-					normals[index] = Vector3.Lerp(_geometry.Normals[v], normals[index], .5f).normalized;
 				}
 
 				for (int t = 0; t < _geometry.Triangles.Length; t++) {
@@ -52,8 +47,9 @@ namespace Forge.Filters {
 			}
 
 			_geometry.Vertices = vertices.ToArray();
-			_geometry.Normals = normals.ToArray();
 			_geometry.UV = uv.ToArray();
+
+			_geometry.CalculateNormals();
 			
 			return _geometry;
 		}

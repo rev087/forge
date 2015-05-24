@@ -29,7 +29,6 @@ namespace Forge.Filters {
 
 			Geometry geometry = new Geometry();
 			geometry.Vertices = new Vector3[vertexCount * 2];
-			geometry.Normals = new Vector3[vertexCount * 2];
 			geometry.UV = new Vector2[vertexCount * 2];
 			geometry.Triangles = new int[vertexCount * 6];
 
@@ -49,53 +48,9 @@ namespace Forge.Filters {
 				geometry.Triangles[i*6+5] = i + vertexCount;
 			}
 
-			// Normals
-			for (int i = 0; i < vertexCount; i++) {
-				// Normal for a[i]
-				geometry.Normals[i] = CalculateNormal(geometry, i);
-
-				// Normal for b[i]
-				geometry.Normals[i + vertexCount] = CalculateNormal(geometry, i + vertexCount);
-			}
+			geometry.CalculateNormals();
 
 			return geometry;
-		}
-
-		private Vector3 CalculateNormal(Geometry geometry, int vertexIndex) {
-
-			HashSet<Vector3> normalSet = new HashSet<Vector3>();
-
-			int[] faces = FacesSharingPoint(geometry, vertexIndex);
-			for (int i = 0; i < faces.Length; i++) {
-				normalSet.Add(NormalForFace(geometry, faces[i]));
-			}
-
-			Vector3 sum = Vector3.zero;
-			foreach (Vector3 normal in normalSet) {
-				sum += normal;
-			}
-
-			return sum / normalSet.Count;
-		}
-
-		private int[] FacesSharingPoint(Geometry geometry, int vertexIndex) {
-			List<int> faces = new List<int>();
-
-			for (int i = 0; i < geometry.Triangles.Length; i++) {
-				if (geometry.Triangles[i] == vertexIndex) {
-					faces.Add(Mathf.FloorToInt(i / 3));
-				}
-			}
-
-			return faces.ToArray();
-		}
-
-		private Vector3 NormalForFace(Geometry geometry, int faceIndex) {
-			Vector3 a = geometry.Vertices[geometry.Triangles[faceIndex * 3]];
-			Vector3 b = geometry.Vertices[geometry.Triangles[faceIndex * 3 + 1]];
-			Vector3 c = geometry.Vertices[geometry.Triangles[faceIndex * 3 + 2]];
-			Vector3 normal = Vector3.Cross(b-a, c-a).normalized;
-			return normal;
 		}
 
 	} // class
