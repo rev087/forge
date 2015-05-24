@@ -28,15 +28,17 @@ namespace Forge.EditorUtils {
 				_vertStyle = new GUIStyle();
 				_vertStyle.normal.textColor = Color.cyan;
 				_vertStyle.fontSize = 16;
+				_vertStyle.contentOffset = new Vector2(-5f, 5f);
 
 				_faceStyle = new GUIStyle();
 				_faceStyle.normal.textColor = Color.red;
 				_faceStyle.fontSize = 16;
+				_faceStyle.contentOffset = new Vector2(-5f, 5f);
 
 				_shadowStyle = new GUIStyle();
 				_shadowStyle.normal.textColor = Color.black;
 				_shadowStyle.fontSize = 16;
-				_shadowStyle.contentOffset = new Vector2(1f, 1f);
+				_shadowStyle.contentOffset = new Vector2(-4f, 6f);
 			}
 
 			if (mesh != null && (DisplayVertices || DisplayVertexPosition || DisplayVertexNormal || DisplayVertexIndex)) {
