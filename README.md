@@ -16,6 +16,7 @@ When appropriate, they can receive one ore more geometries as input by implement
 - __Square__
 - __Cuboid__
 - __Circle__
+- __Cylinder__
 
 ### Filters
 
