@@ -18,7 +18,9 @@ namespace Forge.Primitives {
 			Geometry geo = new Geometry();
 			geo.Vertices = new Vector3[vertexCount];
 			geo.UV = new Vector2[vertexCount];
-			geo.Triangles = new int[Segments * 3 - (Angle < 360 ? 3 : 0)];
+			if (Filled) {
+				geo.Triangles = new int[Segments * 3 - (Angle < 360 ? 3 : 0)];
+			}
 
 			float radians = Angle * Mathf.Deg2Rad;
 
@@ -61,9 +63,9 @@ namespace Forge.Primitives {
 				geo.Vertices[Segments] = Center;
 				geo.UV[Segments] = new Vector2(.5f, 1f);
 				
+				geo.CalculateNormals();
 			}
 
-			geo.CalculateNormals();
 
 			return geo;
 		}
