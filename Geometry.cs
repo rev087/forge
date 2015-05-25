@@ -93,6 +93,15 @@ namespace Forge {
 			return normal;
 		}
 
+		public override string ToString() {
+			return System.String.Format("vert:{0}, nor:{1}, uv:{2}, tri:{3}",
+				Vertices != null ? Vertices.Length.ToString() : "-",
+				Normals != null ? Normals.Length.ToString() : "-",
+				UV != null ? UV.Length.ToString() : "-",
+				Triangles != null ? (Triangles.Length / 3).ToString() : "-"
+			);
+		}
+
 	}
 
 }
