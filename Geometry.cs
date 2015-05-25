@@ -74,6 +74,8 @@ namespace Forge {
 		}
 
 		public int[] FacesSharingVertex(int vertexIndex) {
+			if (Triangles == null) return new int[0];
+
 			List<int> faces = new List<int>();
 
 			for (int i = 0; i < Triangles.Length; i++) {
