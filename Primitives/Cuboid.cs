@@ -14,35 +14,41 @@ namespace Forge.Primitives {
 			Square bottom = new Square();
 			bottom.Center = new Vector3(Center.x, Center.y - Size.y/2, Center.z);
 			bottom.Size = new Vector2(Size.x, Size.z);
+			bottom.Filled = true;
 
 			// Right wall
 			Square right = new Square();
 			right.OrientationPlane = OrientationPlane.YZ;
 			right.Center = new Vector3(Center.x - Size.x/2, Center.y, Center.z);
 			right.Size = new Vector2(Size.y, Size.z);
+			right.Filled = true;
 
 			// Left wall
 			Square left = new Square();
 			left.OrientationPlane = OrientationPlane.YZ;
 			left.Center = new Vector3(Center.x + Size.x/2, Center.y, Center.z);
 			left.Size = new Vector2(Size.y, Size.z);
+			left.Filled = true;
 
 			// Back wall
 			Square back = new Square();
 			back.OrientationPlane = OrientationPlane.XY;
 			back.Center = new Vector3(Center.x, Center.y, Center.z - Size.z/2);
 			back.Size = new Vector2(Size.x, Size.y);
+			back.Filled = true;
 
 			// Front wall
 			Square front = new Square();
 			front.OrientationPlane = OrientationPlane.XY;
 			front.Center = new Vector3(Center.x, Center.y, Center.z + Size.z/2);
 			front.Size = new Vector2(Size.x, Size.y);
+			front.Filled = true;
 
 			// Top
 			Square top = new Square();
 			top.Center = new Vector3(Center.x, Center.y + Size.y/2, Center.z);
 			top.Size = new Vector2(Size.x, Size.z);
+			top.Filled = true;
 
 			// Merge all sides
 			Merge merge = new Merge();
