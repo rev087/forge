@@ -79,12 +79,12 @@ namespace Forge.EditorUtils {
 
 		void OnSceneGUI() {
 
+			if (Asset == null) return;
 			if (Asset.MeshDisplay == null) Asset.MeshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
 			if (IconLoader == null) IconLoader = new IconLoader();
 
 			float height = 32f * 8;
 			float width = 32f;
-			Tools.hidden = true;
 
 			var rect = new Rect(Screen.width - width - 10, Screen.height/2 - height/2, width, height);
 
