@@ -9,6 +9,7 @@ namespace Forge.Primitives {
 		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
 		public Vector2 Size = Vector2.one;
 		public Vector3 Center = Vector3.zero;
+		public bool Filled = false;
 
 		public Geometry Output() {
 
@@ -19,28 +20,28 @@ namespace Forge.Primitives {
 			switch (OrientationPlane) {
 				case OrientationPlane.XY:
 					geo.Vertices = new Vector3 [] {
-						new Vector3(Center.x + -Size.x / 2, Center.y + -Size.y / 2, Center.z),
-						new Vector3(Center.x + -Size.x / 2, Center.y +  Size.y / 2, Center.z),
+						new Vector3(Center.x +  Size.x / 2, Center.y + -Size.y / 2, Center.z),
 						new Vector3(Center.x +  Size.x / 2, Center.y +  Size.y / 2, Center.z),
-						new Vector3(Center.x +  Size.x / 2, Center.y + -Size.y / 2, Center.z)
+						new Vector3(Center.x + -Size.x / 2, Center.y +  Size.y / 2, Center.z),
+						new Vector3(Center.x + -Size.x / 2, Center.y + -Size.y / 2, Center.z)
 					};
 					normal = new Vector3(0f, 0f, -1f);
 					break;
 				case OrientationPlane.XZ:
 					geo.Vertices = new Vector3 [] {
-						new Vector3(Center.x + -Size.x / 2, Center.y, Center.z + -Size.y / 2),
-						new Vector3(Center.x + -Size.x / 2, Center.y, Center.z +  Size.y / 2),
+						new Vector3(Center.x +  Size.x / 2, Center.y, Center.z + -Size.y / 2),
 						new Vector3(Center.x +  Size.x / 2, Center.y, Center.z +  Size.y / 2),
-						new Vector3(Center.x +  Size.x / 2, Center.y, Center.z + -Size.y / 2)
+						new Vector3(Center.x + -Size.x / 2, Center.y, Center.z +  Size.y / 2),
+						new Vector3(Center.x + -Size.x / 2, Center.y, Center.z + -Size.y / 2)
 					};
 					normal = new Vector3(0f, 1f, 0f);
 					break;
 				case OrientationPlane.YZ:
 					geo.Vertices = new Vector3 [] {
-						new Vector3(Center.x, Center.y + -Size.x / 2, Center.z + -Size.y / 2),
-						new Vector3(Center.x, Center.y +  Size.x / 2, Center.z + -Size.y / 2),
+						new Vector3(Center.x, Center.y + -Size.x / 2, Center.z +  Size.y / 2),
 						new Vector3(Center.x, Center.y +  Size.x / 2, Center.z +  Size.y / 2),
-						new Vector3(Center.x, Center.y + -Size.x / 2, Center.z +  Size.y / 2)
+						new Vector3(Center.x, Center.y +  Size.x / 2, Center.z + -Size.y / 2),
+						new Vector3(Center.x, Center.y + -Size.x / 2, Center.z + -Size.y / 2)
 					};
 					normal = new Vector3(1f, 0f, 0f);
 					break;
@@ -55,6 +56,11 @@ namespace Forge.Primitives {
 				new Vector2(1f, 1f),
 				new Vector2(1f, 0f)
 			};
+
+			if (!Filled) {
+				geo.Triangles = new int[0];
+				return geo;
+			}
 
 			// Triangles
 			if (OrientationPlane != OrientationPlane.XY) {
