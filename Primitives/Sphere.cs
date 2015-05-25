@@ -11,6 +11,11 @@ namespace Forge.Primitives {
 		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
 
 		public Geometry Output() {
+			if (Segments < 4) {
+				Segments = 4;
+				Debug.LogWarning("Sphere cannot have less than 4 segments");
+			}
+
 			Hemisphere hemisphere = new Hemisphere();
 			hemisphere.Center = Center;
 			hemisphere.Segments = Segments;
