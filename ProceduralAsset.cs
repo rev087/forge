@@ -57,18 +57,13 @@ namespace Forge {
 			IsBuilt = true;
 		}
 
-		public void Save(string filename) {
-
-		}
-
 		#if UNITY_EDITOR
 		private MeshFilter _meshFilter;
 
 		void OnDrawGizmosSelected() {
-			if (_meshFilter == null) _meshFilter = GetComponent<MeshFilter>();
 			if (MeshDisplay == null) MeshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
 
-			MeshDisplay.DrawHandles(_meshFilter.sharedMesh, transform);
+			MeshDisplay.DrawHandles(this, transform);
 		}
 		#endif
 
