@@ -123,7 +123,7 @@ namespace Forge.EditorUtils {
 			} // if
 
 			if (mesh != null && (DisplayVertices || DisplayVertexPosition ||
-				DisplayVertexNormal || DisplayVertexIndex)) {
+				DisplayVertexNormal || DisplayVertexIndex || DisplayPolygon)) {
 
 				// Vertex based handles
 				for (int i = 0; i < mesh.vertices.Length; i++) {
