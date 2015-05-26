@@ -11,9 +11,10 @@ public class IconLoader {
 		Icons = new Dictionary<string, Texture2D>();
 
 		string[] icons = new string[] {
+			"defaultGizmo",
 			"vertex", "vertexIndex", "vertexNormal", "vertexPosition",
 			"face", "faceIndex", "faceNormal", "facePosition",
-			"origin"
+			"origin", "polygon"
 		};
 
 		for (int i = 0; i < icons.Length; i++) {

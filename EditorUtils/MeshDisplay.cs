@@ -9,6 +9,8 @@ namespace Forge.EditorUtils {
 
 	public class MeshDisplay : ScriptableObject {
 
+		public bool DisplayDefaultGizmo = false;
+
 		public bool DisplayVertices = false;
 		public bool DisplayVertexPosition = false;
 		public bool DisplayVertexIndex = false;
@@ -19,6 +21,7 @@ namespace Forge.EditorUtils {
 		public bool DisplayFaceNormal = false;
 
 		public bool DisplayOrigin = false;
+		public bool DisplayPolygon = false;
 
 		private static GUIStyle _vertStyle = null;
 		private static GUIStyle _faceStyle = null;
@@ -32,11 +35,43 @@ namespace Forge.EditorUtils {
 			return style;
 		}
 
-		public void DrawHandles(Mesh mesh, Transform transform) {
+		private void DrawDefaultGizmo(ProceduralAsset asset) {
+			// Workaround for the disappearing default gizmo
+			switch (Tools.current){
+				case Tool.Move:
+					asset.transform.position = Handles.PositionHandle(asset.transform.position, Quaternion.identity);
+					break;
+				case Tool.Rotate:
+					asset.transform.rotation = Handles.RotationHandle(asset.transform.rotation, asset.transform.position);
+					break;
+				case Tool.Scale:
+					asset.transform.localScale = Handles.ScaleHandle(
+						asset.transform.localScale,
+						asset.transform.position,
+						asset.transform.rotation,
+						HandleUtility.GetHandleSize(asset.transform.position)
+					);
+					break;
+				case Tool.View:
+					break;
+				// case Tool.Rect:
+				// 	break;
+				case Tool.None:
+					break;
+			}
+		}
+
+		public void DrawHandles(ProceduralAsset asset, Transform transform) {
+			Mesh mesh = asset.Mesh;
+
 			if (_vertStyle == null) {
 				_vertStyle = MakeStyle(Color.cyan, 16, new Vector2(-5f, 5f));
 				_faceStyle = MakeStyle(Color.red, 16, new Vector2(-5f, 5f));
 				_shadowStyle = MakeStyle(Color.black, 16, new Vector2(-4f, 6f));
+			}
+
+			if (DisplayDefaultGizmo) {
+				DrawDefaultGizmo(asset);
 			}
 
 			Vector3 camPos = SceneView.lastActiveSceneView.camera.transform.position;
@@ -88,7 +123,7 @@ namespace Forge.EditorUtils {
 			} // if
 
 			if (mesh != null && (DisplayVertices || DisplayVertexPosition ||
-				DisplayVertexNormal || DisplayVertexIndex || DisplayOrigin)) {
+				DisplayVertexNormal || DisplayVertexIndex)) {
 
 				// Vertex based handles
 				for (int i = 0; i < mesh.vertices.Length; i++) {
@@ -122,17 +157,29 @@ namespace Forge.EditorUtils {
 						Handles.Label(origin, label, _vertStyle);
 					}
 
-				} // vertices
+					// Vertex Polygon
+					if (DisplayPolygon) {
+						Handles.color = Color.yellow;
+						if (i > 0) {
+							Vector3 prev = transform.TransformPoint(mesh.vertices[i-1]);
+							Handles.DrawLine(origin, prev);
+						} else {
+							Vector3 prev = transform.TransformPoint(mesh.vertices[mesh.vertices.Length-1]);
+							Handles.DrawDottedLine(origin, prev, 4f);
+						}
+					}
 
-				// Origin
-				if (DisplayOrigin) {
-					Handles.color = Color.yellow;
-					float camDist = Vector3.Distance(Vector3.zero, camPos);
-					int originId = mesh.vertices.Length + mesh.triangles.Length/3 + 1;
-					Handles.DotCap(originId, transform.TransformPoint(Vector3.zero), Quaternion.identity, camDist / 180);
-				}
+				} // vertices
 				
-			} // if
+			} // vertex display options
+
+			// Origin
+			if (DisplayOrigin) {
+				Handles.color = Color.yellow;
+				float camDist = Vector3.Distance(Vector3.zero, camPos);
+				int originId = mesh.vertices.Length + mesh.triangles.Length / 3 + 1;
+				Handles.DotCap(originId, transform.TransformPoint(Vector3.zero), Quaternion.identity, camDist / 180);
+			}
 
 		} // public void DrawHandles
 

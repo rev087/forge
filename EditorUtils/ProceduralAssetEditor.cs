@@ -83,26 +83,35 @@ namespace Forge.EditorUtils {
 			if (Asset.MeshDisplay == null) Asset.MeshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
 			if (IconLoader == null) IconLoader = new IconLoader();
 
-			float height = 32f * 8;
+			float height = 32f * 10 + 30f;
 			float width = 32f;
 
 			var rect = new Rect(Screen.width - width - 10, Screen.height/2 - height/2, width, height);
 
 			GUILayout.BeginArea(rect);
 
+			// Default Gizmo
+			Asset.MeshDisplay.DisplayDefaultGizmo = GUILayout.Toggle(Asset.MeshDisplay.DisplayDefaultGizmo, IconLoader.Icons["defaultGizmo"], "button");
+			GUILayout.Space(10);
+
+
 			// Vertex Display
 			Asset.MeshDisplay.DisplayVertices = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertices, IconLoader.Icons["vertex"], "button");
 			Asset.MeshDisplay.DisplayVertexNormal = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexNormal, IconLoader.Icons["vertexNormal"], "button");
 			Asset.MeshDisplay.DisplayVertexIndex = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexIndex, IconLoader.Icons["vertexIndex"], "button");
 			Asset.MeshDisplay.DisplayVertexPosition = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexPosition, IconLoader.Icons["vertexPosition"], "button");
+			GUILayout.Space(10);
 
 			// Face Display
 			Asset.MeshDisplay.DisplayFaces = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaces, IconLoader.Icons["face"], "button");
 			Asset.MeshDisplay.DisplayFaceNormal = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceNormal, IconLoader.Icons["faceNormal"], "button");
 			Asset.MeshDisplay.DisplayFaceIndex = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceIndex, IconLoader.Icons["faceIndex"], "button");
+			GUILayout.Space(10);
 
 			// Origin
 			Asset.MeshDisplay.DisplayOrigin = GUILayout.Toggle(Asset.MeshDisplay.DisplayOrigin, IconLoader.Icons["origin"], "button");
+			Asset.MeshDisplay.DisplayPolygon = GUILayout.Toggle(Asset.MeshDisplay.DisplayPolygon, IconLoader.Icons["polygon"], "button");
+
 			GUILayout.EndArea();
 		}
 
