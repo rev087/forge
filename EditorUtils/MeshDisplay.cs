@@ -23,29 +23,20 @@ namespace Forge.EditorUtils {
 		private static GUIStyle _vertStyle = null;
 		private static GUIStyle _faceStyle = null;
 		private static GUIStyle _shadowStyle = null;
-		private static GUIStyle _miscStyle = null;
+
+		private GUIStyle MakeStyle(Color textColor, int fontSize, Vector2 contentOffset) {
+			var style = new GUIStyle();
+			style.normal.textColor = textColor;
+			style.fontSize = fontSize;
+			style.contentOffset = contentOffset;
+			return style;
+		}
 
 		public void DrawHandles(Mesh mesh, Transform transform) {
 			if (_vertStyle == null) {
-				_vertStyle = new GUIStyle();
-				_vertStyle.normal.textColor = Color.cyan;
-				_vertStyle.fontSize = 16;
-				_vertStyle.contentOffset = new Vector2(-5f, 5f);
-
-				_faceStyle = new GUIStyle();
-				_faceStyle.normal.textColor = Color.red;
-				_faceStyle.fontSize = 16;
-				_faceStyle.contentOffset = new Vector2(-5f, 5f);
-
-				_miscStyle = new GUIStyle();
-				_miscStyle.normal.textColor = Color.yellow;
-				_miscStyle.fontSize = 16;
-				_miscStyle.contentOffset = new Vector2(-5f, 5f);
-
-				_shadowStyle = new GUIStyle();
-				_shadowStyle.normal.textColor = Color.black;
-				_shadowStyle.fontSize = 16;
-				_shadowStyle.contentOffset = new Vector2(-4f, 6f);
+				_vertStyle = MakeStyle(Color.cyan, 16, new Vector2(-5f, 5f));
+				_faceStyle = MakeStyle(Color.red, 16, new Vector2(-5f, 5f));
+				_shadowStyle = MakeStyle(Color.black, 16, new Vector2(-4f, 6f));
 			}
 
 			Vector3 camPos = SceneView.lastActiveSceneView.camera.transform.position;
@@ -55,11 +46,11 @@ namespace Forge.EditorUtils {
 				// Triangle based handles
 				for (int a = 0; a <= mesh.triangles.Length - 3; a += 3) {
 					
-					Vector3 aVert = mesh.vertices[mesh.triangles[a]];
-					Vector3 bVert = mesh.vertices[mesh.triangles[a+1]];
-					Vector3 cVert = mesh.vertices[mesh.triangles[a+2]];
+					Vector3 aVert = transform.TransformPoint(mesh.vertices[mesh.triangles[a]]);
+					Vector3 bVert = transform.TransformPoint(mesh.vertices[mesh.triangles[a+1]]);
+					Vector3 cVert = transform.TransformPoint(mesh.vertices[mesh.triangles[a+2]]);
 
-					Vector3 mid = transform.TransformPoint((aVert + bVert + cVert) / 3);
+					Vector3 mid = (aVert + bVert + cVert) / 3;
 
 					Vector3 la = Vector3.Lerp(aVert, mid, 0.025f);
 					Vector3 lb = Vector3.Lerp(bVert, mid, 0.025f);
@@ -138,7 +129,7 @@ namespace Forge.EditorUtils {
 					Handles.color = Color.yellow;
 					float camDist = Vector3.Distance(Vector3.zero, camPos);
 					int originId = mesh.vertices.Length + mesh.triangles.Length/3 + 1;
-					Handles.DotCap(originId, Vector3.zero, Quaternion.identity, camDist / 180);
+					Handles.DotCap(originId, transform.TransformPoint(Vector3.zero), Quaternion.identity, camDist / 180);
 				}
 				
 			} // if
