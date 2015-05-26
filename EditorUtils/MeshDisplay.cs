@@ -99,7 +99,7 @@ namespace Forge.EditorUtils {
 					Handles.color = Color.cyan;
 
 					// Normals
-					if (DisplayVertexNormal) {
+					if (DisplayVertexNormal && i < mesh.normals.Length) {
 						Vector3 normalEnd = Vector3.ClampMagnitude(mesh.normals[i], camDist / 20);
 						Handles.DrawPolyLine(origin, origin + normalEnd);
 					}
