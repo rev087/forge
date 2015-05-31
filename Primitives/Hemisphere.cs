@@ -18,7 +18,7 @@ namespace Forge.Primitives {
 
 			Merge hemi = new Merge();
 
-			Geometry prevCircle = Geometry.Empty;
+			Geometry prevLatitude = Geometry.Empty;
 
 			Vector3 northCap = Vector3.zero;
 
@@ -33,24 +33,32 @@ namespace Forge.Primitives {
 				if (i > 0) {
 					float cos = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
 
-					var c = new Circle();
-					c.Segments = Segments;
-					c.Center = new Vector3(0f, sin, 0f);
-					c.Radius = cos;
-					Geometry circle = c.Output();
+					// Latitudes
+					Geometry latitude = new Geometry();
+					latitude.Vertices = new Vector3[Segments];
+					latitude.Normals = new Vector3[Segments];
+					latitude.UV = new Vector2[Segments];
+
+					for (int f = 0; f < Segments; f++) {
+						float ng = Mathf.PI * 2 * f / Segments;
+						float h = Mathf.Cos(ng) * cos;
+						float v = Mathf.Sin(ng) * cos;
+						latitude.Vertices[Segments - f - 1] = new Vector3(h, sin, v);
+						latitude.Normals[Segments - f - 1] = new Vector3(h, sin, v).normalized;
+					}
 
 					if (i == 1) {
-						var converge = new Converge(c.Output());
+						var converge = new Converge(latitude);
 						converge.RecalculateNormals = true;
 						converge.Point = northCap;
 						hemi.Input(converge.Output());
 					} else {
-						var bridge = new Bridge(circle, prevCircle);
+						var bridge = new Bridge(latitude, prevLatitude);
 						bridge.RecalculateNormals = false;
 						hemi.Input(bridge.Output());
 					}
 
-					prevCircle = circle;
+					prevLatitude = latitude;
 				}
 
 			}

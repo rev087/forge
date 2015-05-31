@@ -18,14 +18,15 @@ namespace Forge.Primitives {
 
 			Merge sphere = new Merge();
 
-			Geometry prevCircle = Geometry.Empty;
-
+			Geometry prevLatitude = Geometry.Empty;
 			Vector3 northCap = Vector3.zero;
 
+			// Longitudes
 			for (int i = 0; i < Segments; i++) {
 				float angle = 90 + (180 * i / (Segments - 1));
 				float sin = Mathf.Sin(angle * Mathf.Deg2Rad) * Radius;
 
+				// North-most point
 				if (i == 0) {
 					northCap = new Vector3(0f, sin, 0f);
 				}
@@ -33,28 +34,38 @@ namespace Forge.Primitives {
 				if (i > 0 && i < Segments - 1) {
 					float cos = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
 
-					var c = new Circle();
-					c.Segments = Segments;
-					c.Center = new Vector3(0f, sin, 0f);
-					c.Radius = cos;
-					Geometry circle = c.Output();
+					// Latitudes
+					Geometry latitude = new Geometry();
+					latitude.Vertices = new Vector3[Segments];
+					latitude.Normals = new Vector3[Segments];
+					latitude.UV = new Vector2[Segments];
 
+					for (int f = 0; f < Segments; f++) {
+						float ng = Mathf.PI * 2 * f / Segments;
+						float h = Mathf.Cos(ng) * cos;
+						float v = Mathf.Sin(ng) * cos;
+						latitude.Vertices[Segments - f - 1] = new Vector3(h, sin, v);
+						latitude.Normals[Segments - f - 1] = new Vector3(h, sin, v).normalized;
+					}
+
+					// Converge north pole or bridge latitudes
 					if (i == 1) {
-						var converge = new Converge(circle);
+						var converge = new Converge(latitude);
 						converge.RecalculateNormals = false;
 						converge.Point = northCap;
 						sphere.Input(converge.Output());
 					} else {
-						var bridge = new Bridge(circle, prevCircle);
+						var bridge = new Bridge(latitude, prevLatitude);
 						bridge.RecalculateNormals = false;
 						sphere.Input(bridge.Output());
 					}
 
-					prevCircle = circle;
+					prevLatitude = latitude;
 				}
 
+				// Converge south pole
 				if (i == Segments - 1) {
-					var converge = new Converge(prevCircle);
+					var converge = new Converge(prevLatitude);
 					converge.RecalculateNormals = true;
 					converge.Point = new Vector3(0f, sin, 0f);
 					sphere.Input(Reverse.Process(converge.Output()));
