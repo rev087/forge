@@ -8,7 +8,7 @@ namespace Forge.Primitives {
 		public float Radius = 0.5f;
 		public Vector3 Center = Vector3.zero;
 		public int Segments = 8;
-		public OrientationPreset Orientation;
+		public OrientationPreset Orientation = OrientationPreset.XZ;
 
 		public Geometry Output() {
 
@@ -63,7 +63,12 @@ namespace Forge.Primitives {
 
 			}
 
-			return hemi.Output();
+			Geometry geo = hemi.Output();
+
+			geo.ApplyOrientation(Orientation);
+			geo.Offset(Center);
+
+			return geo;
 		}
 
 	} // class

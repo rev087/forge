@@ -73,7 +73,12 @@ namespace Forge.Primitives {
 
 			}
 
-			return sphere.Output();
+			Geometry geo = sphere.Output();
+
+			geo.ApplyOrientation(Orientation);
+			geo.Offset(Center);
+
+			return geo;
 		}
 
 	} // class
