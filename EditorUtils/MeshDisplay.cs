@@ -84,9 +84,9 @@ namespace Forge.EditorUtils {
 
 			Vector3 camPos = SceneView.lastActiveSceneView.camera.transform.position;
 
+			// Face display options
 			if (mesh != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal) && canDisplayVertexData) {
 
-				// Triangle based handles
 				for (int i = 0; i <= mesh.triangles.Length - 3; i += 3) {
 					
 					Vector3 aVert = transform.TransformPoint(mesh.vertices[mesh.triangles[i]]);
@@ -114,7 +114,7 @@ namespace Forge.EditorUtils {
 						Handles.DotCap(id, mid, Quaternion.identity, camDist / 220);
 					}
 
-					// Face normal
+					// Normals
 					if (DisplayFaceNormal) {
 						Handles.color = Color.red;
 						Vector3 normal = Vector3.ClampMagnitude(Vector3.Cross(bVert-aVert, cVert-aVert), camDist / 20);
@@ -132,7 +132,7 @@ namespace Forge.EditorUtils {
 						// Handles.Label(lc, mesh.triangles[i+2].ToString(), _faceStyle);
 					}
 
-					// Face index
+					// Index
 					if (DisplayFaceIndex) {
 						Handles.color = Color.red;
 						Handles.Label(mid, "" + nth, _shadowStyle);
@@ -141,12 +141,12 @@ namespace Forge.EditorUtils {
 
 				} // triangles
 
-			} // if
+			} // face display options
 
+			// Vertex display options
 			if (mesh != null && (DisplayVertices || DisplayVertexPosition ||
 				DisplayVertexNormal || DisplayVertexIndex || DisplayPolygon) && canDisplayVertexData) {
 
-				// Vertex based handles
 				for (int i = 0; i < mesh.vertices.Length; i++) {
 
 					Vector3 origin = transform.TransformPoint(mesh.vertices[i]);
@@ -165,7 +165,7 @@ namespace Forge.EditorUtils {
 						Handles.DrawPolyLine(origin, origin + normalEnd);
 					}
 
-					// Vertex Index and Position
+					// Index and Position
 					if (DisplayVertexIndex || DisplayVertexPosition) {
 						string label = "";
 						if (DisplayVertexIndex) {
@@ -178,7 +178,7 @@ namespace Forge.EditorUtils {
 						Handles.Label(origin, label, _vertStyle);
 					}
 
-					// Vertex Polygon
+					// Misc: Polygon
 					if (DisplayPolygon) {
 						Handles.color = Color.yellow;
 						if (i > 0) {
@@ -194,7 +194,7 @@ namespace Forge.EditorUtils {
 				
 			} // vertex display options
 
-			// Origin
+			// Misc: Origin
 			if (DisplayOrigin) {
 				Handles.color = Color.yellow;
 				float camDist = Vector3.Distance(Vector3.zero, camPos);
@@ -202,15 +202,14 @@ namespace Forge.EditorUtils {
 				Handles.DotCap(originId, transform.TransformPoint(Vector3.zero), Quaternion.identity, camDist / 180);
 			}
 
-			// Ghost Mesh
-
+			// Misc: Ghost Mesh
 			if (asset.GhostMesh != null) {
 				Gizmos.color = new Color(0.3f, 0.65f, 1f, 0.7f);
 				Gizmos.DrawMesh(asset.GhostMesh, transform.position, transform.rotation, transform.localScale);
 			}
 
-		} // public void DrawHandles
+		} // DrawHandles
 
-	} // public class MeshDisplay
+	} // class
 	
-}
+} // namespace
