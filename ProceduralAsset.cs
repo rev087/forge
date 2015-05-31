@@ -16,7 +16,7 @@ namespace Forge {
 		[HideInInspector] public MeshDisplay MeshDisplay;
 
 		private System.Diagnostics.Stopwatch Stopwatch = null;
-		[HideInInspector] public long BuildMilliseconds = 0;
+		[HideInInspector] public double BuildMilliseconds = 0;
 
 		[HideInInspector] public int VertexCount = 0;
 		[HideInInspector] public int TriangleCount = 0;
@@ -35,7 +35,7 @@ namespace Forge {
 			// Statistics
 			Stopwatch.Start();
 			Geometry geo = Build();
-			BuildMilliseconds = Stopwatch.ElapsedMilliseconds;
+			BuildMilliseconds = Stopwatch.Elapsed.TotalMilliseconds;
 			Stopwatch.Reset();
 			VertexCount = (geo.Vertices != null) ? geo.Vertices.Length : 0;
 			TriangleCount = (geo.Triangles != null) ? geo.Triangles.Length / 3 : 0;
