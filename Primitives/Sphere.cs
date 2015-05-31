@@ -8,7 +8,7 @@ namespace Forge.Primitives {
 		public float Radius = 0.5f;
 		public Vector3 Center = Vector3.zero;
 		public int Segments = 8;
-		public OrientationPreset Orientation;
+		public OrientationPreset Orientation = OrientationPreset.XZ;
 
 		public Geometry Output() {
 
@@ -66,9 +66,12 @@ namespace Forge.Primitives {
 				// Converge south pole
 				if (i == Segments - 1) {
 					var converge = new Converge(prevLatitude);
-					converge.RecalculateNormals = true;
+					converge.RecalculateNormals = false;
 					converge.Point = new Vector3(0f, sin, 0f);
-					sphere.Input(Reverse.Process(converge.Output()));
+
+					var reverse = new Reverse(converge.Output());
+					reverse.Normals = Reverse.ReverseNormals.None;
+					sphere.Input(reverse.Output());
 				}
 
 			}

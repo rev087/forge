@@ -5,6 +5,10 @@ namespace Forge.Filters {
 
 	public class Reverse {
 
+		public enum ReverseNormals { None, Reverse, Recalculate };
+
+		public ReverseNormals Normals = ReverseNormals.Reverse;
+
 		public Reverse() {}
 
 		public Reverse(Geometry geometry) {
@@ -19,6 +23,7 @@ namespace Forge.Filters {
 
 		public Geometry Output() {
 
+			// Triangles
 			int[] revTriangles = new int[_geometry.Triangles.Length];
 			for (int t = 0; t < _geometry.Triangles.Length; t += 3) {
 				revTriangles[t+2] = _geometry.Triangles[t  ];
@@ -27,11 +32,17 @@ namespace Forge.Filters {
 			}
 			_geometry.Triangles = revTriangles;
 
-			Vector3[] revNormals = new Vector3[_geometry.Normals.Length];
-			for (int v = 0; v < _geometry.Normals.Length; v++) {
-				revNormals[v] = _geometry.Normals[v] * -1;
+			// Normals
+			if (Normals == ReverseNormals.Reverse) {
+				Vector3[] revNormals = new Vector3[_geometry.Normals.Length];
+				for (int v = 0; v < _geometry.Normals.Length; v++) {
+					revNormals[v] = _geometry.Normals[v] * -1;
+				}
+				_geometry.Normals = revNormals;
 			}
-			_geometry.Normals = revNormals;
+			else if (Normals == ReverseNormals.Recalculate) {
+				_geometry.RecalculateNormals();
+			}
 
 			return _geometry;
 		}

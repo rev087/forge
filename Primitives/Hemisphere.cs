@@ -49,7 +49,7 @@ namespace Forge.Primitives {
 
 					if (i == 1) {
 						var converge = new Converge(latitude);
-						converge.RecalculateNormals = true;
+						converge.RecalculateNormals = false;
 						converge.Point = northCap;
 						hemi.Input(converge.Output());
 					} else {
