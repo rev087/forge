@@ -202,6 +202,13 @@ namespace Forge.EditorUtils {
 				Handles.DotCap(originId, transform.TransformPoint(Vector3.zero), Quaternion.identity, camDist / 180);
 			}
 
+			// Ghost Mesh
+
+			if (asset.GhostMesh != null) {
+				Gizmos.color = new Color(0.3f, 0.65f, 1f, 0.7f);
+				Gizmos.DrawMesh(asset.GhostMesh, transform.position, transform.rotation, transform.localScale);
+			}
+
 		} // public void DrawHandles
 
 	} // public class MeshDisplay

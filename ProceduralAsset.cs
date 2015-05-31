@@ -13,6 +13,7 @@ namespace Forge {
 	public class ProceduralAsset : MonoBehaviour {
 
 		[HideInInspector] public Mesh Mesh = null;
+		[HideInInspector] public Mesh GhostMesh = null;
 		[HideInInspector] public MeshDisplay MeshDisplay;
 
 		private System.Diagnostics.Stopwatch Stopwatch = null;
@@ -31,6 +32,9 @@ namespace Forge {
 			if (Stopwatch == null) {
 				Stopwatch = new System.Diagnostics.Stopwatch();
 			}
+
+			// Reset the ghost mesh
+			GhostMesh = null;
 
 			// Statistics
 			Stopwatch.Start();
@@ -55,6 +59,15 @@ namespace Forge {
 			shader.hideFlags = HideFlags.HideAndDontSave;
 
 			IsBuilt = true;
+		}
+
+		public void Ghost(Geometry geo) {
+			GhostMesh = new Mesh();
+			GhostMesh.Clear();
+			GhostMesh.vertices = geo.Vertices;
+			GhostMesh.normals = geo.Normals;
+			GhostMesh.triangles = geo.Triangles;
+			GhostMesh.uv = geo.UV;
 		}
 
 		#if UNITY_EDITOR
