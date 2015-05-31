@@ -70,7 +70,6 @@ namespace Forge.Primitives {
 					converge.Point = new Vector3(0f, sin, 0f);
 
 					var reverse = new Reverse(converge.Output());
-					reverse.Normals = Reverse.ReverseNormals.None;
 					sphere.Input(reverse.Output());
 				}
 
