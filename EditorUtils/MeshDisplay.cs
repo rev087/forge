@@ -68,6 +68,7 @@ namespace Forge.EditorUtils {
 		}
 
 		public void DrawHandles(ProceduralAsset asset, Transform transform) {
+			if (!asset.IsBuilt) asset.Generate();
 			Mesh mesh = asset.Mesh;
 			bool canDisplayVertexData = mesh.vertices.Length <= MAX_VERTEX_COUNT;
 
