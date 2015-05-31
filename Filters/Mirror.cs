@@ -21,12 +21,7 @@ namespace Forge.Filters {
 
 		public Geometry Output() {
 
-			Geometry geo = new Geometry() {
-				Vertices = new Vector3[_geometry.Vertices.Length],
-				Normals = new Vector3[_geometry.Normals.Length],
-				UV = new Vector2[_geometry.UV.Length],
-				Triangles = new int[_geometry.Triangles.Length]
-			};
+			Geometry geo = _geometry.Copy();
 
 			for (int i = 0; i < _geometry.Vertices.Length; i++) {
 				Vector3 v = _geometry.Vertices[i];
