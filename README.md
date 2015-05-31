@@ -1,5 +1,6 @@
 # forge
-Procedural Generation toolkit for Unity3D
+
+Procedural Modeling plugin for Unity3D.
 
 ## Creating procedural assets
 
