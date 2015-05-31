@@ -15,9 +15,9 @@ namespace Forge.Primitives {
 			top.Size = new Vector2(Size.x, Size.z);
 			top.Surface = Surface.Triangulate;
 
-			// bottom
-			var bottom = new Mirror(top.Output());
-			bottom.Axis = Axis.Y;
+			// Bottom
+			var bottom = new Manipulate(top.Output());
+			bottom.Position = new Vector3(0f, -Size.y, 0f);
 
 			// Right wall
 			var right = new Square();
@@ -27,8 +27,8 @@ namespace Forge.Primitives {
 			right.Surface = Surface.Triangulate;
 
 			// Left wall
-			var left = new Mirror(right.Output());
-			left.Axis = Axis.X;
+			var left = new Manipulate(right.Output());
+			left.Position = new Vector3(-Size.x, 0f, 0f);
 
 			// Front wall
 			var front = new Square();
@@ -38,16 +38,16 @@ namespace Forge.Primitives {
 			front.Surface = Surface.Triangulate;
 
 			// Back wall
-			var back = new Mirror(front.Output());
-			back.Axis = Axis.Z;
+			var back = new Manipulate(front.Output());
+			back.Position = new Vector3(0f, 0f, -Size.z);
 
 			// Merge all sides
 			Merge merge = new Merge();
-			merge.Input(bottom.Output());
+			merge.Input(Reverse.Process(bottom.Output()));
 			merge.Input(right.Output());
-			merge.Input(left.Output());
+			merge.Input(Reverse.Process(left.Output()));
 			merge.Input(front.Output());
-			merge.Input(back.Output());
+			merge.Input(Reverse.Process(back.Output()));
 			merge.Input(top.Output());
 
 			return merge.Output();
