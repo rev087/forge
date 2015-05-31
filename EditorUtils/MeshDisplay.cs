@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Forge.Util;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -27,11 +28,16 @@ namespace Forge.EditorUtils {
 		private static GUIStyle _faceStyle = null;
 		private static GUIStyle _shadowStyle = null;
 
-		private GUIStyle MakeStyle(Color textColor, int fontSize, Vector2 contentOffset) {
+		public const int MAX_VERTEX_COUNT = 1000;
+
+		private GUIStyle MakeStyle(Color textColor, Vector2 contentOffset) {
 			var style = new GUIStyle();
 			style.normal.textColor = textColor;
-			style.fontSize = fontSize;
+			style.fontSize = 16;
 			style.contentOffset = contentOffset;
+			style.alignment = TextAnchor.UpperCenter;
+			style.fixedHeight = 20f;
+			style.fixedWidth = 100f;
 			return style;
 		}
 
@@ -63,11 +69,12 @@ namespace Forge.EditorUtils {
 
 		public void DrawHandles(ProceduralAsset asset, Transform transform) {
 			Mesh mesh = asset.Mesh;
+			bool canDisplayVertexData = mesh.vertices.Length <= MAX_VERTEX_COUNT;
 
 			if (_vertStyle == null) {
-				_vertStyle = MakeStyle(Color.cyan, 16, new Vector2(-5f, 5f));
-				_faceStyle = MakeStyle(Color.red, 16, new Vector2(-5f, 5f));
-				_shadowStyle = MakeStyle(Color.black, 16, new Vector2(-4f, 6f));
+				_vertStyle = MakeStyle(Color.cyan, new Vector2(0, 0));
+				_faceStyle = MakeStyle(Color.red, new Vector2(0f, 0f));
+				_shadowStyle = MakeStyle(Color.black, new Vector2(1f, 1f));
 			}
 
 			if (DisplayDefaultGizmo) {
@@ -76,28 +83,29 @@ namespace Forge.EditorUtils {
 
 			Vector3 camPos = SceneView.lastActiveSceneView.camera.transform.position;
 
-			if (mesh != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal)) {
+			if (mesh != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal) && canDisplayVertexData) {
 
 				// Triangle based handles
-				for (int a = 0; a <= mesh.triangles.Length - 3; a += 3) {
+				for (int i = 0; i <= mesh.triangles.Length - 3; i += 3) {
 					
-					Vector3 aVert = transform.TransformPoint(mesh.vertices[mesh.triangles[a]]);
-					Vector3 bVert = transform.TransformPoint(mesh.vertices[mesh.triangles[a+1]]);
-					Vector3 cVert = transform.TransformPoint(mesh.vertices[mesh.triangles[a+2]]);
+					Vector3 aVert = transform.TransformPoint(mesh.vertices[mesh.triangles[i]]);
+					Vector3 bVert = transform.TransformPoint(mesh.vertices[mesh.triangles[i+1]]);
+					Vector3 cVert = transform.TransformPoint(mesh.vertices[mesh.triangles[i+2]]);
 
 					Vector3 mid = (aVert + bVert + cVert) / 3;
 
-					Vector3 la = Vector3.Lerp(aVert, mid, 0.025f);
-					Vector3 lb = Vector3.Lerp(bVert, mid, 0.025f);
-					Vector3 lc = Vector3.Lerp(cVert, mid, 0.025f);
-
 					float camDist = Vector3.Distance(mid, camPos);
 
-					int nth = a / 3;
+					int nth = i / 3;
 
+					// Faces
 					if (DisplayFaces) {
 						Handles.color = new Color(1f, 0f, 0f, 0.15f);
-						var tri = new Vector3[] {la, lb, lc};
+						var tri = new Vector3[] {
+							Vector3.Lerp(aVert, mid, 0.025f),
+							Vector3.Lerp(bVert, mid, 0.025f),
+							Vector3.Lerp(cVert, mid, 0.025f)
+						};
 						Handles.DrawAAConvexPolygon(tri);
 
 						Handles.color = new Color(1f, 0f, 0f, 0.6f);
@@ -105,13 +113,25 @@ namespace Forge.EditorUtils {
 						Handles.DotCap(id, mid, Quaternion.identity, camDist / 220);
 					}
 
-
+					// Face normal
 					if (DisplayFaceNormal) {
 						Handles.color = Color.red;
 						Vector3 normal = Vector3.ClampMagnitude(Vector3.Cross(bVert-aVert, cVert-aVert), camDist / 20);
 						Handles.DrawPolyLine(mid, mid + normal);
+
+						// Face vertex order arrows
+						// Vector3 la = Vector3.Lerp(aVert, mid, 0.15f);
+						// Vector3 lb = Vector3.Lerp(bVert, mid, 0.15f);
+						// Vector3 lc = Vector3.Lerp(cVert, mid, 0.15f);
+						// Handles.DrawLine(la, Vector3.Lerp(la, lb, 0.25f));
+						// Handles.DrawLine(lb, Vector3.Lerp(lb, lc, 0.25f));
+						// Handles.DrawLine(lc, Vector3.Lerp(lc, la, 0.25f));
+						// Handles.Label(la, mesh.triangles[i].ToString(), _faceStyle);
+						// Handles.Label(lb, mesh.triangles[i+1].ToString(), _faceStyle);
+						// Handles.Label(lc, mesh.triangles[i+2].ToString(), _faceStyle);
 					}
 
+					// Face index
 					if (DisplayFaceIndex) {
 						Handles.color = Color.red;
 						Handles.Label(mid, "" + nth, _shadowStyle);
@@ -123,7 +143,7 @@ namespace Forge.EditorUtils {
 			} // if
 
 			if (mesh != null && (DisplayVertices || DisplayVertexPosition ||
-				DisplayVertexNormal || DisplayVertexIndex || DisplayPolygon)) {
+				DisplayVertexNormal || DisplayVertexIndex || DisplayPolygon) && canDisplayVertexData) {
 
 				// Vertex based handles
 				for (int i = 0; i < mesh.vertices.Length; i++) {
@@ -133,15 +153,15 @@ namespace Forge.EditorUtils {
 
 					Handles.color = Color.cyan;
 
+					// Vertices
+					if (DisplayVertices) {
+						Handles.DotCap(i * 2, origin, Quaternion.identity, camDist / 220);
+					}
+
 					// Normals
 					if (DisplayVertexNormal && i < mesh.normals.Length) {
 						Vector3 normalEnd = Vector3.ClampMagnitude(mesh.normals[i], camDist / 20);
 						Handles.DrawPolyLine(origin, origin + normalEnd);
-					}
-
-					// Vertices
-					if (DisplayVertices) {
-						Handles.DotCap(i * 2, origin, Quaternion.identity, camDist / 220);
 					}
 
 					// Vertex Index and Position

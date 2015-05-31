@@ -33,7 +33,9 @@ namespace Forge.Filters {
 				Quaternion qRot = Quaternion.Euler(Rotation);
 				for (int i = 0; i < geo.Vertices.Length; i++) {
 					geo.Vertices[i] = qRot * geo.Vertices[i];
-					geo.Normals[i] = qRot * geo.Normals[i];
+					if (geo.Normals != null && i < geo.Normals.Length) {
+						geo.Normals[i] = qRot * geo.Normals[i];
+					}
 				}
 			}
 
@@ -45,7 +47,6 @@ namespace Forge.Filters {
 
 			return geo;
 		}
-
 
 	}
 

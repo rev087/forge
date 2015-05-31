@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace Forge.Filters {
 
-	public enum Axis {X=0, Y=1, Z=2};
-
 	public class Mirror {
 
 		public Axis Axis = Axis.X;

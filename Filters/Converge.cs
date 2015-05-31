@@ -1,10 +1,12 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Forge.Filters {
 
 	public class Converge {
 
 		public Vector3 Point = Vector3.zero;
+		public bool RecalculateNormals = true;
 
 		private Geometry _geometry;
 
@@ -23,23 +25,40 @@ namespace Forge.Filters {
 
 			Geometry geo = new Geometry();
 			geo.Vertices = new Vector3[vertexCount+1];
+			geo.Normals = new Vector3[vertexCount+1];
 			geo.UV = new Vector2[vertexCount+1];
-			geo.Triangles = new int[vertexCount*3];
+
+			var triangles = new List<int>();
 
 			// Add the converge point
 			geo.Vertices[vertexCount] = Point;
+			geo.Normals[vertexCount] = Point;
 			geo.UV[vertexCount] = new Vector2(.5f, .5f);
 
 			for (int i = 0; i < vertexCount; i++) {
 				geo.Vertices[i] = _geometry.Vertices[i];
+				if (!RecalculateNormals && i < _geometry.Normals.Length) {
+					geo.Normals[i] = _geometry.Normals[i].normalized;
+				}
 				geo.UV[i] = new Vector2((i % 2 == 0) ? 0f : 1f, 0f);
 
-				geo.Triangles[i*3  ] = i;
-				geo.Triangles[i*3+1] = vertexCount;
-				geo.Triangles[i*3+2] = (i == _geometry.Vertices.Length-1) ? 0 : i+1;
+				int a = (i == _geometry.Vertices.Length-1) ? 0 : i+1, b = vertexCount, c = i;
+
+				var dot = Vector3.Dot(_geometry.Vertices[a], _geometry.Vertices[c]);
+				if (dot == 1f || dot == -1) {
+					continue;
+				}
+
+				triangles.Add(a);
+				triangles.Add(b);
+				triangles.Add(c);
 			}
 
-			geo.CalculateNormals();
+			geo.Triangles = triangles.ToArray();
+
+			if (RecalculateNormals) {
+				geo.RecalculateNormals();
+			}
 
 			return geo;
 		}

@@ -21,9 +21,9 @@ public class IconLoader {
 			string filePath = System.String.Format("Forge/Icons/{0}.png", icons[i]);
 			string vertexIconPath = Path.Combine(Application.dataPath, filePath);
 			Texture2D texture = new Texture2D( 1, 1 );
+			texture.hideFlags = HideFlags.HideAndDontSave;
 			texture.LoadImage(File.ReadAllBytes(vertexIconPath));
 			texture.Apply();
-			texture.hideFlags = HideFlags.HideAndDontSave;
 			Icons.Add(icons[i], texture);
 		}
 

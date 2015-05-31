@@ -1,74 +1,64 @@
 using UnityEngine;
+using Forge.Filters;
 
 namespace Forge.Primitives {
 
 	public class Circle {
 
-		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
-		public int Segments = 8;
-		public bool Filled = false;
+		public OrientationPreset Orientation = OrientationPreset.XZ;
+		public Surface Surface = Surface.None;
+		public int Segments = 12;
 		public Vector3 Center = Vector3.zero;
 		public float Radius = .5f;
-		public float Angle = 360;
+		public float StartAngle = 0;
+		public float EndAngle = 360;
 
 		public Geometry Output() {
-			Segments = Segments + (Angle < 360 ? 1 : 0);
-			int vertexCount = Segments + (Filled ? 1 : 0);
+			float angleDelta = Mathf.Abs(EndAngle - StartAngle);
+			int vertexCount = Segments + (angleDelta == 360 ? 0 : 1);
 
 			Geometry geo = new Geometry();
 			geo.Vertices = new Vector3[vertexCount];
+			geo.Normals = new Vector3[vertexCount];
 			geo.UV = new Vector2[vertexCount];
-			if (Filled) {
-				geo.Triangles = new int[Segments * 3 - (Angle < 360 ? 3 : 0)];
+
+			for (int i = 0; i < vertexCount; i++) {
+				int s = vertexCount - (angleDelta == 360 ? 0 : 1);
+				float angle = StartAngle + ((EndAngle-StartAngle) * i / s);
+				float h = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
+				float v = Mathf.Sin(angle * Mathf.Deg2Rad) * Radius;
+				geo.Vertices[vertexCount - i - 1] = new Vector3(h, 0f, v);
+				geo.Normals[vertexCount - i - 1] = new Vector3(h, 0f, v).normalized;
 			}
 
-			float radians = Angle * Mathf.Deg2Rad;
+			switch (Surface) {
+				case Surface.None:
+					geo.Triangles = new int[0];
+					break; 
+				case Surface.Triangulate:
+					var triangulate = new Triangulate(geo);
+					geo = triangulate.Output();
+					break;
+				case Surface.Converge:
+					var converge = new Converge(geo);
+					converge.Point = Vector3.zero;
+					converge.RecalculateNormals = false;
 
-			for (int i = 0; i < Segments; i++) {
-				int offset = Angle < 360 ? 1 : 0;
-				float angle = radians * i / (Segments - offset);
-				float cos = Mathf.Cos(angle) * Radius;
-				float sin = Mathf.Sin(angle) * Radius;
+					var sel = new ExtractFaces(converge.Output());
+					sel.Indexes = new int[] {Segments};
+					sel.Invert = true;
+					sel.RecalculateNormals = true;
+					geo = sel.Output();
 
-				switch (OrientationPlane) {
-					case OrientationPlane.XZ:
-						geo.Vertices[i] = new Vector3(Center.x + cos, Center.y, Center.z + sin);
-						break;
-					case OrientationPlane.YZ:
-						geo.Vertices[i] = new Vector3(Center.x, Center.y + sin, Center.z + cos);
-						break;
-					case OrientationPlane.XY:
-						geo.Vertices[i] = new Vector3(Center.x + cos, Center.y + sin, Center.z);
-						break;
-				}
-
-				geo.UV[i] = new Vector2((i % 2 == 0) ? 0f : 1f, 0f);
-				
+					break;
 			}
 
-			if (Filled) {
-				for (int i = 0; i < Segments - (Angle < 360 ? 1 : 0); i++) {
-					if (OrientationPlane == OrientationPlane.XZ) {
-						geo.Triangles[i*3  ] = i;
-						geo.Triangles[i*3+1] = Segments;
-						geo.Triangles[i*3+2] = (i == Segments - 1) ? 0 : i + 1;
-					}
-					else {
-						geo.Triangles[i*3  ] = i;
-						geo.Triangles[i*3+1] = (i == Segments - 1) ? 0 : i + 1;
-						geo.Triangles[i*3+2] = Segments;
-					}
-				}
-
-				geo.Vertices[Segments] = Center;
-				geo.UV[Segments] = new Vector2(.5f, 1f);
-				
-				geo.CalculateNormals();
-			}
-
+			geo.ApplyOrientation(Orientation);
+			geo.Offset(Center);
 
 			return geo;
-		}
+
+		} // Output
 
 	} // class
 

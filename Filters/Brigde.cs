@@ -4,6 +4,8 @@ namespace Forge.Filters {
 	
 	public class Bridge {
 
+		public bool RecalculateNormals = true;
+
 		private Geometry _a;
 		private Geometry _b;
 
@@ -28,6 +30,7 @@ namespace Forge.Filters {
 
 			Geometry geometry = new Geometry();
 			geometry.Vertices = new Vector3[vertexCount * 2];
+			geometry.Normals = new Vector3[vertexCount * 2];
 			geometry.UV = new Vector2[vertexCount * 2];
 			geometry.Triangles = new int[vertexCount * 6];
 
@@ -36,18 +39,23 @@ namespace Forge.Filters {
 				geometry.Vertices[i] = _a.Vertices[i];
 				geometry.Vertices[vertexCount + i] = _b.Vertices[i];
 
+				if (i < _a.Normals.Length) geometry.Normals[i] = _a.Normals[i];
+				if (i < _b.Normals.Length) geometry.Normals[vertexCount + i] = _b.Normals[i];
+
 				// First Triangle
 				geometry.Triangles[i*6  ] = i;
-				geometry.Triangles[i*6+1] = i + vertexCount;
-				geometry.Triangles[i*6+2] = i + 1;
+				geometry.Triangles[i*6+1] = i + 1;
+				geometry.Triangles[i*6+2] = i + vertexCount;
 
 				// Second Triangle
 				geometry.Triangles[i*6+3] = i;
-				geometry.Triangles[i*6+4] = i + vertexCount - 1;
-				geometry.Triangles[i*6+5] = i + vertexCount;
+				geometry.Triangles[i*6+4] = i + vertexCount;
+				geometry.Triangles[i*6+5] = i + vertexCount - 1;
 			}
 
-			geometry.CalculateNormals();
+			if (RecalculateNormals) {
+				geometry.RecalculateNormals();
+			}
 
 			return geometry;
 		}

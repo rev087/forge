@@ -11,58 +11,43 @@ namespace Forge.Primitives {
 		public bool CapTop = true;
 		public bool CapBottom = true;
 		public Vector3 Center = Vector3.zero;
-		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
+		public OrientationPreset Orientation = OrientationPreset.XZ;
 
 		private Geometry _geometry;
 
 		public Geometry Output() {
 
-			Circle bottom = new Circle();
+			var bottom = new Circle();
 			bottom.Radius = Radius;
 			bottom.Segments = Segments;
-			bottom.OrientationPlane = OrientationPlane;
+			bottom.Center = new Vector3(Center.x, Center.y - Height/2, Center.z);
 
-			Circle top = new Circle();
+			var top = new Circle();
 			top.Radius = Radius;
 			top.Segments = Segments;
-			top.OrientationPlane = OrientationPlane;
-
-			switch (OrientationPlane) {
-				case OrientationPlane.XY:
-					bottom.Center = new Vector3(Center.x, Center.y, Center.z - Height/2);
-					top.Center = new Vector3(Center.x, Center.y, Center.z + Height/2);
-					break;
-				case OrientationPlane.XZ:
-					bottom.Center = new Vector3(Center.x, Center.y - Height/2, Center.z);
-					top.Center = new Vector3(Center.x, Center.y + Height/2, Center.z);
-					break;
-				case OrientationPlane.YZ:
-					bottom.Center = new Vector3(Center.x - Height/2, Center.y, Center.z);
-					top.Center = new Vector3(Center.x + Height/2, Center.y, Center.z);
-					break;
-			}
+			top.Center = new Vector3(Center.x, Center.y + Height/2, Center.z);
 
 			Bridge bridge = new Bridge(bottom.Output(), top.Output());
 
 			Merge merge = new Merge();
 
-			if (OrientationPlane == OrientationPlane.XY) {
-				merge.Input(Reverse.Process(bridge.Output()));
-			} else {
-				merge.Input(bridge.Output());
-			}
+			merge.Input(bridge.Output());
 
 			if (CapTop) {
-				top.Filled = true;
+				top.Surface = Surface.Converge;
 				merge.Input(top.Output());
 			}
 
 			if (CapBottom) {
-				bottom.Filled = true;
+				bottom.Surface = Surface.Converge;
 				merge.Input(Reverse.Process(bottom.Output()));
 			}
 
-			return merge.Output();
+			Geometry geo = merge.Output();
+
+			geo.ApplyOrientation(Orientation);
+
+			return geo;
 		}
 
 	} // class

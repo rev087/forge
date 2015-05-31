@@ -6,6 +6,7 @@ namespace Forge.Filters {
 	public class Fuse {
 
 		public float Threshold = 0f;
+		public bool RecalculateNormals = true;
 
 		private Geometry _geometry;
 
@@ -49,7 +50,11 @@ namespace Forge.Filters {
 			_geometry.Vertices = vertices.ToArray();
 			_geometry.UV = uv.ToArray();
 
-			_geometry.CalculateNormals();
+			if (RecalculateNormals) {
+				_geometry.RecalculateNormals();
+			} else {
+				_geometry.Normals = new Vector3[0];
+			}
 			
 			return _geometry;
 		}

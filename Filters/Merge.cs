@@ -26,7 +26,7 @@ namespace Forge.Filters {
 
 			Geometry result = new Geometry();
 
-			int vertexCount = VertexCount;
+			int vertexCount = VertexCount();
 			result.Vertices = new Vector3 [vertexCount];
 			result.Normals = new Vector3 [vertexCount];
 			result.UV = new Vector2 [vertexCount];
@@ -38,9 +38,13 @@ namespace Forge.Filters {
 
 				// Vertices, Normals and UV
 				for (int v = 0; v < geo.Vertices.Length; v++) {
-					result.Vertices[vCount + v] = geo.Vertices[v];					
-					result.Normals[vCount + v] = geo.Normals[v];					
-					result.UV[vCount + v] = geo.UV[v];					
+					result.Vertices[vCount + v] = geo.Vertices[v];
+					if (v < geo.Normals.Length) {
+						result.Normals[vCount + v] = geo.Normals[v];
+					} else {
+						result.Normals[vCount + v] = Vector3.zero;
+					}
+					result.UV[vCount + v] = geo.UV[v];
 				}
 
 				// Faces
@@ -63,15 +67,13 @@ namespace Forge.Filters {
 			return merge.Output();
 		}
 
-		private int VertexCount {
-			get {
-				if (_geometries == null) return 0;
-				int count = 0;
-				foreach (Geometry geo in _geometries) {
-					count += geo.Vertices.Length;
-				}
-				return count;
+		private int VertexCount() {
+			if (_geometries == null) return 0;
+			int count = 0;
+			foreach (Geometry geo in _geometries) {
+				count += geo.Vertices.Length;
 			}
+			return count;
 		}
 
 		private int FaceCount (){

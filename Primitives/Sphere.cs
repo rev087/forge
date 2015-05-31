@@ -8,26 +8,61 @@ namespace Forge.Primitives {
 		public float Radius = 0.5f;
 		public Vector3 Center = Vector3.zero;
 		public int Segments = 8;
-		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
+		public OrientationPreset Orientation;
 
 		public Geometry Output() {
-			if (Segments < 4) {
-				Segments = 4;
-				Debug.LogWarning("Sphere cannot have less than 4 segments");
+
+			if (Segments < 3) {
+				Debug.LogError("Sphere error: Spheres must have at least 3 segments");
 			}
 
-			Hemisphere hemisphere = new Hemisphere();
-			hemisphere.Center = Center;
-			hemisphere.Segments = Segments;
-			hemisphere.OrientationPlane = OrientationPlane;
-			var top = hemisphere.Output();
+			Merge sphere = new Merge();
 
-			Mirror bottom = new Mirror(top);
-			bottom.Axis = Axis.Y;
+			Geometry prevCircle = Geometry.Empty;
 
-			Merge sphere = new Merge(top, bottom.Output());
+			Vector3 northCap = Vector3.zero;
 
-			return Fuse.Process(sphere.Output());
+			for (int i = 0; i < Segments; i++) {
+				float angle = 90 + (180 * i / (Segments - 1));
+				float sin = Mathf.Sin(angle * Mathf.Deg2Rad) * Radius;
+
+				if (i == 0) {
+					northCap = new Vector3(0f, sin, 0f);
+				}
+
+				if (i > 0 && i < Segments - 1) {
+					float cos = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
+
+					var c = new Circle();
+					c.Segments = Segments;
+					c.Center = new Vector3(0f, sin, 0f);
+					c.Radius = cos;
+					Geometry circle = c.Output();
+
+					if (i == 1) {
+						var converge = new Converge(circle);
+						converge.RecalculateNormals = false;
+						converge.Point = northCap;
+						sphere.Input(converge.Output());
+					} else {
+						var bridge = new Bridge(circle, prevCircle);
+						bridge.RecalculateNormals = false;
+						sphere.Input(bridge.Output());
+					}
+
+					prevCircle = circle;
+				}
+
+				if (i == Segments - 1) {
+					var converge = new Converge(prevCircle);
+					converge.RecalculateNormals = true;
+					converge.Point = new Vector3(0f, sin, 0f);
+					sphere.Input(Reverse.Process(converge.Output()));
+				}
+
+			}
+
+			return sphere.Output();
 		}
 
 	} // class

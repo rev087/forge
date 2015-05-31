@@ -6,7 +6,7 @@ namespace Forge.Primitives {
 
 	public class Grid {
 
-		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
+		public OrientationPreset Orientation;
 		public Vector2 Size;
 		public Vector2 Center;
 		public Vector2 Cells = new Vector2(2, 2);

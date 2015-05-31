@@ -8,44 +8,54 @@ namespace Forge.Primitives {
 		public float Radius = 0.5f;
 		public Vector3 Center = Vector3.zero;
 		public int Segments = 8;
-		public OrientationPlane OrientationPlane = OrientationPlane.XZ;
+		public OrientationPreset Orientation;
 
 		public Geometry Output() {
 
-			if (Segments < 4) return new Geometry();
+			if (Segments < 3) {
+				Debug.LogError("Hemisphere error: Hemispheres must have at least 3 segments");
+			}
 
-			Merge hemisphere = new Merge();
+			Merge hemi = new Merge();
 
-			int rows = Segments / 2;
+			Geometry prevCircle = Geometry.Empty;
 
-			Circle prev = null;
+			Vector3 northCap = Vector3.zero;
 
-			for (int i = 0; i < rows; i++) {
-				float angle = Mathf.PI / 2 * i / (rows-1);
-				float cos = Mathf.Cos(angle) * Radius;
-				float sin = Mathf.Sin(angle) * Radius;
+			for (int i = 0; i < Segments; i++) {
+				float angle = 90 + (90 * i / (Segments - 1));
+				float sin = Mathf.Sin(angle * Mathf.Deg2Rad) * Radius;
 
-				if (i < rows - 1) {
-					Circle c = new Circle();
+				if (i == 0) {
+					northCap = new Vector3(0f, sin, 0f);
+				}
+
+				if (i > 0) {
+					float cos = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
+
+					var c = new Circle();
 					c.Segments = Segments;
-					c.Center = new Vector3(Center.x, Center.y + sin, Center.z);
+					c.Center = new Vector3(0f, sin, 0f);
 					c.Radius = cos;
+					Geometry circle = c.Output();
 
-					if (i > 0) {
-						Bridge bridge = new Bridge(prev.Output(), c.Output());
-						hemisphere.Input(bridge.Output());
+					if (i == 1) {
+						var converge = new Converge(c.Output());
+						converge.RecalculateNormals = true;
+						converge.Point = northCap;
+						hemi.Input(converge.Output());
+					} else {
+						var bridge = new Bridge(circle, prevCircle);
+						bridge.RecalculateNormals = false;
+						hemi.Input(bridge.Output());
 					}
 
-					prev = c;
-				} else {
-					Converge converge = new Converge(prev.Output());
-					converge.Point = new Vector3(Center.x, Center.y + sin, Center.z);
-					hemisphere.Input(converge.Output());
+					prevCircle = circle;
 				}
 
 			}
 
-			return Fuse.Process(hemisphere.Output());
+			return hemi.Output();
 		}
 
 	} // class
