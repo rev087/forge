@@ -23,7 +23,7 @@ namespace Forge.Primitives {
 			var right = new Square();
 			right.Orientation = OrientationPreset.ZY;
 			right.Center = new Vector3(Center.x + Size.x/2, Center.y, Center.z);
-			right.Size = new Vector2(Size.y, Size.z);
+			right.Size = new Vector2(Size.z, Size.y);
 			right.Surface = Surface.Triangulate;
 
 			// Left wall
