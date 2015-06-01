@@ -155,6 +155,33 @@ namespace Forge {
 			return PlanarCoordinates(InvariantAxis(AxisVariance()), point);
 		}
 
+		// Minimum bounding box value in the axis
+		public float Min(Axis axis) {
+			float min = Mathf.Infinity;
+
+			for (int i = 0; i < Vertices.Length; i++) {
+				if (Vertices[i][(int)axis] < min) min = Vertices[i][(int)axis];
+			}
+
+			return min;
+		}
+
+		// Maximum bounding box value in the axis
+		public float Max(Axis axis) {
+			float max = -Mathf.Infinity;
+
+			for (int i = 0; i < Vertices.Length; i++) {
+				if (Vertices[i][(int)axis] > max) max = Vertices[i][(int)axis];
+			}
+
+			return max;
+		}
+
+		// Span of the bounding box in the axis
+		public float Span(Axis axis) {
+			return Max(axis) - Min(axis);
+		}
+
 		public override string ToString() {
 			return System.String.Format("vert:{0}, nor:{1}, uv:{2}, tri:{3}",
 				Vertices != null ? Vertices.Length.ToString() : "-",
