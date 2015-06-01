@@ -14,6 +14,7 @@ namespace Forge {
 
 		[HideInInspector] public Mesh Mesh = null;
 		[HideInInspector] public Mesh GhostMesh = null;
+		[HideInInspector] public Geometry Geometry = Geometry.Empty;
 		[HideInInspector] public MeshDisplay MeshDisplay;
 
 		private System.Diagnostics.Stopwatch Stopwatch = null;
@@ -38,19 +39,19 @@ namespace Forge {
 
 			// Statistics
 			Stopwatch.Start();
-			Geometry geo = Build();
+			Geometry = Build();
 			BuildMilliseconds = Stopwatch.Elapsed.TotalMilliseconds;
 			Stopwatch.Reset();
-			VertexCount = (geo.Vertices != null) ? geo.Vertices.Length : 0;
-			TriangleCount = (geo.Triangles != null) ? geo.Triangles.Length / 3 : 0;
+			VertexCount = (Geometry.Vertices != null) ? Geometry.Vertices.Length : 0;
+			TriangleCount = (Geometry.Triangles != null) ? Geometry.Triangles.Length / 3 : 0;
 
 			// Mesh
 			Mesh = (Mesh == null) ? new Mesh() : Mesh;
 			Mesh.Clear();
-			Mesh.vertices = geo.Vertices;
-			Mesh.normals = geo.Normals;
-			Mesh.triangles = geo.Triangles;
-			Mesh.uv = geo.UV;
+			Mesh.vertices = Geometry.Vertices;
+			Mesh.normals = Geometry.Normals;
+			Mesh.triangles = Geometry.Triangles;
+			Mesh.uv = Geometry.UV;
 
 			GetComponent<MeshFilter>().sharedMesh = Mesh;
 

@@ -69,8 +69,8 @@ namespace Forge.EditorUtils {
 
 		public void DrawHandles(ProceduralAsset asset, Transform transform) {
 			if (!asset.IsBuilt) asset.Generate();
-			Mesh mesh = asset.Mesh;
-			bool canDisplayVertexData = mesh.vertices.Length <= MAX_VERTEX_COUNT;
+			Geometry geo = asset.Geometry;
+			bool canDisplayVertexData = geo.Vertices.Length <= MAX_VERTEX_COUNT;
 
 			if (_vertStyle == null) {
 				_vertStyle = MakeStyle(Color.cyan, new Vector2(0, 0));
@@ -85,13 +85,13 @@ namespace Forge.EditorUtils {
 			Vector3 camPos = SceneView.lastActiveSceneView.camera.transform.position;
 
 			// Face display options
-			if (mesh != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal) && canDisplayVertexData) {
+			if (geo.Triangles != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal) && canDisplayVertexData) {
 
-				for (int i = 0; i <= mesh.triangles.Length - 3; i += 3) {
+				for (int i = 0; i <= geo.Triangles.Length - 3; i += 3) {
 					
-					Vector3 aVert = transform.TransformPoint(mesh.vertices[mesh.triangles[i]]);
-					Vector3 bVert = transform.TransformPoint(mesh.vertices[mesh.triangles[i+1]]);
-					Vector3 cVert = transform.TransformPoint(mesh.vertices[mesh.triangles[i+2]]);
+					Vector3 aVert = transform.TransformPoint(geo.Vertices[geo.Triangles[i]]);
+					Vector3 bVert = transform.TransformPoint(geo.Vertices[geo.Triangles[i+1]]);
+					Vector3 cVert = transform.TransformPoint(geo.Vertices[geo.Triangles[i+2]]);
 
 					Vector3 mid = (aVert + bVert + cVert) / 3;
 
@@ -110,7 +110,7 @@ namespace Forge.EditorUtils {
 						Handles.DrawAAConvexPolygon(tri);
 
 						Handles.color = new Color(1f, 0f, 0f, 0.6f);
-						int id = mesh.vertices.Length + nth;
+						int id = geo.Vertices.Length + nth;
 						Handles.DotCap(id, mid, Quaternion.identity, camDist / 220);
 					}
 
@@ -127,9 +127,9 @@ namespace Forge.EditorUtils {
 						// Handles.DrawLine(la, Vector3.Lerp(la, lb, 0.25f));
 						// Handles.DrawLine(lb, Vector3.Lerp(lb, lc, 0.25f));
 						// Handles.DrawLine(lc, Vector3.Lerp(lc, la, 0.25f));
-						// Handles.Label(la, mesh.triangles[i].ToString(), _faceStyle);
-						// Handles.Label(lb, mesh.triangles[i+1].ToString(), _faceStyle);
-						// Handles.Label(lc, mesh.triangles[i+2].ToString(), _faceStyle);
+						// Handles.Label(la, geo.Triangles[i].ToString(), _faceStyle);
+						// Handles.Label(lb, geo.Triangles[i+1].ToString(), _faceStyle);
+						// Handles.Label(lc, geo.Triangles[i+2].ToString(), _faceStyle);
 					}
 
 					// Index
@@ -144,12 +144,12 @@ namespace Forge.EditorUtils {
 			} // face display options
 
 			// Vertex display options
-			if (mesh != null && (DisplayVertices || DisplayVertexPosition ||
+			if (geo.Vertices != null && (DisplayVertices || DisplayVertexPosition ||
 				DisplayVertexNormal || DisplayVertexIndex || DisplayPolygon) && canDisplayVertexData) {
 
-				for (int i = 0; i < mesh.vertices.Length; i++) {
+				for (int i = 0; i < geo.Vertices.Length; i++) {
 
-					Vector3 origin = transform.TransformPoint(mesh.vertices[i]);
+					Vector3 origin = transform.TransformPoint(geo.Vertices[i]);
 					float camDist = Vector3.Distance(origin, camPos);
 
 					Handles.color = Color.cyan;
@@ -160,8 +160,8 @@ namespace Forge.EditorUtils {
 					}
 
 					// Normals
-					if (DisplayVertexNormal && i < mesh.normals.Length) {
-						Vector3 normalEnd = Vector3.ClampMagnitude(mesh.normals[i], camDist / 20);
+					if (DisplayVertexNormal && i < geo.Normals.Length) {
+						Vector3 normalEnd = Vector3.ClampMagnitude(geo.Normals[i], camDist / 20);
 						Handles.DrawPolyLine(origin, origin + normalEnd);
 					}
 
@@ -172,33 +172,36 @@ namespace Forge.EditorUtils {
 							label += i + "\n";
 						}
 						if (DisplayVertexPosition) {
-							label += mesh.vertices[i].ToString() + "\n";
+							label += geo.Vertices[i].ToString() + "\n";
 						}
 						Handles.Label(origin, label, _shadowStyle);
 						Handles.Label(origin, label, _vertStyle);
-					}
-
-					// Misc: Polygon
-					if (DisplayPolygon) {
-						Handles.color = Color.yellow;
-						if (i > 0) {
-							Vector3 prev = transform.TransformPoint(mesh.vertices[i-1]);
-							Handles.DrawLine(origin, prev);
-						} else {
-							Vector3 prev = transform.TransformPoint(mesh.vertices[mesh.vertices.Length-1]);
-							Handles.DrawDottedLine(origin, prev, 4f);
-						}
 					}
 
 				} // vertices
 				
 			} // vertex display options
 
+			// Misc: Polygon
+			if (DisplayPolygon) {
+				Handles.color = Color.yellow;
+				for (int i = 0; i < geo.Vertices.Length; i++) {
+					Vector3 origin = transform.TransformPoint(geo.Vertices[i]);
+					if (i > 0) {
+						Vector3 prev = transform.TransformPoint(geo.Vertices[i-1]);
+						Handles.DrawLine(origin, prev);
+					} else {
+						Vector3 prev = transform.TransformPoint(geo.Vertices[geo.Vertices.Length-1]);
+						Handles.DrawDottedLine(origin, prev, 4f);
+					}
+				}
+			}
+
 			// Misc: Origin
 			if (DisplayOrigin) {
 				Handles.color = Color.yellow;
 				float camDist = Vector3.Distance(Vector3.zero, camPos);
-				int originId = mesh.vertices.Length + mesh.triangles.Length / 3 + 1;
+				int originId = geo.Vertices.Length + geo.Triangles.Length / 3 + 1;
 				Handles.DotCap(originId, transform.TransformPoint(Vector3.zero), Quaternion.identity, camDist / 180);
 			}
 
