@@ -39,6 +39,9 @@ namespace Forge.Filters {
 				}
 			}
 			
+			System.Array.Reverse(geo.Vertices);
+			System.Array.Reverse(geo.Normals);
+			System.Array.Reverse(geo.UV);
 			return geo;
 		}
 
