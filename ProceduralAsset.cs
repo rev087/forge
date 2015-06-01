@@ -54,10 +54,6 @@ namespace Forge {
 
 			GetComponent<MeshFilter>().sharedMesh = Mesh;
 
-			// Standard shader
-			Shader shader = Shader.Find("Standard");
-			shader.hideFlags = HideFlags.HideAndDontSave;
-
 			IsBuilt = true;
 		}
 
