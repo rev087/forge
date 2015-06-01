@@ -15,6 +15,7 @@ When appropriate, they can receive one ore more geometries as input by implement
 ### Primitives
 
 - __Point__
+- __Line__
 - __Triangle__
 - __Square__
 - __Cuboid__
