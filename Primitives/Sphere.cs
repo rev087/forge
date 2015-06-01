@@ -19,59 +19,35 @@ namespace Forge.Primitives {
 			Merge sphere = new Merge();
 
 			Geometry prevLatitude = Geometry.Empty;
-			Vector3 northCap = Vector3.zero;
 
 			// Longitudes
 			for (int i = 0; i < Segments; i++) {
 				float angle = 90 + (180 * i / (Segments - 1));
 				float sin = Mathf.Sin(angle * Mathf.Deg2Rad) * Radius;
+				float cos = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
 
-				// North-most point
-				if (i == 0) {
-					northCap = new Vector3(0f, sin, 0f);
+				// Latitudes
+				Geometry latitude = new Geometry();
+				latitude.Vertices = new Vector3[Segments + 1];
+				latitude.Normals = new Vector3[Segments + 1];
+				latitude.UV = new Vector2[Segments + 1];
+
+				// We iterate one additional time to create an overlapping longitude
+				// at the UV seam
+				for (int l = 0; l < Segments + 1; l++) {
+					float ng = Mathf.PI * 2 * l / Segments;
+					float h = Mathf.Cos(ng) * cos;
+					float v = Mathf.Sin(ng) * cos;
+					latitude.Vertices[Segments - l] = new Vector3(h, sin, v);
+					latitude.Normals[Segments - l] = new Vector3(h, sin, v).normalized;
+					latitude.UV[Segments - l] = new Vector2(ng / (Mathf.PI * 2), sin + Radius);
 				}
 
-				if (i > 0 && i < Segments - 1) {
-					float cos = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
+				var bridge = new Bridge(latitude, prevLatitude);
+				bridge.RecalculateNormals = false;
+				sphere.Input(bridge.Output());
 
-					// Latitudes
-					Geometry latitude = new Geometry();
-					latitude.Vertices = new Vector3[Segments];
-					latitude.Normals = new Vector3[Segments];
-					latitude.UV = new Vector2[Segments];
-
-					for (int f = 0; f < Segments; f++) {
-						float ng = Mathf.PI * 2 * f / Segments;
-						float h = Mathf.Cos(ng) * cos;
-						float v = Mathf.Sin(ng) * cos;
-						latitude.Vertices[Segments - f - 1] = new Vector3(h, sin, v);
-						latitude.Normals[Segments - f - 1] = new Vector3(h, sin, v).normalized;
-					}
-
-					// Converge north pole or bridge latitudes
-					if (i == 1) {
-						var converge = new Converge(latitude);
-						converge.RecalculateNormals = false;
-						converge.Point = northCap;
-						sphere.Input(converge.Output());
-					} else {
-						var bridge = new Bridge(latitude, prevLatitude);
-						bridge.RecalculateNormals = false;
-						sphere.Input(bridge.Output());
-					}
-
-					prevLatitude = latitude;
-				}
-
-				// Converge south pole
-				if (i == Segments - 1) {
-					var converge = new Converge(prevLatitude);
-					converge.RecalculateNormals = false;
-					converge.Point = new Vector3(0f, sin, 0f);
-
-					var reverse = new Reverse(converge.Output());
-					sphere.Input(reverse.Output());
-				}
+				prevLatitude = latitude;
 
 			}
 
@@ -83,6 +59,6 @@ namespace Forge.Primitives {
 			return geo;
 		}
 
-	} // class
+	}
 
-} // namespace
+}
