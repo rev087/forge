@@ -83,7 +83,7 @@ namespace Forge.EditorUtils {
 			if (Asset.MeshDisplay == null) Asset.MeshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
 			if (IconLoader == null) IconLoader = new IconLoader();
 
-			float height = 32f * 10 + 30f;
+			float height = 32f * 12 + 30f;
 			float width = 32f;
 
 			bool disableVertexData = Asset.Mesh.vertices.Length >= MeshDisplay.MAX_VERTEX_COUNT;
@@ -100,6 +100,7 @@ namespace Forge.EditorUtils {
 			EditorGUI.BeginDisabledGroup(disableVertexData);
 			Asset.MeshDisplay.DisplayVertices = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertices, IconLoader.Icons["vertex"], "button");
 			Asset.MeshDisplay.DisplayVertexNormal = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexNormal, IconLoader.Icons["vertexNormal"], "button");
+			Asset.MeshDisplay.DisplayVertexTangent = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexTangent, IconLoader.Icons["vertexTangent"], "button");
 			Asset.MeshDisplay.DisplayVertexIndex = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexIndex, IconLoader.Icons["vertexIndex"], "button");
 			Asset.MeshDisplay.DisplayVertexPosition = GUILayout.Toggle(Asset.MeshDisplay.DisplayVertexPosition, IconLoader.Icons["vertexPosition"], "button");
 			EditorGUI.EndDisabledGroup();
@@ -113,11 +114,21 @@ namespace Forge.EditorUtils {
 			EditorGUI.EndDisabledGroup();
 			GUILayout.Space(10);
 
-			// Origin
-			Asset.MeshDisplay.DisplayOrigin = GUILayout.Toggle(Asset.MeshDisplay.DisplayOrigin, IconLoader.Icons["origin"], "button");
+			// Polygons
 			EditorGUI.BeginDisabledGroup(disableVertexData);
-			Asset.MeshDisplay.DisplayPolygon = GUILayout.Toggle(Asset.MeshDisplay.DisplayPolygon, IconLoader.Icons["polygon"], "button");
+			Asset.MeshDisplay.DisplayPolygons = GUILayout.Toggle(Asset.MeshDisplay.DisplayPolygons, IconLoader.Icons["polygon"], "button");
+			Asset.MeshDisplay.DisplayPolygonIndex = GUILayout.Toggle(Asset.MeshDisplay.DisplayPolygonIndex, IconLoader.Icons["polygonIndex"], "button");
 			EditorGUI.EndDisabledGroup();
+
+			GUILayout.Space(10);
+
+			// UV
+			EditorGUI.BeginDisabledGroup(disableVertexData);
+			Asset.MeshDisplay.DisplayUVs = GUILayout.Toggle(Asset.MeshDisplay.DisplayUVs, IconLoader.Icons["uv"], "button");
+			EditorGUI.EndDisabledGroup();
+
+			// origin
+			Asset.MeshDisplay.DisplayOrigin = GUILayout.Toggle(Asset.MeshDisplay.DisplayOrigin, IconLoader.Icons["origin"], "button");
 
 			GUILayout.EndArea();
 		}

@@ -12,9 +12,10 @@ public class IconLoader {
 
 		string[] icons = new string[] {
 			"defaultGizmo",
-			"vertex", "vertexIndex", "vertexNormal", "vertexPosition",
+			"vertex", "vertexIndex", "vertexNormal", "vertexTangent", "vertexPosition",
 			"face", "faceIndex", "faceNormal", "facePosition",
-			"origin", "polygon"
+			"polygon", "polygonIndex",
+			"origin", "uv"
 		};
 
 		for (int i = 0; i < icons.Length; i++) {

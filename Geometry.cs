@@ -10,8 +10,10 @@ namespace Forge {
 
 		public Vector3[] Vertices;
 		public Vector3[] Normals;
+		public Vector4[] Tangents;
 		public Vector2[] UV;
 		public int[] Triangles;
+		public int[] Polygons;
 
 		public const float TAU = Mathf.PI * 2;
 
@@ -20,17 +22,20 @@ namespace Forge {
 				return new Geometry() {
 					Vertices = new Vector3[0],
 					Normals = new Vector3[0],
+					Tangents = new Vector4[0],
 					UV = new Vector2[0],
 					Triangles = new int[0]
 				};
 			}
 		}
 
-		public Geometry(Vector3[] verts, Vector3[] normals, Vector2[] uv, int[] tris) {
-			Vertices = verts;
-			Normals = normals;
-			UV = uv;
-			Triangles = tris;
+		public Geometry(int vertexCount, int faceCount=0, int polyCount=0) {
+			Vertices = new Vector3[vertexCount];
+			Normals = new Vector3[vertexCount];
+			Tangents = new Vector4[vertexCount];
+			UV = new Vector2[vertexCount];
+			Triangles = new int[faceCount];
+			Polygons = new int[polyCount];
 		}
 
 		public Geometry Copy() {
@@ -48,6 +53,12 @@ namespace Forge {
 				geometry.Normals = normals;
 			}
 
+			if (Tangents != null) {
+				Vector4[] tangents = new Vector4[Tangents.Length];
+				System.Array.Copy(Tangents, tangents, Tangents.Length);
+				geometry.Tangents = tangents;
+			}
+
 			if (UV != null) {
 				Vector2[] uv = new Vector2[UV.Length];
 				System.Array.Copy(UV, uv, UV.Length);
@@ -58,6 +69,12 @@ namespace Forge {
 				int[] triangles = new int[Triangles.Length];
 				System.Array.Copy(Triangles, triangles, Triangles.Length);
 				geometry.Triangles = triangles;
+			}
+
+			if (Polygons != null) {
+				int[] polygons = new int[Polygons.Length];
+				System.Array.Copy(Polygons, polygons, Polygons.Length);
+				geometry.Polygons = polygons;
 			}
 
 			return geometry;
