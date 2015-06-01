@@ -38,13 +38,20 @@ namespace Forge.Filters {
 
 				// Vertices, Normals and UV
 				for (int v = 0; v < geo.Vertices.Length; v++) {
+
 					result.Vertices[vCount + v] = geo.Vertices[v];
+
 					if (v < geo.Normals.Length) {
 						result.Normals[vCount + v] = geo.Normals[v];
 					} else {
 						result.Normals[vCount + v] = Vector3.zero;
 					}
-					result.UV[vCount + v] = geo.UV[v];
+
+					if (v < geo.UV.Length) {
+						result.UV[vCount + v] = geo.UV[v];
+					} else {
+						result.UV[vCount + v] = Vector2.zero;
+					}
 				}
 
 				// Faces
