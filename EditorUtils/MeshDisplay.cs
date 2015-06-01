@@ -117,7 +117,7 @@ namespace Forge.EditorUtils {
 					// Normals
 					if (DisplayFaceNormal) {
 						Handles.color = Color.red;
-						Vector3 normal = Vector3.ClampMagnitude(Vector3.Cross(bVert-aVert, cVert-aVert), camDist / 20);
+						Vector3 normal = Vector3.ClampMagnitude(Vector3.Cross(bVert-aVert, cVert-aVert).normalized, camDist / 20);
 						Handles.DrawPolyLine(mid, mid + normal);
 
 						// Face vertex order arrows
