@@ -18,11 +18,12 @@ namespace Forge.Primitives {
 
 			Geometry geo = new Geometry(
 				Segments*(Segments+1),
-				(Segments*2) * (Segments-1) * 3, // (Segments*2) = # triangles in a ring, (Segments-1) = # of rings in sphere
+				(Segments*2) * (Segments-1) * 3 -Segments*6, // (Segments*2) = # triangles in a ring, (Segments-1) = # of rings in sphere
 				Segments*2
 			);
 
 			float tau = Mathf.PI * 2;
+			int triIndex = 0;
 
 			// Longitudes (meridians)
 			for (int i = 0; i < Segments; i++) {
@@ -55,24 +56,21 @@ namespace Forge.Primitives {
 				var polyLength = geo.Polygons[i*2+1] = Segments+1;
 
 				if (i > 0) {
-					int triIndex = (i-1) * (Segments*2) * 3;
 					
 					for (int t = 0; t < polyLength-1; t++) {
 
-						int triOffset = t * 6;
-
 						// First Triangle
 						if (i < Segments-1) {
-							geo.Triangles[triIndex + triOffset + 0] = polyOrigin + t;
-							geo.Triangles[triIndex + triOffset + 1] = polyOrigin + t + 1;
-							geo.Triangles[triIndex + triOffset + 2] = polyOrigin + t - polyLength + 1;
+							geo.Triangles[triIndex++] = polyOrigin + t;
+							geo.Triangles[triIndex++] = polyOrigin + t + 1;
+							geo.Triangles[triIndex++] = polyOrigin + t - polyLength + 1;
 						}
 
 						// Second Triangle
 						if (i > 1) {
-							geo.Triangles[triIndex + triOffset + 3] = polyOrigin + t - polyLength + 1;
-							geo.Triangles[triIndex + triOffset + 4] = polyOrigin + t - polyLength;
-							geo.Triangles[triIndex + triOffset + 5] = polyOrigin + t;
+							geo.Triangles[triIndex++] = polyOrigin + t;
+							geo.Triangles[triIndex++] = polyOrigin + t - polyLength + 1;
+							geo.Triangles[triIndex++] = polyOrigin + t - polyLength;
 						}
 					}
 
