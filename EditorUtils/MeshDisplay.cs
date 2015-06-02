@@ -211,12 +211,14 @@ namespace Forge.EditorUtils {
 					int count = geo.Polygons[p+1];
 					Vector3 origin = transform.TransformPoint(geo.Vertices[start]);
 
+					// Index
 					if (DisplayPolygonIndex) {
-						Handles.Label(origin, p.ToString(), _shadowStyle);
-						Handles.Label(origin, p.ToString(), _polyStyle);
+						Handles.Label(origin, (p/2).ToString(), _shadowStyle);
+						Handles.Label(origin, (p/2).ToString(), _polyStyle);
 					}
 
 					if (DisplayPolygons) {
+
 						// Cap
 						float camDist = Vector3.Distance(origin, camPos);
 						Handles.DotCap(GUIUtility.GetControlID (FocusType.Passive), origin, Quaternion.identity, camDist / 220);
