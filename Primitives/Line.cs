@@ -13,11 +13,8 @@ namespace Forge.Primitives {
 			if (Segments == 0) return Geometry.Empty;
 			if (Segments == 1) return Point.At((Start + End) / 2);
 
-			var geo = new Geometry();
-			geo.Vertices = new Vector3[Segments];
-			geo.Normals = new Vector3[0];
-			geo.UV = new Vector2[0];
-			geo.Triangles = new int[0];
+			var geo = new Geometry(Segments);
+			geo.Polygons = new int[] {0, Segments};
 
 			for (int i = 0; i < Segments; i++) {
 				float f = (float)i / (Segments-1);

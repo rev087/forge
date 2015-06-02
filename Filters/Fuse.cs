@@ -6,7 +6,7 @@ namespace Forge.Filters {
 	public class Fuse {
 
 		public float Threshold = 0f;
-		public bool RecalculateNormals = true;
+		public bool RecalculateNormals = false;
 
 		private Geometry _geometry;
 

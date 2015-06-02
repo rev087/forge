@@ -13,17 +13,14 @@ namespace Forge {
 	public class ProceduralAsset : MonoBehaviour {
 
 		[HideInInspector] public Mesh Mesh = null;
-		[HideInInspector] public Mesh GhostMesh = null;
-		[HideInInspector] public Geometry Geometry = Geometry.Empty;
 		[HideInInspector] public MeshDisplay MeshDisplay;
 
 		private System.Diagnostics.Stopwatch Stopwatch = null;
-		[HideInInspector] public double BuildMilliseconds = 0;
+		[HideInInspector] public double LastBuildTime = 0;
 
-		[HideInInspector] public int VertexCount = 0;
-		[HideInInspector] public int TriangleCount = 0;
-
-		[HideInInspector] public bool IsBuilt = false;
+		[HideInInspector] [System.NonSerialized] public Mesh GhostMesh = null;
+		[HideInInspector] [System.NonSerialized] public Geometry Geometry = Geometry.Empty;
+		[HideInInspector] [System.NonSerialized] public bool IsBuilt = false;
 
 		public virtual Geometry Build() {
 			return new Geometry();
@@ -38,18 +35,25 @@ namespace Forge {
 			GhostMesh = null;
 
 			// Statistics
+			#if UNITY_EDITOR
 			Stopwatch.Start();
+			#endif
+
+			// Build it
 			Geometry = Build();
-			BuildMilliseconds = Stopwatch.Elapsed.TotalMilliseconds;
+
+			// Statistics
+			#if UNITY_EDITOR
+			LastBuildTime = Stopwatch.Elapsed.TotalMilliseconds;
 			Stopwatch.Reset();
-			VertexCount = (Geometry.Vertices != null) ? Geometry.Vertices.Length : 0;
-			TriangleCount = (Geometry.Triangles != null) ? Geometry.Triangles.Length / 3 : 0;
+			#endif
 
 			// Mesh
 			Mesh = (Mesh == null) ? new Mesh() : Mesh;
 			Mesh.Clear();
 			Mesh.vertices = Geometry.Vertices;
 			Mesh.normals = Geometry.Normals;
+			Mesh.tangents = Geometry.Tangents;
 			Mesh.triangles = Geometry.Triangles;
 			Mesh.uv = Geometry.UV;
 
@@ -63,6 +67,7 @@ namespace Forge {
 			GhostMesh.Clear();
 			GhostMesh.vertices = geo.Vertices;
 			GhostMesh.normals = geo.Normals;
+			GhostMesh.tangents = geo.Tangents;
 			GhostMesh.triangles = geo.Triangles;
 			GhostMesh.uv = geo.UV;
 		}
@@ -72,7 +77,6 @@ namespace Forge {
 
 		void OnDrawGizmosSelected() {
 			if (MeshDisplay == null) MeshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
-
 			MeshDisplay.DrawHandles(this, transform);
 		}
 		#endif

@@ -24,6 +24,9 @@ namespace Forge.Primitives {
 
 			Vector3 normal = new Vector3(0f, 1f, 0f);
 			geo.Normals = new Vector3 [] {normal, normal, normal, normal};
+			Vector4 tangent = new Vector4(1f, 0f, 0f, -1f);
+			geo.Tangents = new Vector4 [] {tangent, tangent, tangent, tangent};
+			geo.Polygons = new int[] {0, 4};
 
 			// UV
 			geo.UV = new Vector2 [] {
@@ -37,7 +40,6 @@ namespace Forge.Primitives {
 			switch (Surface) {
 				case Surface.None:
 					geo.Triangles = new int[0];
-					geo.Normals = new Vector3[4];
 					break;
 				case Surface.Triangulate:
 					geo.Triangles = new int [] {

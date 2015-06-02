@@ -24,7 +24,8 @@ namespace Forge {
 					Normals = new Vector3[0],
 					Tangents = new Vector4[0],
 					UV = new Vector2[0],
-					Triangles = new int[0]
+					Triangles = new int[0],
+					Polygons = new int[0]
 				};
 			}
 		}
@@ -89,8 +90,10 @@ namespace Forge {
 		}
 
 		public void Offset(Vector3 offset) {
-			for (int i = 0; i < Vertices.Length; i++) {
-				Vertices[i] = Vertices[i] + offset;
+			if (offset.magnitude != 0f) {
+				for (int i = 0; i < Vertices.Length; i++) {
+					Vertices[i] = Vertices[i] + offset;
+				}
 			}
 		}
 
@@ -200,11 +203,13 @@ namespace Forge {
 		}
 
 		public override string ToString() {
-			return System.String.Format("vert:{0}, nor:{1}, uv:{2}, tri:{3}",
+			return System.String.Format("vert:{0}, nor:{1}, tan:{2} uv:{3}, tri:{3} poly:{4}",
 				Vertices != null ? Vertices.Length.ToString() : "-",
 				Normals != null ? Normals.Length.ToString() : "-",
+				Tangents != null ? Tangents.Length.ToString() : "-",
 				UV != null ? UV.Length.ToString() : "-",
-				Triangles != null ? (Triangles.Length / 3).ToString() : "-"
+				Triangles != null ? (Triangles.Length / 3).ToString() : "-",
+				Polygons != null ? (Polygons.Length / 2).ToString() : "-"
 			);
 		}
 

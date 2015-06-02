@@ -16,45 +16,71 @@ namespace Forge.Primitives {
 				Debug.LogError("Sphere error: Spheres must have at least 3 segments");
 			}
 
-			Merge sphere = new Merge();
+			Geometry geo = new Geometry(
+				Segments*(Segments+1),
+				(Segments*2) * (Segments-1) * 3, // (Segments*2) = # triangles in a ring, (Segments-1) = # of rings in sphere
+				Segments*2
+			);
 
-			Geometry prevLatitude = Geometry.Empty;
+			float tau = Mathf.PI * 2;
 
-			// Longitudes
+			// Longitudes (meridians)
 			for (int i = 0; i < Segments; i++) {
-				float angle = 90 + (180 * i / (Segments - 1));
-				float sin = Mathf.Sin(angle * Mathf.Deg2Rad) * Radius;
-				float cos = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
+				float lonAng = Mathf.PI/2 + (Mathf.PI * i / (Segments - 1));
+				float lonSin = Mathf.Sin(lonAng) * Radius;
+				float lonCos = Mathf.Cos(lonAng) * Radius;
 
-				// Latitudes
-				Geometry latitude = new Geometry();
-				latitude.Vertices = new Vector3[Segments + 1];
-				latitude.Normals = new Vector3[Segments + 1];
-				latitude.UV = new Vector2[Segments + 1];
+				// Latitudes (parallels)
+				int offset = i * (Segments + 1);
 
 				// We iterate one additional time to create an overlapping longitude
 				// at the UV seam
 				for (int l = 0; l < Segments + 1; l++) {
-					float ng = Mathf.PI * 2 * l / Segments;
-					float h = Mathf.Cos(ng) * cos;
-					float v = Mathf.Sin(ng) * cos;
-					latitude.Vertices[Segments - l] = new Vector3(h, sin, v);
-					latitude.Normals[Segments - l] = new Vector3(h, sin, v).normalized;
-					latitude.UV[Segments - l] = new Vector2(ng / (Mathf.PI * 2), sin + Radius);
+
+					float latAng = tau * l / Segments;
+					float latCos = Mathf.Cos(latAng) * lonCos;
+					float latSin = Mathf.Sin(latAng) * lonCos;
+					
+					// Vertices, Normals, UV
+					geo.Vertices[offset + Segments - l] = new Vector3(latCos, lonSin, latSin);
+					geo.Normals[offset + Segments - l] = new Vector3(latCos, lonSin, latSin);
+					geo.UV[offset + Segments - l] = new Vector2(latAng / tau, (lonSin+Radius) / (Radius*2));
+
+					// Tangents
+					geo.Tangents[offset + Segments - l] = new Vector4(-latSin, 0f, latCos, -1).normalized;
 				}
 
-				var bridge = new Bridge(latitude, prevLatitude);
-				bridge.RecalculateNormals = false;
-				sphere.Input(bridge.Output());
+				// Polygons
+				var polyOrigin = geo.Polygons[i*2  ] = offset;
+				var polyLength = geo.Polygons[i*2+1] = Segments+1;
 
-				prevLatitude = latitude;
+				if (i > 0) {
+					int triIndex = (i-1) * (Segments*2) * 3;
+					
+					for (int t = 0; t < polyLength-1; t++) {
 
+						int triOffset = t * 6;
+
+						// First Triangle
+						if (i < Segments-1) {
+							geo.Triangles[triIndex + triOffset + 0] = polyOrigin + t;
+							geo.Triangles[triIndex + triOffset + 1] = polyOrigin + t + 1;
+							geo.Triangles[triIndex + triOffset + 2] = polyOrigin + t - polyLength + 1;
+						}
+
+						// Second Triangle
+						if (i > 1) {
+							geo.Triangles[triIndex + triOffset + 3] = polyOrigin + t - polyLength + 1;
+							geo.Triangles[triIndex + triOffset + 4] = polyOrigin + t - polyLength;
+							geo.Triangles[triIndex + triOffset + 5] = polyOrigin + t;
+						}
+					}
+
+				}
 			}
 
-			Geometry geo = sphere.Output();
-
-			geo.ApplyOrientation(Orientation);
 			geo.Offset(Center);
+			geo.ApplyOrientation(Orientation);
 
 			return geo;
 		}

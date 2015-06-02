@@ -26,8 +26,10 @@ namespace Forge {
 			return new Geometry() {
 				Vertices = new Vector3[] { Position },
 				Normals = new Vector3[] { Vector3.zero },
+				Tangents = new Vector4[] { Vector4.zero },
 				UV = new Vector2[0],
-				Triangles = new int[0]
+				Triangles = new int[0],
+				Polygons = new int[0]
 			};
 		}
 

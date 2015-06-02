@@ -17,10 +17,7 @@ namespace Forge.Primitives {
 			float angleDelta = Mathf.Abs(EndAngle - StartAngle);
 			int vertexCount = Segments + (angleDelta == 360 ? 0 : 1);
 
-			Geometry geo = new Geometry();
-			geo.Vertices = new Vector3[vertexCount];
-			geo.Normals = new Vector3[vertexCount];
-			geo.UV = new Vector2[vertexCount];
+			Geometry geo = new Geometry(vertexCount);
 
 			for (int i = 0; i < vertexCount; i++) {
 				int s = vertexCount - (angleDelta == 360 ? 0 : 1);
@@ -47,7 +44,7 @@ namespace Forge.Primitives {
 					var sel = new ExtractFaces(converge.Output());
 					sel.Indexes = new int[] {Segments};
 					sel.Invert = true;
-					sel.RecalculateNormals = true;
+					sel.RecalculateNormals = false;
 					geo = sel.Output();
 
 					break;

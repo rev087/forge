@@ -28,6 +28,7 @@ namespace Forge.Filters {
 
 			var vertices = new List<Vector3>();
 			var normals = new List<Vector3>();
+			var tangents = new List<Vector4>();
 			var uv = new List<Vector2>();
 
 			for (int i = 0; i < _geometry.Vertices.Length; i++) {
@@ -37,15 +38,17 @@ namespace Forge.Filters {
 				{
 					vertices.Add(_geometry.Vertices[i]);
 					if (i < _geometry.Normals.Length) normals.Add(_geometry.Normals[i]);
+					if (i < _geometry.Tangents.Length) tangents.Add(_geometry.Tangents[i]);
 					if (i < _geometry.UV.Length) uv.Add(_geometry.UV[i]);
-
 				}
 			}
 
 			geo.Vertices = vertices.ToArray();
 			geo.Normals = normals.ToArray();
+			geo.Tangents = tangents.ToArray();
 			geo.UV = uv.ToArray();
 			geo.Triangles = new int[0];
+			geo.Polygons = new int[0];
 
 			return geo;
 		}

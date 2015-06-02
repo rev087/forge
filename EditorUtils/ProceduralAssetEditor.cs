@@ -29,11 +29,10 @@ namespace Forge.EditorUtils {
 			// Statistics
 			ShowStatistics = EditorGUILayout.Foldout(ShowStatistics, "Statistics");
 			if (ShowStatistics) {
-				EditorGUILayout.LabelField("Last build time: ", Asset.IsBuilt ? System.String.Format("{0}ms", Asset.BuildMilliseconds) : "-");
-				EditorGUILayout.LabelField(
-					System.String.Format("Vertices: {0}", Asset.IsBuilt ? Asset.VertexCount.ToString() : "-"),
-					System.String.Format("Triangles: {0}", Asset.IsBuilt ? Asset.TriangleCount.ToString() : "-")
-				);
+				EditorGUILayout.LabelField("Last build time: ", Asset.IsBuilt ? System.String.Format("{0}ms", Asset.LastBuildTime) : "-");
+				EditorGUILayout.LabelField("Vertices: " , Asset.IsBuilt ? Asset.Geometry.Vertices.Length.ToString()  : "-");
+				EditorGUILayout.LabelField("Triangles: ", Asset.IsBuilt ? (Asset.Geometry.Triangles.Length/3).ToString() : "-");
+				EditorGUILayout.LabelField("Polygons: " , Asset.IsBuilt ? (Asset.Geometry.Polygons.Length/2).ToString()  : "-");
 			}
 
 			// Data File

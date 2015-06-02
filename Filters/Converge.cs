@@ -6,7 +6,7 @@ namespace Forge.Filters {
 	public class Converge {
 
 		public Vector3 Point = Vector3.zero;
-		public bool RecalculateNormals = true;
+		public bool RecalculateNormals = false;
 
 		private Geometry _geometry;
 
@@ -23,10 +23,7 @@ namespace Forge.Filters {
 		public Geometry Output() {
 			int vertexCount = _geometry.Vertices.Length;
 
-			Geometry geo = new Geometry();
-			geo.Vertices = new Vector3[vertexCount+1];
-			geo.Normals = new Vector3[vertexCount+1];
-			geo.UV = new Vector2[vertexCount+1];
+			Geometry geo = new Geometry(vertexCount+1);
 
 			var triangles = new List<int>();
 

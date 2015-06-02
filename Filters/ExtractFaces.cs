@@ -7,7 +7,7 @@ namespace Forge.Filters {
 
 		public int[] Indexes = new int[0];
 		public bool Invert = false;
-		public bool RecalculateNormals = true;
+		public bool RecalculateNormals = false;
 
 		public Vector3 Point = Vector3.zero;
 
@@ -25,12 +25,9 @@ namespace Forge.Filters {
 
 		public Geometry Output() {
 
-			Geometry geo = new Geometry();
+			Geometry geo = new Geometry(_geometry.Vertices.Length);
 
 			var triangles = new List<int>();
-			geo.Vertices = new Vector3[_geometry.Vertices.Length];
-			geo.Normals = new Vector3[_geometry.Normals.Length];
-			geo.UV = new Vector2[_geometry.UV.Length];
 
 			for (int i = 0; i < _geometry.Vertices.Length; i++) {
 				geo.Vertices[i] = _geometry.Vertices[i];

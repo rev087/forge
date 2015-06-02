@@ -20,46 +20,35 @@ namespace Forge.Primitives {
 
 			Geometry prevLatitude = Geometry.Empty;
 
-			Vector3 northCap = Vector3.zero;
-
 			for (int i = 0; i < Segments; i++) {
-				float angle = 90 + (90 * i / (Segments - 1));
-				float sin = Mathf.Sin(angle * Mathf.Deg2Rad) * Radius;
+				float lonAngle = 90 + (90 * i / (Segments - 1));
+				float lonCos = Mathf.Cos(lonAngle * Mathf.Deg2Rad) * Radius;
+				float lonSin = Mathf.Sin(lonAngle * Mathf.Deg2Rad) * Radius;
 
-				if (i == 0) {
-					northCap = new Vector3(0f, sin, 0f);
+				// Latitudes
+				Geometry latitude = new Geometry(Segments+1);
+
+				// We iterate one additional time to create an overlapping longitude
+				// at the UV seam
+				for (int l = 0; l < Segments + 1; l++) {
+					float latAng = Mathf.PI * 2 * l / Segments;
+					float latCos = Mathf.Cos(latAng) * lonCos;
+					float latSin = Mathf.Sin(latAng) * lonCos;
+					latitude.Vertices[Segments - l] = new Vector3(latCos, lonSin, latSin);
+					latitude.Normals[Segments - l] = new Vector3(latCos, lonSin, latSin).normalized;
+					latitude.UV[Segments - l] = new Vector2(latAng / Mathf.PI, lonSin + Radius);
+
+					float tanAng = latAng - Mathf.PI / 2;
+					float tanCos = Mathf.Cos(tanAng) * lonCos;
+					float tanSin = Mathf.Sin(tanAng) * lonCos;
+					latitude.Tangents[Segments - l] = new Vector4(-tanCos, 0f, -tanSin, -1).normalized;
 				}
 
-				if (i > 0) {
-					float cos = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
+				var bridge = new Bridge(latitude, prevLatitude);
+				bridge.RecalculateNormals = false;
+				hemi.Input(bridge.Output());
 
-					// Latitudes
-					Geometry latitude = new Geometry();
-					latitude.Vertices = new Vector3[Segments];
-					latitude.Normals = new Vector3[Segments];
-					latitude.UV = new Vector2[Segments];
-
-					for (int f = 0; f < Segments; f++) {
-						float ng = Mathf.PI * 2 * f / Segments;
-						float h = Mathf.Cos(ng) * cos;
-						float v = Mathf.Sin(ng) * cos;
-						latitude.Vertices[Segments - f - 1] = new Vector3(h, sin, v);
-						latitude.Normals[Segments - f - 1] = new Vector3(h, sin, v).normalized;
-					}
-
-					if (i == 1) {
-						var converge = new Converge(latitude);
-						converge.RecalculateNormals = false;
-						converge.Point = northCap;
-						hemi.Input(converge.Output());
-					} else {
-						var bridge = new Bridge(latitude, prevLatitude);
-						bridge.RecalculateNormals = false;
-						hemi.Input(bridge.Output());
-					}
-
-					prevLatitude = latitude;
-				}
+				prevLatitude = latitude;
 
 			}
 
