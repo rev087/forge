@@ -31,6 +31,8 @@ namespace Forge {
 
 		public static void ApplyOrientation(this Geometry geo, OrientationPreset preset) {
 
+			if (preset == OrientationPreset.XZ) return;
+
 			Orientation o = Orientation.Preset(preset);
 
 			for (int i = 0; i < geo.Vertices.Length; i++) {
