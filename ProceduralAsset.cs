@@ -23,7 +23,7 @@ namespace Forge {
 		[HideInInspector] [System.NonSerialized] public bool IsBuilt = false;
 
 		public virtual Geometry Build() {
-			return new Geometry();
+			return Geometry.Empty;
 		}
 
 		public void Generate() {
