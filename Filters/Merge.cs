@@ -5,7 +5,11 @@ namespace Forge.Filters {
 
 	public class Merge {
 
-		private List<Geometry> _geometries = null;
+		private List<Geometry> _geometries = new List<Geometry>();
+
+		private int _totalVerts = 0;
+		private int _totalTris = 0;
+		private int _totalPolys = 0;
 
 		public Merge() {}
 
@@ -16,23 +20,15 @@ namespace Forge.Filters {
 		}
 
 		public void Input(Geometry geometry) {
-			if (_geometries == null) {
-				_geometries = new List<Geometry>();
-			}
+			_totalVerts += geometry.Vertices.Length;
+			_totalTris += geometry.Triangles.Length;
+			_totalPolys += geometry.Polygons.Length;
 			_geometries.Add(geometry.Copy());
 		}
 
 		public Geometry Output() {
 
-			Geometry result = new Geometry();
-
-			int vertexCount = VertexLength();
-			result.Vertices = new Vector3[vertexCount];
-			result.Normals = new Vector3[vertexCount];
-			result.Tangents = new Vector4[vertexCount];
-			result.UV = new Vector2[vertexCount];
-			result.Triangles = new int[FaceLength()];
-			result.Polygons = new int[PolyLength()];
+			Geometry result = new Geometry(_totalVerts, _totalTris, _totalPolys);
 
 			int vCount = 0;
 			int tCount = 0;
@@ -63,8 +59,9 @@ namespace Forge.Filters {
 				}
 
 				// Polygons
-				for (int p = 0; p < geo.Polygons.Length; p++) {
-					result.Polygons[pCount + p] = geo.Polygons[p] + pCount;
+				for (int p = 0; p < geo.Polygons.Length; p+=2) {
+					result.Polygons[pCount+p] = geo.Polygons[p] + vCount;
+					result.Polygons[pCount+p+1] = geo.Polygons[p+1];
 				}
 
 				vCount += geo.Vertices.Length;
@@ -81,33 +78,6 @@ namespace Forge.Filters {
 				merge.Input(geometries[i]);
 			}
 			return merge.Output();
-		}
-
-		private int VertexLength() {
-			if (_geometries == null) return 0;
-			int count = 0;
-			foreach (Geometry geo in _geometries) {
-				count += geo.Vertices.Length;
-			}
-			return count;
-		}
-
-		private int FaceLength (){
-			if (_geometries == null) return 0;
-			int count = 0;
-			foreach (Geometry geo in _geometries) {
-				count += geo.Triangles.Length;
-			}
-			return count;
-		}
-
-		private int PolyLength() {
-			if (_geometries == null) return 0;
-			int count = 0;
-			foreach (Geometry geo in _geometries) {
-				count += geo.Polygons.Length;
-			}
-			return count;
 		}
 
 	}
