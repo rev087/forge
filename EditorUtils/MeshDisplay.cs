@@ -79,11 +79,11 @@ namespace Forge.EditorUtils {
 			bool canDisplayVertexData = geo.Vertices.Length <= MAX_VERTEX_COUNT;
 
 			if (_vertStyle == null) {
-				_vertStyle = MakeStyle(Color.cyan, new Vector2(0, 0));
-				_faceStyle = MakeStyle(Color.red, new Vector2(0f, 0f));
-				_polyStyle = MakeStyle(Color.yellow, new Vector2(0f, 0f));
-				_uvStyle = MakeStyle(Color.magenta, new Vector2(0f, 0f));
-				_shadowStyle = MakeStyle(Color.black, new Vector2(1f, 1f));
+				_vertStyle = MakeStyle(Color.cyan, new Vector2(0f, 2f));
+				_faceStyle = MakeStyle(Color.red, new Vector2(0f, 2f));
+				_polyStyle = MakeStyle(Color.yellow, new Vector2(0f, 2f));
+				_uvStyle = MakeStyle(Color.magenta, new Vector2(0f, 2f));
+				_shadowStyle = MakeStyle(Color.black, new Vector2(1f, 3f));
 			}
 
 			if (DisplayDefaultGizmo) {
