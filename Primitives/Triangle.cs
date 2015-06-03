@@ -18,7 +18,7 @@ namespace Forge.Primitives {
 
 		public Geometry Output() {
 
-			Geometry geo = new Geometry();
+			Geometry geo = new Geometry(3);
 
 			// http://upload.wikimedia.org/wikipedia/commons/9/9a/Degree-Radian_Conversion.svg
 			float radius = 2 * Height / 3;
@@ -48,6 +48,9 @@ namespace Forge.Primitives {
 			} else {
 				geo.Triangles = new int[0];
 			}
+
+			// Polygons
+			geo.Polygons = new int[] {0, 3};
 
 			geo.ApplyOrientation(Orientation);
 			geo.Offset(Center);
