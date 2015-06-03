@@ -27,9 +27,12 @@ namespace Forge.Primitives {
 			top.Segments = Segments;
 			top.Center = new Vector3(Center.x, Center.y + Height/2, Center.z);
 
-			Bridge bridge = new Bridge(bottom.Output(), top.Output());
-
 			Merge merge = new Merge();
+			merge.Input(top.Output());
+			merge.Input(Reverse.Process(bottom.Output()));
+			
+			Bridge bridge = new Bridge(merge.Output());
+
 
 			merge.Input(bridge.Output());
 
