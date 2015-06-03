@@ -6,6 +6,7 @@ namespace Forge.Filters {
 	public class Mirror {
 
 		public Axis Axis = Axis.X;
+		public bool Reverse = true;
 
 		private Geometry _geometry;
 
@@ -39,10 +40,32 @@ namespace Forge.Filters {
 				}
 			}
 			
-			System.Array.Reverse(geo.Vertices);
-			System.Array.Reverse(geo.Normals);
-			System.Array.Reverse(geo.Tangents);
-			System.Array.Reverse(geo.UV);
+			if (Reverse) {
+				System.Array.Reverse(geo.Vertices);
+				System.Array.Reverse(geo.Normals);
+				System.Array.Reverse(geo.Tangents);
+				System.Array.Reverse(geo.UV);
+
+				for (int p = 0; p < _geometry.Polygons.Length; p+=2) {
+					int start = _geometry.Polygons[p];
+					int length = _geometry.Polygons[p+1];
+
+					geo.Polygons[p] = _geometry.Vertices.Length-(start+length);
+					geo.Polygons[p+1] = length;
+				}
+
+				int total = _geometry.Vertices.Length - 1;
+				for (int t = 0; t < _geometry.Triangles.Length; t+=3) {
+					int a = _geometry.Triangles[t];
+					int b = _geometry.Triangles[t+1];
+					int c = _geometry.Triangles[t+2];
+
+					geo.Triangles[t  ] = total-c;
+					geo.Triangles[t+1] = total-b;
+					geo.Triangles[t+2] = total-a;
+				}
+			}
+
 			return geo;
 		}
 
