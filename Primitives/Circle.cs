@@ -5,8 +5,11 @@ namespace Forge.Primitives {
 
 	public class Circle {
 
+		public enum OpeningType {Sector, Segment};
+
+		public OpeningType Opening = OpeningType.Segment;
 		public OrientationPreset Orientation = OrientationPreset.XZ;
-		public Surface Surface = Surface.None;
+		public bool Surface = false;
 		public int Segments = 12;
 		public Vector3 Center = Vector3.zero;
 		public float Radius = .5f;
@@ -14,40 +17,50 @@ namespace Forge.Primitives {
 		public float EndAngle = 360;
 
 		public Geometry Output() {
-			float angleDelta = Mathf.Abs(EndAngle - StartAngle);
-			int vertexCount = Segments + (angleDelta == 360 ? 0 : 1);
+			bool isOpen = Mathf.Abs(EndAngle - StartAngle) < 360;
+			bool hasMidPoint = (Opening == OpeningType.Sector && isOpen) ||
+				(Opening == OpeningType.Sector && Surface);
+
+			int vertexCount = Segments;
+			if (isOpen) vertexCount++;
+			if (hasMidPoint) vertexCount++;
 
 			Geometry geo = new Geometry(vertexCount);
 
-			for (int i = 0; i < vertexCount; i++) {
-				int s = vertexCount - (angleDelta == 360 ? 0 : 1);
-				float angle = StartAngle + ((EndAngle-StartAngle) * i / s);
+			int arcVertices = Segments + (isOpen || hasMidPoint ? 1 : 0);
+
+			// Vertices, Normals
+			for (int i = 0; i < arcVertices; i++) {
+				int seg = Segments + (hasMidPoint ? 0 : 0);
+				float angle = StartAngle + ((EndAngle-StartAngle) * i / seg);
 				float h = Mathf.Cos(angle * Mathf.Deg2Rad) * Radius;
 				float v = Mathf.Sin(angle * Mathf.Deg2Rad) * Radius;
-				geo.Vertices[vertexCount - i - 1] = new Vector3(h, 0f, v);
-				geo.Normals[vertexCount - i - 1] = new Vector3(h, 0f, v).normalized;
+				geo.Vertices[arcVertices - i - 1] = new Vector3(h, 0f, v);
+				geo.Normals[arcVertices - i - 1] = Vector3.up;
 			}
 
-			switch (Surface) {
-				case Surface.None:
-					geo.Triangles = new int[0];
-					break; 
-				case Surface.Triangulate:
-					var triangulate = new Triangulate(geo);
-					geo = triangulate.Output();
-					break;
-				case Surface.Converge:
-					var converge = new Converge(geo);
-					converge.Point = Vector3.zero;
-					converge.RecalculateNormals = false;
+			if (hasMidPoint) {
+				geo.Vertices[vertexCount-1] = Vector3.zero;
+				geo.Normals[vertexCount-1] = Vector3.up;
+			}
 
-					var sel = new ExtractFaces(converge.Output());
-					sel.Indexes = new int[] {Segments};
-					sel.Invert = true;
-					sel.RecalculateNormals = false;
-					geo = sel.Output();
+			if (Surface) {
+				var triangulate = new Triangulate(geo);
+				geo = triangulate.Output();
 
-					break;
+				if (!isOpen && Opening == OpeningType.Sector) {
+					System.Array.Resize<int>(ref geo.Triangles, geo.Triangles.Length + 3);
+					geo.Triangles[geo.Triangles.Length-3] = 0;
+					geo.Triangles[geo.Triangles.Length-2] = Segments;
+					geo.Triangles[geo.Triangles.Length-1] = Segments-1;
+				}
+			}
+
+			// Polygon
+			if (hasMidPoint && !isOpen) {
+				geo.Polygons = new int[] {0, vertexCount-1};
+			} else {
+				geo.Polygons = new int[] {0, vertexCount};
 			}
 
 			geo.ApplyOrientation(Orientation);

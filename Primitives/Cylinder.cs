@@ -34,12 +34,12 @@ namespace Forge.Primitives {
 			merge.Input(bridge.Output());
 
 			if (CapTop) {
-				top.Surface = Surface.Converge;
+				top.Surface = true;
 				merge.Input(top.Output());
 			}
 
 			if (CapBottom) {
-				bottom.Surface = Surface.Converge;
+				bottom.Surface = true;
 				merge.Input(Reverse.Process(bottom.Output()));
 			}
 
