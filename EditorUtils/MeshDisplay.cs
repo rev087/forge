@@ -230,7 +230,7 @@ namespace Forge.EditorUtils {
 								Vector3 prev = transform.TransformPoint(geo.Vertices[v-1]);
 								Handles.DrawLine(point, prev);
 							} else {
-								Vector3 prev = transform.TransformPoint(geo.Vertices[start]);
+								Vector3 prev = transform.TransformPoint(geo.Vertices[start+count-1]);
 								Handles.DrawDottedLine(point, prev, 4f);
 							}
 						}
