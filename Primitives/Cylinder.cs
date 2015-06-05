@@ -27,29 +27,24 @@ namespace Forge.Primitives {
 			top.Segments = Segments;
 			top.Center = new Vector3(Center.x, Center.y + Height/2, Center.z);
 
-			Merge merge = new Merge();
-			merge.Input(top.Output());
-			merge.Input(Reverse.Process(bottom.Output()));
-			
-			Bridge bridge = new Bridge(merge.Output());
+			var scaffold = new Merge(top.Output(), bottom.Output());
 
+			var bridge = new Bridge(scaffold.Output());
 
-			merge.Input(bridge.Output());
+			var cylinder = new Merge(bridge.Output());
 
 			if (CapTop) {
 				top.Surface = true;
-				merge.Input(top.Output());
+				cylinder.Input(top.Output());
 			}
 
 			if (CapBottom) {
 				bottom.Surface = true;
-				merge.Input(Reverse.Process(bottom.Output()));
+				cylinder.Input(Reverse.Process(bottom.Output()));
 			}
 
-			Geometry geo = merge.Output();
-
+			var geo = cylinder.Output();
 			geo.ApplyOrientation(Orientation);
-
 			return geo;
 		}
 
