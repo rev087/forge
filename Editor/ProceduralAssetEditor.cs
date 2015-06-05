@@ -23,7 +23,7 @@ namespace Forge.Editor {
 
 			DrawDefaultInspector();
 
-			if (GUI.changed) {
+			if (GUI.changed || GUILayout.Button("Rebuild")) {
 				Asset.Generate();
 			}
 
@@ -81,7 +81,7 @@ namespace Forge.Editor {
 			if (Asset == null) return;
 			if (IconLoader == null) IconLoader = new IconLoader();
 
-			float height = 32f * 12 + 30f;
+			float height = 32f * 13 + 30f;
 			float width = 32f;
 
 			bool disableVertexData = Asset.Mesh.vertices.Length >= MeshDisplay.MAX_VERTEX_COUNT;
@@ -107,6 +107,7 @@ namespace Forge.Editor {
 			// Face Display
 			EditorGUI.BeginDisabledGroup(disableVertexData);
 			Asset.MeshDisplay.DisplayFaces = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaces, IconLoader.Icons["face"], "button");
+			Asset.MeshDisplay.DisplayFaceOrder = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceOrder, IconLoader.Icons["face"], "button");
 			Asset.MeshDisplay.DisplayFaceNormal = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceNormal, IconLoader.Icons["faceNormal"], "button");
 			Asset.MeshDisplay.DisplayFaceIndex = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceIndex, IconLoader.Icons["faceIndex"], "button");
 			EditorGUI.EndDisabledGroup();
