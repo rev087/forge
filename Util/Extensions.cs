@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Forge.Util {
+namespace Forge.Extensions {
 
 	public static class Extensions {
 

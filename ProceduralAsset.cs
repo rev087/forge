@@ -13,7 +13,18 @@ namespace Forge {
 	public class ProceduralAsset : MonoBehaviour {
 
 		[HideInInspector] public Mesh Mesh = null;
-		[HideInInspector] public MeshDisplay MeshDisplay;
+
+		#if UNITY_EDITOR
+		private MeshDisplay _meshDisplay = null;
+		public MeshDisplay MeshDisplay {
+			get {
+				if (_meshDisplay == null) {
+					_meshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
+				}
+				return _meshDisplay;
+			}
+		}
+		#endif
 
 		private System.Diagnostics.Stopwatch Stopwatch = null;
 		[HideInInspector] public double LastBuildTime = 0;
@@ -73,10 +84,8 @@ namespace Forge {
 		}
 
 		#if UNITY_EDITOR
-		private MeshFilter _meshFilter;
-
 		void OnDrawGizmosSelected() {
-			if (MeshDisplay == null) MeshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
+			if (!IsBuilt) Generate();
 			MeshDisplay.DrawHandles(this, transform);
 		}
 		#endif

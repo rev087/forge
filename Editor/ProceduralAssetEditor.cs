@@ -3,11 +3,12 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Forge.EditorUtils;
 
-namespace Forge.EditorUtils {
+namespace Forge.Editor {
 
 	[CustomEditor(typeof(ProceduralAsset), true)]
-	public class ProceduralAssetEditor : Editor {
+	public class ProceduralAssetEditor : UnityEditor.Editor {
 
 		private static IconLoader IconLoader = null;
 
@@ -22,7 +23,7 @@ namespace Forge.EditorUtils {
 
 			DrawDefaultInspector();
 
-			if (GUI.changed || GUILayout.Button("Build")) {
+			if (GUI.changed) {
 				Asset.Generate();
 			}
 
@@ -77,9 +78,7 @@ namespace Forge.EditorUtils {
 		}
 
 		void OnSceneGUI() {
-
 			if (Asset == null) return;
-			if (Asset.MeshDisplay == null) Asset.MeshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
 			if (IconLoader == null) IconLoader = new IconLoader();
 
 			float height = 32f * 12 + 30f;

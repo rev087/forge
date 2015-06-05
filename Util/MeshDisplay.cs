@@ -1,10 +1,8 @@
 using UnityEngine;
-using System.Collections;
-using Forge.Util;
-
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
+using System.Collections;
+using Forge.Extensions;
+
 
 namespace Forge.EditorUtils {
 
@@ -74,7 +72,6 @@ namespace Forge.EditorUtils {
 		}
 
 		public void DrawHandles(ProceduralAsset asset, Transform transform) {
-			if (!asset.IsBuilt) asset.Generate();
 			Geometry geo = asset.Geometry;
 			bool canDisplayVertexData = geo.Vertices.Length <= MAX_VERTEX_COUNT;
 
