@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Forge.Util;
+using Forge.Extensions;
 
 namespace Forge.Filters {
 
