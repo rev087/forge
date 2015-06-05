@@ -19,6 +19,7 @@ namespace Forge.EditorUtils {
 		public bool DisplayFaces = false;
 		public bool DisplayFaceIndex = false;
 		public bool DisplayFaceNormal = false;
+		public bool DisplayFaceOrder = false;
 
 		public bool DisplayPolygons = false;
 		public bool DisplayPolygonIndex = false;
@@ -125,13 +126,15 @@ namespace Forge.EditorUtils {
 						Vector3 normal = Vector3.ClampMagnitude(Vector3.Cross(bVert-aVert, cVert-aVert).normalized, camDist / 20);
 						Handles.DrawPolyLine(mid, mid + normal);
 
-						// Face vertex order arrows
-						// Vector3 la = Vector3.Lerp(aVert, mid, 0.15f);
-						// Vector3 lb = Vector3.Lerp(bVert, mid, 0.15f);
-						// Vector3 lc = Vector3.Lerp(cVert, mid, 0.15f);
-						// Handles.DrawLine(la, Vector3.Lerp(la, lb, 0.25f));
-						// Handles.DrawLine(lb, Vector3.Lerp(lb, lc, 0.25f));
-						// Handles.DrawLine(lc, Vector3.Lerp(lc, la, 0.25f));
+					}
+
+					if (DisplayFaceOrder) {
+						Vector3 la = Vector3.Lerp(aVert, mid, 0.15f);
+						Vector3 lb = Vector3.Lerp(bVert, mid, 0.15f);
+						Vector3 lc = Vector3.Lerp(cVert, mid, 0.15f);
+						Handles.DrawLine(la, Vector3.Lerp(la, lb, 0.25f));
+						Handles.DrawLine(lb, Vector3.Lerp(lb, lc, 0.25f));
+						Handles.DrawLine(lc, Vector3.Lerp(lc, la, 0.25f));
 						// Handles.Label(la, geo.Triangles[i].ToString(), _faceStyle);
 						// Handles.Label(lb, geo.Triangles[i+1].ToString(), _faceStyle);
 						// Handles.Label(lc, geo.Triangles[i+2].ToString(), _faceStyle);
