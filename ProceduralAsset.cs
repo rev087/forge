@@ -20,6 +20,7 @@ namespace Forge {
 			get {
 				if (_meshDisplay == null) {
 					_meshDisplay = (MeshDisplay) ScriptableObject.CreateInstance(typeof(MeshDisplay));
+					_meshDisplay.hideFlags = HideFlags.HideAndDontSave;
 				}
 				return _meshDisplay;
 			}
