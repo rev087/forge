@@ -6,8 +6,8 @@ namespace Forge.Editor.Renderers {
 
 	public class GridRenderer {
 
-		private static Texture2D _gridTex = null;
-		private float _cachedScale = 1f;
+		private static Texture2D _GridTex = null;
+		private static float _CachedScale = 1f;
 
 		private const float _TileSize = 120f;
 		private const float _GridSize = 10f;
@@ -60,21 +60,22 @@ namespace Forge.Editor.Renderers {
 		}
 		
 		public void Draw(Vector2 scrollPoint, float scale, Rect canvas) {
-			if (_gridTex == null || _cachedScale != scale) {
-				_gridTex = Render(scale);
+			if (_GridTex == null || _CachedScale != scale) {
+				_GridTex = Render(scale);
+				_CachedScale = scale;
 			}
 			
-			float yOffset = scrollPoint.y % _gridTex.height;
+			float yOffset = scrollPoint.y % _GridTex.height;
 			float yStart = scrollPoint.y - yOffset;
 			float yEnd = scrollPoint.y + canvas.height + yOffset;
 			
-			float xOffset = scrollPoint.x % _gridTex.width;
+			float xOffset = scrollPoint.x % _GridTex.width;
 			float xStart = scrollPoint.x - xOffset;
 			float xEnd = scrollPoint.x + canvas.width + xOffset;
 			
-			for (float x = xStart; x < xEnd; x += _gridTex.width) {
-				for (float y = yStart; y < yEnd; y += _gridTex.height) {
-					GUI.DrawTexture(new Rect(x, y, _gridTex.width, _gridTex.height), _gridTex);
+			for (float x = xStart; x < xEnd; x += _GridTex.width) {
+				for (float y = yStart; y < yEnd; y += _GridTex.height) {
+					GUI.DrawTexture(new Rect(x, y, _GridTex.width, _GridTex.height), _GridTex);
 				}
 			}
 		}
