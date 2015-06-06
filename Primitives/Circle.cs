@@ -3,7 +3,7 @@ using Forge.Filters;
 
 namespace Forge.Primitives {
 
-	public class Circle {
+	public class Circle : Node {
 
 		public enum OpeningType {Sector, Segment};
 
@@ -16,6 +16,7 @@ namespace Forge.Primitives {
 		public float StartAngle = 0;
 		public float EndAngle = 360;
 
+		[Output]
 		public Geometry Output() {
 			bool isOpen = Mathf.Abs(EndAngle - StartAngle) < 360;
 			bool hasMidPoint = (Opening == OpeningType.Sector && isOpen) ||

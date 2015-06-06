@@ -3,11 +3,12 @@ using Forge.Filters;
 
 namespace Forge.Primitives {
 
-	public class Cuboid {
+	public class Cuboid : Node {
 
 		public Vector3 Size = Vector3.one;
 		public Vector3 Center = Vector3.zero;
 
+		[Output]
 		public Geometry Output() {
 			// Top
 			var top = new Square();

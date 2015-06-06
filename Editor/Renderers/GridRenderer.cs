@@ -15,7 +15,7 @@ namespace Forge.Editor.Renderers {
 		// Generates a single tile of the grid texture
 		public Texture2D Render(float scale) {
 			int tileSize = Mathf.RoundToInt(_TileSize * scale);
-			Vector2 step = new Vector2(tileSize/10, tileSize/10);
+			int step = Mathf.RoundToInt((_TileSize * scale) / 10);
 
 			Texture2D gridTex = new Texture2D(tileSize, tileSize);
 			gridTex.hideFlags = HideFlags.DontSave;
@@ -41,11 +41,11 @@ namespace Forge.Editor.Renderers {
 						gridTex.SetPixel(x, y, dark);
 
 					// Finer grid intersection color
-					else if (x % step.x == 0 && y % step.y == 0)
+					else if (x % step == 0 && y % step == 0)
 						gridTex.SetPixel(x, y, lightIntersection);
 
 					// Finer grid color
-					else if (x % step.x == 0 || y % step.y == 0)
+					else if (x % step == 0 || y % step == 0)
 						gridTex.SetPixel(x, y, light);
 
 					// Background
@@ -60,6 +60,7 @@ namespace Forge.Editor.Renderers {
 		}
 		
 		public void Draw(Vector2 scrollPoint, float scale, Rect canvas) {
+
 			if (_GridTex == null || _CachedScale != scale) {
 				_GridTex = Render(scale);
 				_CachedScale = scale;

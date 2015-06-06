@@ -1,14 +1,16 @@
 using UnityEngine;
 using UnityEditor;
+using Forge;
+using Forge.Primitives;
+using Forge.Filters;
 
 namespace Forge.Editor.Renderers {
 
 	public class NodeRenderer {
 
-		public string Title = "Node";
-
 		private Vector2 _pos = new Vector2(50f, 50f);
-		private Color _txColor = new Color(0.282f, 0.294f, 0.302f);
+		private Color _txColor = new Color(0.182f, 0.194f, 0.202f);
+		private Color _txAltColor = new Color(0.332f, 0.344f, 0.352f);
 		private Color _bgColor = new Color(0.682f, 0.714f, 0.735f);
 		private Color _bgAltColor = new Color(0.612f, 0.639f, 0.661f);
 
@@ -16,7 +18,13 @@ namespace Forge.Editor.Renderers {
 		private Texture2D _bgAlt;
 		private GUIStyle _titleStyle;
 		private GUIStyle _inputStyle;
+		private GUIStyle _inputTypeStyle;
 		private GUIStyle _outputStyle;
+		private GUIStyle _outputTypeStyle;
+
+		// Interaction
+		public bool ShowType = true;
+		public Node Node = (Node) new Cuboid();
 
 		// Node parameters
 		private const float _Width = 200f;
@@ -27,9 +35,10 @@ namespace Forge.Editor.Renderers {
 		private const float _TitleSeparator = 1f;
 
 		// IO Parameters
-		private const float _IOHeight = 24f;
+		private const float _IOHeight = 28f;
 		private const float _IOMargin = 15f;
 		private const int _IOFontSize = 12;
+		private const int _IOAltFontSize = 10;
 
 		private static OutletRenderer _outletRenderer = null;
 
@@ -42,9 +51,17 @@ namespace Forge.Editor.Renderers {
 			_inputStyle.normal.textColor = _txColor;
 			_inputStyle.alignment = TextAnchor.MiddleLeft;
 
+			_inputTypeStyle = new GUIStyle();
+			_inputTypeStyle.normal.textColor = _txAltColor;
+			_inputTypeStyle.alignment = TextAnchor.MiddleLeft;
+
 			_outputStyle = new GUIStyle();
 			_outputStyle.normal.textColor = _txColor;
 			_outputStyle.alignment = TextAnchor.MiddleRight;
+
+			_outputTypeStyle = new GUIStyle();
+			_outputTypeStyle.normal.textColor = _txAltColor;
+			_outputTypeStyle.alignment = TextAnchor.MiddleRight;
 
 			_bg = new Texture2D(1, 1);
 			_bg.hideFlags = HideFlags.HideAndDontSave;
@@ -69,36 +86,40 @@ namespace Forge.Editor.Renderers {
 			float ioMargin = _IOMargin * scale;
 			_titleStyle.fontSize = Mathf.CeilToInt(_TitleFontSize * scale);
 			_inputStyle.fontSize = Mathf.CeilToInt(_IOFontSize * scale);
+			_inputTypeStyle.fontSize = Mathf.CeilToInt(_IOAltFontSize * scale);
 			_outputStyle.fontSize = Mathf.CeilToInt(_IOFontSize * scale);
+			_outputTypeStyle.fontSize = Mathf.CeilToInt(_IOAltFontSize * scale);
 
 			// Title box
 			GUI.DrawTexture(new Rect(x, y, width, titleHeight), _bg);
-			GUI.Label(new Rect(x, y, width, titleHeight), Title, _titleStyle);
+			GUI.Label(new Rect(x, y, width, titleHeight), Node.NodeName, _titleStyle);
 
 			y += titleHeight + _TitleSeparator;
 
-			string[] inputs = new string[] {
-				"Opening", "Orientation", "Surface", "Segments", "Center", "Radius", "Start Angle", "End Angle"
-			};
-
-			string[] outputs = new string[] {
-				"Geometry"
-			};
-
 			// IO
-			int ioCount = Mathf.Max(inputs.Length, outputs.Length);
+			int ioCount = Mathf.Max(Node.Inputs.Length, Node.Outputs.Length);
 			for (int i = 0; i < ioCount; i++) {
 				Texture2D bg = (i % 2 == 0) ? _bg : _bgAlt;
 				GUI.DrawTexture(new Rect(x, y, width, ioHeight), bg);
 
-				if (i < inputs.Length) {
+				if (i < Node.Inputs.Length) {
 					_outletRenderer.Draw(x, y + ioHeight/2, scale, false);
-					GUI.Label(new Rect(x + ioMargin, y, width, ioHeight), inputs[i], _inputStyle);
+					if (ShowType) {
+						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), Node.Inputs[i].Name, _inputStyle);
+						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), Node.Inputs[i].Type, _inputTypeStyle);
+					} else {
+						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight), Node.Inputs[i].Name, _inputStyle);
+					}
 				}
 
-				if (i < outputs.Length) {
+				if (i < Node.Outputs.Length) {
 					_outletRenderer.Draw(x + width, y + ioHeight/2, scale, false);
-					GUI.Label(new Rect(x, y, width - ioMargin, ioHeight), outputs[i], _outputStyle);
+					if (ShowType) {
+						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight/2), Node.Outputs[i].Name, _outputStyle);
+						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), Node.Outputs[i].Type, _outputTypeStyle);
+					} else {
+						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight), Node.Outputs[i].Name, _outputStyle);
+					}
 				}
 
 				y += ioHeight;

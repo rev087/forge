@@ -36,25 +36,26 @@ namespace Forge.Editor {
 					ScrollPoint.x += - Event.current.delta.x;
 					ScrollPoint.y += - Event.current.delta.y;
 					needsRepaint = true;
+					Event.current.Use();
 				}
 			}
 
 			if (Event.current.type == EventType.ScrollWheel) {
-				Event.current.Use();
 				Zoom += -Event.current.delta.y / 50;
 				if (Zoom < 0.25f) Zoom = 0.25f;
 				if (Zoom > 1f) Zoom = 1f;
 				needsRepaint = true;
+				Event.current.Use();
 			}
 
 			Canvas = new Rect(0f, 0f, position.width*4*Zoom, position.height*4*Zoom);
 
 			_gridRenderer.Draw(ScrollPoint, Zoom, Canvas);
-			
-			_nodeRenderer.Title = "Circle";
 			_nodeRenderer.Draw(ScrollPoint, Zoom);
 
-			if (needsRepaint) Repaint();
+			if (needsRepaint) {
+				Repaint();
+			}
 
 			GUI.EndScrollView();
 		}
