@@ -2,22 +2,25 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
-namespace Forge {
+namespace Forge.Editor.Renderers {
 
 	public class GridRenderer {
 
-		Texture2D gridTex;
+		private static Texture2D _gridTex = null;
+		private float _cachedScale = 1f;
 
-		public static int width { get { return 120; } }
-		public static int height { get { return 120; } }
-		public static Vector2 step { get { return new Vector2(width / 10, height / 10); } }
+		private const float _TileSize = 120f;
+		private const float _GridSize = 10f;
 		
 		// Generates a single tile of the grid texture
-		void GenerateGrid() {
-			gridTex = new Texture2D(width, height);
+		public Texture2D Render(float scale) {
+			int tileSize = Mathf.RoundToInt(_TileSize * scale);
+			Vector2 step = new Vector2(tileSize/10, tileSize/10);
+
+			Texture2D gridTex = new Texture2D(tileSize, tileSize);
 			gridTex.hideFlags = HideFlags.DontSave;
 			
-			Color bg = new Color(0.333f, 0.345f, 0.353f);
+			Color bg = new Color(0.282f, 0.294f, 0.302f);
 
 			Color dark = Color.Lerp(bg, Color.black, 0.15f);
 			Color darkIntersection = Color.Lerp(bg, Color.black, 0.2f);
@@ -25,9 +28,9 @@ namespace Forge {
 			Color light = Color.Lerp(bg, Color.black, 0.05f);
 			Color lightIntersection = Color.Lerp(bg, Color.black, 0.1f);
 			
-			for (int x = 0; x < width; x ++) {
+			for (int x = 0; x < tileSize; x ++) {
 
-				for (int y = 0; y < height; y ++) {
+				for (int y = 0; y < tileSize; y ++) {
 					
 					// Left Top edge, dark intersection color
 					if (x == 0 && y == 0)
@@ -53,22 +56,25 @@ namespace Forge {
 			}
 			
 			gridTex.Apply();
+			return gridTex;
 		}
 		
-		public void Draw(Vector2 scrollPoint, float zoom, Rect canvas) {
-			if (!gridTex) GenerateGrid ();
+		public void Draw(Vector2 scrollPoint, float scale, Rect canvas) {
+			if (_gridTex == null || _cachedScale != scale) {
+				_gridTex = Render(scale);
+			}
 			
-			float yOffset = scrollPoint.y % gridTex.height;
+			float yOffset = scrollPoint.y % _gridTex.height;
 			float yStart = scrollPoint.y - yOffset;
 			float yEnd = scrollPoint.y + canvas.height + yOffset;
 			
-			float xOffset = scrollPoint.x % gridTex.width;
+			float xOffset = scrollPoint.x % _gridTex.width;
 			float xStart = scrollPoint.x - xOffset;
 			float xEnd = scrollPoint.x + canvas.width + xOffset;
 			
-			for (float x = xStart; x < xEnd; x += gridTex.width) {
-				for (float y = yStart; y < yEnd; y += gridTex.height) {
-					GUI.DrawTexture(new Rect(x, y, gridTex.width, gridTex.height), gridTex);
+			for (float x = xStart; x < xEnd; x += _gridTex.width) {
+				for (float y = yStart; y < yEnd; y += _gridTex.height) {
+					GUI.DrawTexture(new Rect(x, y, _gridTex.width, _gridTex.height), _gridTex);
 				}
 			}
 		}

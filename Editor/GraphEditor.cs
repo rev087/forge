@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using Forge.Editor.Renderers;
 
 namespace Forge.Editor {
 
@@ -31,18 +32,22 @@ namespace Forge.Editor {
 			bool needsRepaint = false;
 
 			if (Event.current.type == EventType.MouseDrag && Event.current.button == 0) {
-				ScrollPoint.x += - Event.current.delta.x;
-				ScrollPoint.y += - Event.current.delta.y;
-				needsRepaint = true;
+				if (Event.current.delta.magnitude > 0) {
+					ScrollPoint.x += - Event.current.delta.x;
+					ScrollPoint.y += - Event.current.delta.y;
+					needsRepaint = true;
+				}
 			}
 
 			if (Event.current.type == EventType.ScrollWheel) {
 				Event.current.Use();
 				Zoom += -Event.current.delta.y / 50;
-				if (Zoom < 0.2f) Zoom = 0.2f;
+				if (Zoom < 0.25f) Zoom = 0.25f;
 				if (Zoom > 1f) Zoom = 1f;
 				needsRepaint = true;
 			}
+
+			Canvas = new Rect(0f, 0f, position.width*4*Zoom, position.height*4*Zoom);
 
 			_gridRenderer.Draw(ScrollPoint, Zoom, Canvas);
 			
