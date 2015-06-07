@@ -24,9 +24,11 @@ namespace Forge.Editor.Renderers {
 
 		// Interaction
 		public bool ShowType = true;
-		public Node Node = (Node) new Cuboid();
 
-		// Node parameters
+		// Instance
+		private Operator _op;
+
+		// General parameters
 		private const float _Width = 200f;
 
 		// Title parameters
@@ -42,7 +44,9 @@ namespace Forge.Editor.Renderers {
 
 		private static OutletRenderer _outletRenderer = null;
 
-		public NodeRenderer() {
+		public NodeRenderer(Operator op) {
+			_op = op;
+
 			_titleStyle = new GUIStyle();
 			_titleStyle.normal.textColor = _txColor;
 			_titleStyle.alignment = TextAnchor.MiddleCenter;
@@ -92,33 +96,33 @@ namespace Forge.Editor.Renderers {
 
 			// Title box
 			GUI.DrawTexture(new Rect(x, y, width, titleHeight), _bg);
-			GUI.Label(new Rect(x, y, width, titleHeight), Node.NodeName, _titleStyle);
+			GUI.Label(new Rect(x, y, width, titleHeight), _op.Title, _titleStyle);
 
 			y += titleHeight + _TitleSeparator;
 
 			// IO
-			int ioCount = Mathf.Max(Node.Inputs.Length, Node.Outputs.Length);
+			int ioCount = Mathf.Max(_op.Inputs.Length, _op.Outputs.Length);
 			for (int i = 0; i < ioCount; i++) {
 				Texture2D bg = (i % 2 == 0) ? _bg : _bgAlt;
 				GUI.DrawTexture(new Rect(x, y, width, ioHeight), bg);
 
-				if (i < Node.Inputs.Length) {
+				if (i < _op.Inputs.Length) {
 					_outletRenderer.Draw(x, y + ioHeight/2, scale, false);
 					if (ShowType) {
-						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), Node.Inputs[i].Name, _inputStyle);
-						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), Node.Inputs[i].Type, _inputTypeStyle);
+						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), _op.Inputs[i].Name, _inputStyle);
+						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), _op.Inputs[i].Type, _inputTypeStyle);
 					} else {
-						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight), Node.Inputs[i].Name, _inputStyle);
+						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight), _op.Inputs[i].Name, _inputStyle);
 					}
 				}
 
-				if (i < Node.Outputs.Length) {
+				if (i < _op.Outputs.Length) {
 					_outletRenderer.Draw(x + width, y + ioHeight/2, scale, false);
 					if (ShowType) {
-						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight/2), Node.Outputs[i].Name, _outputStyle);
-						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), Node.Outputs[i].Type, _outputTypeStyle);
+						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight/2), _op.Outputs[i].Name, _outputStyle);
+						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), _op.Outputs[i].Type, _outputTypeStyle);
 					} else {
-						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight), Node.Outputs[i].Name, _outputStyle);
+						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight), _op.Outputs[i].Name, _outputStyle);
 					}
 				}
 

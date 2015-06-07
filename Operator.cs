@@ -12,39 +12,27 @@ namespace Forge {
 		public string Name;
 	}
 
-	public class Node {
-
-		private static string TypeAlias(System.Type type) {
-			// See https://msdn.microsoft.com/en-us/library/ya5y69ds
-
-			if (type == typeof(System.Boolean)) return "bool";
-			else if (type == typeof(System.String)) return "string";
-			else if (type == typeof(System.Int32)) return "int";			
-			else if (type == typeof(System.Single)) return "float";
-			else if (type == typeof(System.Double)) return "double";
-
-			else if (type == typeof(System.Byte)) return "byte";
-			else if (type == typeof(System.SByte)) return "sbyte";
-			else if (type == typeof(System.Char)) return "char";
-			else if (type == typeof(System.Decimal)) return "decimal";
-			else if (type == typeof(System.UInt32)) return "uint";
-			else if (type == typeof(System.Int64)) return "long";
-			else if (type == typeof(System.UInt64)) return "ulong";
-			else if (type == typeof(System.Int16)) return "short";
-			else if (type == typeof(System.UInt16)) return "ushort";
-
-			return type.Name;
-		}
+	public class Operator {
 
 		public Vector2 EditorPosition = Vector2.zero;
 
-		private string _nodeName = null;
-		public string NodeName {
+		private string _guid = null;
+		public string Guid {
 			get {
-				if (_nodeName == null) {
-					_nodeName = GetType().Name;
+				if (_guid == null) {
+					_guid = System.Guid.NewGuid().ToString("D");
 				}
-				return _nodeName;
+				return _guid;
+			}
+		}
+
+		private string _title = null;
+		public string Title {
+			get {
+				if (_title == null) {
+					_title = GetType().Name;
+				}
+				return _title;
 			}
 		}
 
@@ -91,10 +79,32 @@ namespace Forge {
 			}
 		}
 
-		public void Nodes() {
-			var types = GetType().Assembly.GetTypes();
+		private static string TypeAlias(System.Type type) {
+			// See https://msdn.microsoft.com/en-us/library/ya5y69ds
+
+			if (type == typeof(System.Boolean)) return "bool";
+			else if (type == typeof(System.String)) return "string";
+			else if (type == typeof(System.Int32)) return "int";			
+			else if (type == typeof(System.Single)) return "float";
+			else if (type == typeof(System.Double)) return "double";
+
+			else if (type == typeof(System.Byte)) return "byte";
+			else if (type == typeof(System.SByte)) return "sbyte";
+			else if (type == typeof(System.Char)) return "char";
+			else if (type == typeof(System.Decimal)) return "decimal";
+			else if (type == typeof(System.UInt32)) return "uint";
+			else if (type == typeof(System.Int64)) return "long";
+			else if (type == typeof(System.UInt64)) return "ulong";
+			else if (type == typeof(System.Int16)) return "short";
+			else if (type == typeof(System.UInt16)) return "ushort";
+
+			return type.Name;
+		}
+
+		public static void Operators() {
+			var types = typeof(Operator).Assembly.GetTypes();
 			foreach (var type in types) {
-				if (type.IsSubclassOf(typeof(Node))) {
+				if (type.IsSubclassOf(typeof(Operator))) {
 					Debug.Log(type.Name);
 				}
 			}

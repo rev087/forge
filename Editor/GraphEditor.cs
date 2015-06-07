@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEditor;
 using Forge.Editor.Renderers;
+using Forge.Primitives;
+using Forge.Filters;
+using System.Collections.Generic;
 
 namespace Forge.Editor {
 
@@ -11,6 +14,7 @@ namespace Forge.Editor {
 		public Vector2 ScrollPoint = Vector2.zero;
 		public float Zoom = 1f;
 		public Rect Canvas;
+		public Template Template = new Template();
 
 		[MenuItem ("Window/Forge/Graph Editor")]
 		public static void ShowEditor() {
@@ -25,7 +29,7 @@ namespace Forge.Editor {
 
 		void OnGUI () {
 			if (_gridRenderer == null) _gridRenderer = new GridRenderer();
-			if (_nodeRenderer == null) _nodeRenderer = new NodeRenderer();
+			if (_nodeRenderer == null) _nodeRenderer = new NodeRenderer(new Circle());
 
 			ScrollPoint = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), ScrollPoint, Canvas);
 
@@ -51,7 +55,10 @@ namespace Forge.Editor {
 			Canvas = new Rect(0f, 0f, position.width*4*Zoom, position.height*4*Zoom);
 
 			_gridRenderer.Draw(ScrollPoint, Zoom, Canvas);
-			_nodeRenderer.Draw(ScrollPoint, Zoom);
+
+			foreach (KeyValuePair<string, Operator> op in Template.Operators) {
+				_nodeRenderer.Draw(ScrollPoint, Zoom);
+			}
 
 			if (needsRepaint) {
 				Repaint();

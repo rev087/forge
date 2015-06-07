@@ -3,7 +3,7 @@ using Forge.Filters;
 
 namespace Forge.Primitives {
 
-	public class Circle : Node {
+	public class Circle : Operator {
 
 		public enum OpeningType {Sector, Segment};
 

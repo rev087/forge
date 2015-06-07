@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Forge.Filters {
 
-	public class Mirror {
+	public class Mirror : Operator {
 
 		public Axis Axis = Axis.X;
 		public bool Reverse = true;

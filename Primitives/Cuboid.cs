@@ -3,7 +3,7 @@ using Forge.Filters;
 
 namespace Forge.Primitives {
 
-	public class Cuboid : Node {
+	public class Cuboid : Operator {
 
 		public Vector3 Size = Vector3.one;
 		public Vector3 Center = Vector3.zero;
