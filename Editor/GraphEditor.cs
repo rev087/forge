@@ -56,6 +56,8 @@ namespace Forge.Editor {
 
 			_gridRenderer.Draw(ScrollPoint, Zoom, Canvas);
 
+			Template.DrawConnections(_nodes);
+
 			foreach (KeyValuePair<string, Node> node in _nodes) {
 				needsRepaint = needsRepaint || node.Value.EventsNeedRepaint(Zoom);
 				node.Value.Draw(Zoom);

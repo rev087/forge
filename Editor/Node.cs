@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using Forge.Editor.Renderers;
 
 namespace Forge.Editor {
 	public class Node {
@@ -73,5 +74,37 @@ namespace Forge.Editor {
 			return needsRepaint;
 
 		}
+
+		public Vector2 OutputOutlet(IOOutlet target) {
+			for (int i = 0; i < Operator.Outputs.Length; i++) {
+				if(Operator.Outputs[i].Name == target.Name) {
+					float height = TitleHeight * _cachedScale + TitleSeparator;
+					height += (i * IOHeight) * _cachedScale;
+					height += (IOHeight * _cachedScale) / 2;
+					return new Vector2(
+						NodeRect.x + NodeRect.width,
+						NodeRect.y + height
+					);
+				}
+			}
+			return new Vector2(NodeRect.x, NodeRect.y);
+		}
+
+		public Vector2 InputOutlet(IOOutlet target) {
+			for (int i = 0; i < Operator.Inputs.Length; i++) {
+				if(Operator.Inputs[i].Name == target.Name) {
+					float height = TitleHeight * _cachedScale + TitleSeparator;
+					height += (i * IOHeight) * _cachedScale;
+					height += (IOHeight * _cachedScale) / 2;
+
+					return new Vector2(
+						NodeRect.x,
+						NodeRect.y + height
+					);
+				}
+			}
+			return new Vector2(NodeRect.x, NodeRect.y);
+		}
+
 	}
 }

@@ -4,7 +4,7 @@ namespace Forge.Editor.Renderers {
 
 	public class OutletRenderer {
 
-		private const int _Radius = 8;
+		public const int Radius = 8;
 		private const int _Outline = 3;
 		public Vector2 Center = Vector3.zero;
 
@@ -24,7 +24,7 @@ namespace Forge.Editor.Renderers {
 		}
 
 		public Texture2D Render(bool active, float scale) {
-			float radius = _Radius * scale;
+			float radius = Radius * scale;
 			int side = (int)radius * 2;
 			var tex = new Texture2D(side, side);
 			tex.hideFlags = HideFlags.HideAndDontSave;
@@ -65,9 +65,9 @@ namespace Forge.Editor.Renderers {
 				_cachedScale = scale;
 			}
 
-			x -= _Radius * scale;
-			y -= _Radius * scale;
-			float side = _Radius * 2 * scale;
+			x -= Radius * scale;
+			y -= Radius * scale;
+			float side = Radius * 2 * scale;
 
 			if (active) {
 				GUI.DrawTexture(new Rect(x, y, side, side), _texActive);

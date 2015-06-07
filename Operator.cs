@@ -8,8 +8,13 @@ namespace Forge {
 	public class OutputAttribute : System.Attribute {}
 
 	public struct IOOutlet {
-		public string Type;
+		public System.Type Type;
 		public string Name;
+
+		public IOOutlet(System.Type type, string name) {
+			Type = type;
+			Name = name;
+		}
 	}
 
 	public class Operator {
@@ -47,7 +52,7 @@ namespace Forge {
 
 					for (int i = 0; i < fields.Length; i++) {
 						if (fields[i].DeclaringType == type) {
-							inputs.Add(new IOOutlet() { Name=fields[i].Name, Type=TypeAlias(fields[i].FieldType) });
+							inputs.Add(new IOOutlet() { Name=fields[i].Name, Type=fields[i].FieldType });
 						}
 					}
 
@@ -69,7 +74,7 @@ namespace Forge {
 					foreach (MethodInfo methodInfo in methods) {
 						var isOutput = System.Attribute.IsDefined(methodInfo, typeof(OutputAttribute));
 						if (isOutput) {
-							outputs.Add(new IOOutlet() { Name=methodInfo.Name, Type=TypeAlias(methodInfo.ReturnType) });
+							outputs.Add(new IOOutlet() { Name=methodInfo.Name, Type=methodInfo.ReturnType });
 						}
 					}
 
@@ -77,28 +82,6 @@ namespace Forge {
 				}
 				return _outputs;
 			}
-		}
-
-		private static string TypeAlias(System.Type type) {
-			// See https://msdn.microsoft.com/en-us/library/ya5y69ds
-
-			if (type == typeof(System.Boolean)) return "bool";
-			else if (type == typeof(System.String)) return "string";
-			else if (type == typeof(System.Int32)) return "int";			
-			else if (type == typeof(System.Single)) return "float";
-			else if (type == typeof(System.Double)) return "double";
-
-			else if (type == typeof(System.Byte)) return "byte";
-			else if (type == typeof(System.SByte)) return "sbyte";
-			else if (type == typeof(System.Char)) return "char";
-			else if (type == typeof(System.Decimal)) return "decimal";
-			else if (type == typeof(System.UInt32)) return "uint";
-			else if (type == typeof(System.Int64)) return "long";
-			else if (type == typeof(System.UInt64)) return "ulong";
-			else if (type == typeof(System.Int16)) return "short";
-			else if (type == typeof(System.UInt16)) return "ushort";
-
-			return type.Name;
 		}
 
 		public static void Operators() {
