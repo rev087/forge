@@ -10,11 +10,13 @@ namespace Forge.Editor {
 	public class GraphEditor : EditorWindow {
 
 		private GridRenderer _gridRenderer;
-		private Dictionary<string, NodeRenderer> _nodes = new Dictionary<string, NodeRenderer>();
 		public Vector2 ScrollPoint = Vector2.zero;
 		public float Zoom = 1f;
 		public Rect Canvas;
+		private Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
 		public Template Template = new Template();
+
+		public static object DragEventOwner = null;
 
 		[MenuItem ("Window/Forge/Graph Editor")]
 		public static void ShowEditor() {
@@ -26,11 +28,13 @@ namespace Forge.Editor {
 		public void OnEnable() {
 			Canvas = new Rect(0, 0, position.width*2, position.height*2);
 
-			_nodes = new Dictionary<string, NodeRenderer>();
+			_nodes = new Dictionary<string, Node>();
 			foreach (KeyValuePair<string, Operator> op in Template.Operators) {
-				var node = new NodeRenderer(op.Value);
+				var node = new Node(op.Value);
 				_nodes.Add(op.Key, node);
 			}
+
+			wantsMouseMove = true;
 		}
 
 		void OnGUI () {
@@ -39,15 +43,6 @@ namespace Forge.Editor {
 			ScrollPoint = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), ScrollPoint, Canvas);
 
 			bool needsRepaint = false;
-
-			if (Event.current.type == EventType.MouseDrag && Event.current.button == 0) {
-				if (Event.current.delta.magnitude > 0) {
-					ScrollPoint.x += - Event.current.delta.x;
-					ScrollPoint.y += - Event.current.delta.y;
-					needsRepaint = true;
-					Event.current.Use();
-				}
-			}
 
 			if (Event.current.type == EventType.ScrollWheel) {
 				Zoom += -Event.current.delta.y / 50;
@@ -61,8 +56,23 @@ namespace Forge.Editor {
 
 			_gridRenderer.Draw(ScrollPoint, Zoom, Canvas);
 
-			foreach (KeyValuePair<string, NodeRenderer> node in _nodes) {
-				node.Value.Draw(ScrollPoint, Zoom);
+			foreach (KeyValuePair<string, Node> node in _nodes) {
+				needsRepaint = needsRepaint || node.Value.EventsNeedRepaint(Zoom);
+				node.Value.Draw(Zoom);
+			}
+
+			if (DragEventOwner == null && Event.current.type == EventType.MouseDrag && Event.current.button == 0) {
+				if (Event.current.delta.magnitude > 0) {
+					ScrollPoint.x += - Event.current.delta.x;
+					ScrollPoint.y += - Event.current.delta.y;
+					needsRepaint = true;
+					Event.current.Use();
+				}
+			}
+
+			// Releasing mouse button
+			if (Event.current.type == EventType.MouseUp) {
+				DragEventOwner = null;
 			}
 
 			if (needsRepaint) {

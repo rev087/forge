@@ -10,12 +10,12 @@ namespace Forge.Editor.Renderers {
 		private static float _CachedScale = 1f;
 
 		private const float _TileSize = 120f;
-		private const float _GridSize = 10f;
+		public const float StepSize = 10f;
 		
 		// Generates a single tile of the grid texture
 		public Texture2D Render(float scale) {
 			int tileSize = Mathf.RoundToInt(_TileSize * scale);
-			int step = Mathf.RoundToInt((_TileSize * scale) / 10);
+			int step = Mathf.RoundToInt((_TileSize * scale) / StepSize);
 
 			Texture2D gridTex = new Texture2D(tileSize, tileSize);
 			gridTex.hideFlags = HideFlags.DontSave;
