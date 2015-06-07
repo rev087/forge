@@ -20,6 +20,7 @@ namespace Forge.Filters {
 			_geometry = geometry.Copy();
 		}
 
+		[Output]
 		public Geometry Output() {
 
 			Geometry geo = _geometry.Copy();

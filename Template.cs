@@ -16,10 +16,10 @@ namespace Forge {
 		public Template() {
 
 			var c = new Circle();
-			// c.EditorPosition = new Vector2(50f, 50f);
+			c.EditorPosition = new Vector2(50f, 50f);
 
 			var m = new Mirror();
-			// m.EditorPosition = new Vector2(250f, 50f);
+			m.EditorPosition = new Vector2(300f, 50f);
 
 			Operators.Add(c.Guid, c);
 			Operators.Add(m.Guid, m);

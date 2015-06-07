@@ -8,7 +8,6 @@ namespace Forge.Editor.Renderers {
 
 	public class NodeRenderer {
 
-		private Vector2 _pos = new Vector2(50f, 50f);
 		private Color _txColor = new Color(0.182f, 0.194f, 0.202f);
 		private Color _txAltColor = new Color(0.332f, 0.344f, 0.352f);
 		private Color _bgColor = new Color(0.682f, 0.714f, 0.735f);
@@ -83,7 +82,7 @@ namespace Forge.Editor.Renderers {
 
 		public void Draw(Vector2 scrollPoint, float scale) {
 
-			float x = _pos.x * scale, y = _pos.y * scale;
+			float x = _op.EditorPosition.x * scale, y = _op.EditorPosition.y * scale;
 			float width = _Width * scale;
 			float titleHeight = _TitleHeight * scale;
 			float ioHeight = _IOHeight * scale;

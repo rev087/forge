@@ -10,7 +10,7 @@ namespace Forge.Editor {
 	public class GraphEditor : EditorWindow {
 
 		private GridRenderer _gridRenderer;
-		private NodeRenderer _nodeRenderer;
+		private Dictionary<string, NodeRenderer> _nodes = new Dictionary<string, NodeRenderer>();
 		public Vector2 ScrollPoint = Vector2.zero;
 		public float Zoom = 1f;
 		public Rect Canvas;
@@ -25,11 +25,16 @@ namespace Forge.Editor {
 
 		public void OnEnable() {
 			Canvas = new Rect(0, 0, position.width*2, position.height*2);
+
+			_nodes = new Dictionary<string, NodeRenderer>();
+			foreach (KeyValuePair<string, Operator> op in Template.Operators) {
+				var node = new NodeRenderer(op.Value);
+				_nodes.Add(op.Key, node);
+			}
 		}
 
 		void OnGUI () {
 			if (_gridRenderer == null) _gridRenderer = new GridRenderer();
-			if (_nodeRenderer == null) _nodeRenderer = new NodeRenderer(new Circle());
 
 			ScrollPoint = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), ScrollPoint, Canvas);
 
@@ -56,8 +61,8 @@ namespace Forge.Editor {
 
 			_gridRenderer.Draw(ScrollPoint, Zoom, Canvas);
 
-			foreach (KeyValuePair<string, Operator> op in Template.Operators) {
-				_nodeRenderer.Draw(ScrollPoint, Zoom);
+			foreach (KeyValuePair<string, NodeRenderer> node in _nodes) {
+				node.Value.Draw(ScrollPoint, Zoom);
 			}
 
 			if (needsRepaint) {
