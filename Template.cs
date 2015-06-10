@@ -32,14 +32,20 @@ namespace Forge {
 			var m = new Mirror();
 			m.EditorPosition = new Vector2(300f, 50f);
 
+			var c2 = new Circle();
+			c2.EditorPosition = new Vector2(300f, 200f);
+
 			Operators.Add(c.Guid, c);
 			Operators.Add(m.Guid, m);
+			Operators.Add(c2.Guid, c2);
 
 			var output = new IOOutlet(typeof(Geometry), "Output");
 			var input = new IOOutlet(typeof(Axis), "Axis");
+			Connections.Add(new IOConnection() { From=c, Output=output, To=m, Input=input });
+		}
 
-			var io1 = new IOConnection() { From=c, Output=output, To=m, Input=input };
-			Connections.Add(io1);
+		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input) {
+			Connections.Add(new IOConnection() { From=outOp, Output=output, To=inOp, Input=input });
 		}
 
 	}

@@ -6,21 +6,66 @@ namespace Forge.Editor.Renderers {
 
 	public static class Connections {
 
+		private static GUIStyle _FloatingTextStyle = null;
+
+		public static void DrawBezier(Vector2 inPoint, Vector2 outPoint) {
+			float tanOffset = Vector2.Distance(inPoint, outPoint) / 4f;
+
+			Vector2 inTan = new Vector2(inPoint.x + tanOffset, inPoint.y);
+			Vector2 outTan = new Vector2(outPoint.x - tanOffset, outPoint.y);
+
+			Handles.DrawBezier(inPoint, outPoint, inTan, outTan, Color.white, null, 2f);
+		}
+
 		public static void DrawConnections(this Template template, Dictionary<string, Node> nodes) {
+
+			if (_FloatingTextStyle == null) {
+				_FloatingTextStyle = new GUIStyle();
+				_FloatingTextStyle.alignment = TextAnchor.UpperRight;
+				_FloatingTextStyle.normal.textColor = Color.white;
+				_FloatingTextStyle.fontSize = 16;
+			}
+
+			// Connections
 			foreach (IOConnection conn in template.Connections) {
 				Node a = nodes[conn.From.Guid];
 				Node b = nodes[conn.To.Guid];
 
-				Vector2 aPoint = a.OutputOutlet(conn.Output);
-				Vector2 bPoint = b.InputOutlet(conn.Input);
-
-				float tanOffset = Vector2.Distance(aPoint, bPoint) / 4f;
-
-				Vector2 aTan = new Vector2(aPoint.x + tanOffset, aPoint.y);
-				Vector2 bTan = new Vector2(bPoint.x - tanOffset, bPoint.y);
-
-				Handles.DrawBezier(aPoint, bPoint, aTan, bTan, Color.white, null, 2f);
+				DrawBezier(a.OutputOutlet(conn.Output), b.InputOutlet(conn.Input));
 			}
+
+			// Open connections
+			if (GraphEditor.CurrentEvent.Type == GEType.Drag) {
+
+				Node node = GraphEditor.CurrentEvent.Node;
+				IOOutlet outlet = GraphEditor.CurrentEvent.Outlet;
+				Vector2 mousePos = Event.current.mousePosition;
+
+				bool validConnection = false;
+
+
+				// Dragging from Input
+				if (GraphEditor.CurrentEvent.Context == GEContext.Input) {
+					Vector2 inPoint = node.InputOutlet(outlet);
+					DrawBezier(mousePos, inPoint);
+					validConnection = true;
+				}
+
+				// Dragging from Output
+				if (GraphEditor.CurrentEvent.Context == GEContext.Output) {
+					Vector2 outPoint = node.OutputOutlet(outlet);
+					DrawBezier(outPoint, mousePos);
+					validConnection = true;
+				}
+
+				if (validConnection) {
+					var point = mousePos + new Vector2(0f, 20f);
+					string label = System.String.Format("{0}\n{1}", outlet.Name, NodeRenderer.TypeAlias(outlet.Type), _FloatingTextStyle);
+					Handles.Label(point, label);
+				}
+
+			}
+
 		}
 
 	}

@@ -75,7 +75,7 @@ namespace Forge.Editor.Renderers {
 			var op = node.Operator;
 
 			float x = op.EditorPosition.x * scale, y = op.EditorPosition.y * scale;
-			float width = node.NodeRect.width;
+			float width = Node.BaseWidth * scale;
 			float titleHeight = Node.TitleHeight * scale;
 			float ioHeight = Node.IOHeight * scale;
 			float ioMargin = _IOMargin * scale;
@@ -98,7 +98,7 @@ namespace Forge.Editor.Renderers {
 				GUI.DrawTexture(new Rect(x, y, width, ioHeight), bg);
 
 				if (i < op.Inputs.Length) {
-					_outletRenderer.Draw(x, y + ioHeight/2, scale, false);
+					_outletRenderer.Draw(x, y + ioHeight/2, scale, node.InputHover == i);
 					if (node.ShowType) {
 						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), op.Inputs[i].Name, _inputStyle);
 						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), TypeAlias(op.Inputs[i].Type), _inputTypeStyle);
@@ -108,7 +108,7 @@ namespace Forge.Editor.Renderers {
 				}
 
 				if (i < op.Outputs.Length) {
-					_outletRenderer.Draw(x + width, y + ioHeight/2, scale, false);
+					_outletRenderer.Draw(x + width, y + ioHeight/2, scale, node.OutputHover == i);
 					if (node.ShowType) {
 						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight/2), op.Outputs[i].Name, _outputStyle);
 						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), TypeAlias(op.Outputs[i].Type), _outputTypeStyle);
@@ -121,7 +121,7 @@ namespace Forge.Editor.Renderers {
 			}
 		}
 
-		private static string TypeAlias(System.Type type) {
+		public static string TypeAlias(System.Type type) {
 			// See https://msdn.microsoft.com/en-us/library/ya5y69ds
 
 			if (type == typeof(System.Boolean)) return "bool";

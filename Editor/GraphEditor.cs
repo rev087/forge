@@ -7,6 +7,43 @@ using System.Collections.Generic;
 
 namespace Forge.Editor {
 
+	public enum GEType { None, Unresolved, Click, Drag }
+	public enum GEContext { None, Node, Output, Input }
+	public struct GraphEvent {
+		public GEType Type;
+		public GEContext Context;
+		public Node Node;
+		public IOOutlet Outlet;
+
+		public GraphEvent(GEType type, GEContext context, Node node, IOOutlet outlet) {
+			Type = type;
+			Context = context;
+			Node = node;
+			Outlet = outlet;
+		}
+
+		public void Empty() {
+			Type = GEType.None;
+			Context = GEContext.None;
+			Node = null;
+		}
+
+		public bool IsConnecting() {
+			return Type == GEType.Drag &&
+				(Context == GEContext.Input || Context == GEContext.Output);
+		}
+
+		public bool IsNodeDrag(Node node) {
+			return Node == node && Context == GEContext.Node &&
+				(Type == GEType.Unresolved || Type == GEType.Drag);
+		}
+
+		public bool CanDragOutlet(Node node, GEContext context) {
+			return Node == node && Context == context &&
+				(Type == GEType.Unresolved || Type == GEType.Drag);
+		}
+	}
+
 	public class GraphEditor : EditorWindow {
 
 		private GridRenderer _gridRenderer;
@@ -16,7 +53,7 @@ namespace Forge.Editor {
 		private Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
 		public Template Template = new Template();
 
-		public static object DragEventOwner = null;
+		public static GraphEvent CurrentEvent;
 
 		[MenuItem ("Window/Forge/Graph Editor")]
 		public static void ShowEditor() {
@@ -59,11 +96,12 @@ namespace Forge.Editor {
 			Template.DrawConnections(_nodes);
 
 			foreach (KeyValuePair<string, Node> node in _nodes) {
-				needsRepaint = needsRepaint || node.Value.EventsNeedRepaint(Zoom);
+				needsRepaint = needsRepaint || node.Value.EventsNeedRepaint(Zoom, this);
 				node.Value.Draw(Zoom);
 			}
 
-			if (DragEventOwner == null && Event.current.type == EventType.MouseDrag && Event.current.button == 0) {
+			// Drag the ScrollView
+			if (CurrentEvent.Type == GEType.None && Event.current.type == EventType.MouseDrag && Event.current.button == 0) {
 				if (Event.current.delta.magnitude > 0) {
 					ScrollPoint.x += - Event.current.delta.x;
 					ScrollPoint.y += - Event.current.delta.y;
@@ -74,7 +112,8 @@ namespace Forge.Editor {
 
 			// Releasing mouse button
 			if (Event.current.type == EventType.MouseUp) {
-				DragEventOwner = null;
+				needsRepaint = needsRepaint || CurrentEvent.IsConnecting();
+				CurrentEvent.Empty();
 			}
 
 			if (needsRepaint) {
@@ -82,7 +121,7 @@ namespace Forge.Editor {
 			}
 
 			GUI.EndScrollView();
-		}
+		} // OnGUI
 
 	}
 
