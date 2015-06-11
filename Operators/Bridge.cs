@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Forge.Filters {
+namespace Forge.Operators {
 	
 	public class Bridge {
 

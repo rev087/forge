@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using Forge.Editor.Renderers;
-using Forge.Primitives;
-using Forge.Filters;
 using System.Collections.Generic;
 
 namespace Forge.Editor {

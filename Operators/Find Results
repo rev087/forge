@@ -1,0 +1,162 @@
+Searching 58 files for "namespace Forge.Primitives" (case sensitive)
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Circle.cs:
+    2  using Forge.Operators;
+    3  
+    4: namespace Forge.Primitives {
+    5  
+    6  	public class Circle : Operator {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/CircleScatter.cs:
+    3  using System.Collections.Generic;
+    4  
+    5: namespace Forge.Primitives {
+    6  
+    7  	public class CircleScatter {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Cuboid.cs:
+    2  using Forge.Operators;
+    3  
+    4: namespace Forge.Primitives {
+    5  
+    6  	public class Cuboid : Operator {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Cylinder.cs:
+    2  using Forge.Operators;
+    3  
+    4: namespace Forge.Primitives {
+    5  
+    6  	public class Cylinder {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Grid.cs:
+    3  using System.Collections.Generic;
+    4  
+    5: namespace Forge.Primitives {
+    6  
+    7  	public class Grid {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Hemisphere.cs:
+    2  using Forge.Operators;
+    3  
+    4: namespace Forge.Primitives {
+    5  
+    6  	public class Hemisphere {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Line.cs:
+    1  using UnityEngine;
+    2  
+    3: namespace Forge.Primitives {
+    4  
+    5  	public class Line {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Sphere.cs:
+    2  using Forge.Operators;
+    3  
+    4: namespace Forge.Primitives {
+    5  
+    6  	public class Sphere {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Square.cs:
+    2  using Forge.Operators;
+    3  
+    4: namespace Forge.Primitives {
+    5  
+    6  	public class Square {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Triangle.cs:
+    3  using Forge.Operators;
+    4  
+    5: namespace Forge.Primitives {
+    6  
+    7  	// Equilateral triangles
+
+10 matches across 10 files
+
+
+Searching 58 files for "namespace Forge.Filters" (case sensitive)
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Bridge.cs:
+    1  using UnityEngine;
+    2  
+    3: namespace Forge.Filters {
+    4  	
+    5  	public class Bridge {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Converge.cs:
+    2  using System.Collections.Generic;
+    3  
+    4: namespace Forge.Filters {
+    5  
+    6  	public class Converge {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Copy.cs:
+    1  using UnityEngine;
+    2  
+    3: namespace Forge.Filters {
+    4  
+    5  	public class Copy {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/ExtractFaces.cs:
+    2  using System.Collections.Generic;
+    3  
+    4: namespace Forge.Filters {
+    5  
+    6  	public class ExtractFaces {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/ExtractVertices.cs:
+    2  using System.Collections.Generic;
+    3  
+    4: namespace Forge.Filters {
+    5  
+    6  	public class ExtractVertices {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Fuse.cs:
+    2  using System.Collections.Generic;
+    3  
+    4: namespace Forge.Filters {
+    5  
+    6  	public class Fuse {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Manipulate.cs:
+    1  using UnityEngine;
+    2  
+    3: namespace Forge.Filters {
+    4  
+    5  	public class Manipulate {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Merge.cs:
+    2  using System.Collections.Generic;
+    3  
+    4: namespace Forge.Filters {
+    5  
+    6  	public class Merge {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Mirror.cs:
+    2  using System.Collections.Generic;
+    3  
+    4: namespace Forge.Filters {
+    5  
+    6  	public class Mirror : Operator {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Polygonize.cs:
+    2  using System.Collections.Generic;
+    3  
+    4: namespace Forge.Filters {
+    5  
+    6  	public class Polygonize {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Reverse.cs:
+    2  using System.Collections.Generic;
+    3  
+    4: namespace Forge.Filters {
+    5  
+    6  	public class Reverse {
+
+/Users/rev087/Documents/Lab/unity/explorations/Procedural Assets/Assets/Forge/Operators/Triangulate.cs:
+    3  using Forge.Extensions;
+    4  
+    5: namespace Forge.Filters {
+    6  
+    7  	public class Triangulate {
+
+12 matches across 12 files

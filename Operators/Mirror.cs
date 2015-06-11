@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Forge.Filters {
+namespace Forge.Operators {
 
 	public class Mirror : Operator {
 
@@ -18,6 +18,11 @@ namespace Forge.Filters {
 
 		public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
+		}
+
+		public Geometry InputGeometry {
+			get { return _geometry; }
+			set { _geometry = ((Geometry)value).Copy(); }
 		}
 
 		[Output]

@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
-using Forge.Filters;
+using Forge.Operators;
 
-namespace Forge.Primitives {
+namespace Forge.Operators {
 
 	// Equilateral triangles
 	public class Triangle {

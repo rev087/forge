@@ -1,7 +1,7 @@
 using UnityEngine;
-using Forge.Filters;
+using Forge.Operators;
 
-namespace Forge.Primitives {
+namespace Forge.Operators {
 
 	public class Sphere {
 

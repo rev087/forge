@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Forge.Primitives {
+namespace Forge.Operators {
 
 	public class Grid {
 

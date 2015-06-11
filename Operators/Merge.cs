@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Forge.Filters {
+namespace Forge.Operators {
 
 	public class Merge {
 

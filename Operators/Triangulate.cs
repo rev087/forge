@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Forge.Extensions;
 
-namespace Forge.Filters {
+namespace Forge.Operators {
 
 	public class Triangulate {
 

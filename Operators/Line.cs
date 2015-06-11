@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Forge.Primitives {
+namespace Forge.Operators {
 
 	public class Line {
 
