@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Forge.Primitives;
-using Forge.Filters;
+using Forge.Operators;
 
 namespace Forge {
 
@@ -28,20 +27,27 @@ namespace Forge {
 
 			var c = new Circle();
 			c.EditorPosition = new Vector2(50f, 50f);
+			AddOperator(c);
 
 			var m = new Mirror();
 			m.EditorPosition = new Vector2(300f, 50f);
+			AddOperator(m);
 
 			var c2 = new Circle();
 			c2.EditorPosition = new Vector2(300f, 200f);
+			AddOperator(c2);
 
-			Operators.Add(c.Guid, c);
-			Operators.Add(m.Guid, m);
-			Operators.Add(c2.Guid, c2);
+			var f = new FloatValue();
+			f.EditorPosition = new Vector2(50f, 350f);
+			AddOperator(f);
 
 			var output = new IOOutlet(typeof(Geometry), "Output");
 			var input = new IOOutlet(typeof(Axis), "Axis");
 			Connections.Add(new IOConnection() { From=c, Output=output, To=m, Input=input });
+		}
+
+		public void AddOperator(Operator op) {
+			Operators.Add(op.Guid, op);
 		}
 
 		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input) {
