@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
+using Forge.Extensions;
 
 namespace Forge {
 
@@ -25,6 +26,10 @@ namespace Forge {
 
 		public bool IsNone() {
 			return Type == typeof(System.Boolean) && Name == null;
+		}
+
+		public static bool CanConnect(IOOutlet output, IOOutlet input) {
+			return output.Type == input.Type;
 		}
 	}
 
@@ -57,13 +62,13 @@ namespace Forge {
 			get {
 				if (_inputs == null) {
 					System.Type type = GetType();
-					FieldInfo[] fields = type.GetFields();
 
 					var inputs = new List<IOOutlet>();
 
-					for (int i = 0; i < fields.Length; i++) {
-						if (fields[i].DeclaringType == type) {
-							inputs.Add(new IOOutlet() { Name=fields[i].Name, Type=fields[i].FieldType });
+					MemberInfo[] members = type.GetMembers();
+					foreach (MemberInfo member in members) {
+						if (System.Attribute.IsDefined(member, typeof(InputAttribute))) {
+							inputs.Add(new IOOutlet() { Name=member.Name, Type=member.OutletType() });
 						}
 					}
 
@@ -78,14 +83,13 @@ namespace Forge {
 			get{
 				if (_outputs == null) {
 					System.Type type = GetType();
-					MethodInfo[] methods = type.GetMethods();
 
 					var outputs = new List<IOOutlet>();
 
-					foreach (MethodInfo methodInfo in methods) {
-						var isOutput = System.Attribute.IsDefined(methodInfo, typeof(OutputAttribute));
-						if (isOutput) {
-							outputs.Add(new IOOutlet() { Name=methodInfo.Name, Type=methodInfo.ReturnType });
+					MemberInfo[] members = type.GetMembers();
+					foreach (MemberInfo member in members) {
+						if (System.Attribute.IsDefined(member, typeof(OutputAttribute))) {
+							outputs.Add(new IOOutlet() { Name=member.Name, Type=member.OutletType() });
 						}
 					}
 

@@ -7,14 +7,14 @@ namespace Forge.Operators {
 
 		public enum OpeningType {Sector, Segment};
 
-		public OpeningType Opening = OpeningType.Segment;
-		public OrientationPreset Orientation = OrientationPreset.XZ;
-		public bool Surface = false;
-		public int Segments = 12;
-		public Vector3 Center = Vector3.zero;
-		public float Radius = .5f;
-		public float StartAngle = 0;
-		public float EndAngle = 360;
+		[Input] public OpeningType Opening = OpeningType.Segment;
+		[Input] public OrientationPreset Orientation = OrientationPreset.XZ;
+		[Input] public bool Surface = false;
+		[Input] public int Segments = 12;
+		[Input] public Vector3 Center = Vector3.zero;
+		[Input] public float Radius = .5f;
+		[Input] public float StartAngle = 0;
+		[Input] public float EndAngle = 360;
 
 		[Output]
 		public Geometry Output() {

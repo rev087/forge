@@ -113,20 +113,24 @@ namespace Forge.Editor {
 
 					// Releasing Output on Input
 					if (mouseInInputs && GraphEditor.CurrentEvent.Type == GEType.Drag && GraphEditor.CurrentEvent.Context == GEContext.Output) {
-						graphEditor.Template.Connect(
-							GraphEditor.CurrentEvent.Node.Operator, GraphEditor.CurrentEvent.Outlet,
-							Operator, Operator.Inputs[inputIndex]
-						);
+						if (IOOutlet.CanConnect(GraphEditor.CurrentEvent.Outlet, Operator.Inputs[inputIndex])) {
+							graphEditor.Template.Connect(
+								GraphEditor.CurrentEvent.Node.Operator, GraphEditor.CurrentEvent.Outlet,
+								Operator, Operator.Inputs[inputIndex]
+							);
+						}
 						GraphEditor.CurrentEvent.Empty();
 						needsRepaint = true;
 					}
 
 					// Releasing Input on Output
 					if (mouseInOutputs && GraphEditor.CurrentEvent.Type == GEType.Drag && GraphEditor.CurrentEvent.Context == GEContext.Input) {
-						graphEditor.Template.Connect(
-							Operator, Operator.Outputs[inputIndex],
-							GraphEditor.CurrentEvent.Node.Operator, GraphEditor.CurrentEvent.Outlet
-						);
+						if (IOOutlet.CanConnect(Operator.Outputs[inputIndex], GraphEditor.CurrentEvent.Outlet)) {
+							graphEditor.Template.Connect(
+								Operator, Operator.Outputs[inputIndex],
+								GraphEditor.CurrentEvent.Node.Operator, GraphEditor.CurrentEvent.Outlet
+							);
+						}
 						GraphEditor.CurrentEvent.Empty();
 						needsRepaint = true;
 					}

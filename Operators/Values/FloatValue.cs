@@ -4,12 +4,8 @@ namespace Forge.Operators {
 
 	public class FloatValue : Operator {
 
-		public float FloatVal = 0.0f;
-
 		[Output]
-		public float Value() {
-			return FloatVal;
-		}
+		public float Float = 0.0f;
 
 	}
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Reflection;
 
 namespace Forge.Extensions {
 
@@ -22,6 +23,19 @@ namespace Forge.Extensions {
 				range[i] = i;
 			}
 			return range;
+		}
+
+		public static System.Type OutletType(this MemberInfo member) {
+			switch (member.MemberType) {
+				case MemberTypes.Method:
+					return ((MethodInfo)member).ReturnType;
+				case MemberTypes.Field:
+					return ((FieldInfo)member).FieldType;
+				case MemberTypes.Property:
+					return ((PropertyInfo)member).PropertyType;
+        default:
+					throw new System.ArgumentException("OutletType can only be used with FieldInfo, MethodInfo, or PropertyInfo");
+			}
 		}
 
 	}

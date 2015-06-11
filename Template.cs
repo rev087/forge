@@ -43,7 +43,7 @@ namespace Forge {
 
 			var output = new IOOutlet(typeof(Geometry), "Output");
 			var input = new IOOutlet(typeof(Axis), "Axis");
-			Connections.Add(new IOConnection() { From=c, Output=output, To=m, Input=input });
+			Connect(c, output, m, input);
 		}
 
 		public void AddOperator(Operator op) {
