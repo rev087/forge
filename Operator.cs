@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace Forge {
 
-	[System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = false)]
+	[System.AttributeUsage(System.AttributeTargets.Method | System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple = false)]
 	public class OutputAttribute : System.Attribute {}
 
-	[System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = false)]
+	[System.AttributeUsage(System.AttributeTargets.Method | System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple = false)]
 	public class InputAttribute : System.Attribute {}
 
 	public struct IOOutlet {
@@ -33,7 +33,7 @@ namespace Forge {
 		public Vector2 EditorPosition = Vector2.zero;
 
 		private string _guid = null;
-		public string Guid {
+		public string GUID {
 			get {
 				if (_guid == null) {
 					_guid = System.Guid.NewGuid().ToString("D");

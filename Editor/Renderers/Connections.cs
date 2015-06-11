@@ -28,8 +28,8 @@ namespace Forge.Editor.Renderers {
 
 			// Connections
 			foreach (IOConnection conn in template.Connections) {
-				Node a = nodes[conn.From.Guid];
-				Node b = nodes[conn.To.Guid];
+				Node a = nodes[conn.From.GUID];
+				Node b = nodes[conn.To.GUID];
 
 				DrawBezier(a.OutputOutlet(conn.Output), b.InputOutlet(conn.Input));
 			}

@@ -47,7 +47,7 @@ namespace Forge {
 		}
 
 		public void AddOperator(Operator op) {
-			Operators.Add(op.Guid, op);
+			Operators.Add(op.GUID, op);
 		}
 
 		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input) {
