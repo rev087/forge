@@ -111,7 +111,7 @@ namespace Forge.Editor {
 				// MouseUp outlets
 				if (ev.type == EventType.MouseUp) {
 
-					// Input
+					// Releasing Output on Input
 					if (mouseInInputs && GraphEditor.CurrentEvent.Type == GEType.Drag && GraphEditor.CurrentEvent.Context == GEContext.Output) {
 						graphEditor.Template.Connect(
 							GraphEditor.CurrentEvent.Node.Operator, GraphEditor.CurrentEvent.Outlet,
@@ -121,7 +121,7 @@ namespace Forge.Editor {
 						needsRepaint = true;
 					}
 
-					// Output
+					// Releasing Input on Output
 					if (mouseInOutputs && GraphEditor.CurrentEvent.Type == GEType.Drag && GraphEditor.CurrentEvent.Context == GEContext.Input) {
 						graphEditor.Template.Connect(
 							Operator, Operator.Outputs[inputIndex],
