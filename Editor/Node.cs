@@ -5,7 +5,8 @@ using Forge.Editor.Renderers;
 namespace Forge.Editor {
 	public class Node {
 
-		public bool ShowType = true;
+		public bool ShowType = false;
+		public bool Selected = true;
 
 		public Operator Operator;
 
@@ -146,7 +147,10 @@ namespace Forge.Editor {
 
 					// Mouse Up
 					if (ev.type == EventType.MouseUp && GraphEditor.CurrentEvent.Type == GEType.Unresolved) {
-						Debug.LogFormat("Select {0}", Operator.Title);
+						if (!GraphEditor.Selection.Contains(this)) {
+							GraphEditor.Selection.Add(this);
+						}
+						needsRepaint = true;
 					}
 				}
 

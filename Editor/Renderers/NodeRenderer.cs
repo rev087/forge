@@ -118,6 +118,15 @@ namespace Forge.Editor.Renderers {
 
 				y += ioHeight;
 			}
+
+			if (GraphEditor.Selection.Contains(node)) {
+				SelectionRenderer.Draw(new Rect(
+					op.EditorPosition.x * scale,
+					op.EditorPosition.y * scale,
+					Node.BaseWidth * scale,
+					(Node.TitleHeight + Node.TitleSeparator + (Node.IOHeight * ioCount)) * scale
+				));
+			}
 		}
 
 		public static string TypeAlias(System.Type type) {

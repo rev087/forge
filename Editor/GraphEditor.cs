@@ -51,6 +51,7 @@ namespace Forge.Editor {
 		private Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
 		public Template Template = new Template();
 
+		public static List<Node> Selection = new List<Node>();
 		public static GraphEvent CurrentEvent;
 
 		[MenuItem ("Window/Forge/Graph Editor")]
@@ -113,6 +114,11 @@ namespace Forge.Editor {
 				needsRepaint = needsRepaint || CurrentEvent.IsConnecting();
 				CurrentEvent.Empty();
 			}
+
+			// Click on the grid, deselects
+			// if (CurrentEvent.Type == GEType.None && Event.current.type == EventType.MouseUp && Event.current.button == 0) {
+			// 	Selection.Clear();
+			// }
 
 			if (needsRepaint) {
 				Repaint();
