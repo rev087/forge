@@ -6,23 +6,48 @@ namespace Forge.Editor.Renderers {
 
 	public class SelectionRenderer {
 
-		private const float _Margin = 2f;
-		private const float _Thickness = 1f;
+		public const float Margin = 2f;
+		public const float Thickness = 2f;
+		private static Texture2D _Texture = null;
 
-		public static void Draw(Rect rect) {
-			rect.width += (_Margin + _Thickness) * 2;
-			rect.height += (_Margin + _Thickness) * 2;
-			rect.x -= _Margin + _Thickness;
-			rect.y -= _Margin + _Thickness;
+		public static void DrawNodeSelection(Rect rect, float scale) {
+			if (_Texture == null) _Texture = Texture2D.whiteTexture;
 
-			var a = new Vector2(rect.x, rect.y);
-			var b = new Vector2(rect.x + rect.width, rect.y);
-			var c = new Vector2(rect.x + rect.width, rect.y + rect.height);
-			var d = new Vector2(rect.x, rect.y + rect.height);
+			float outletRadius = OutletRenderer.Radius * scale;
 
-			Handles.color = Color.white;
-			Handles.DrawPolyLine(a, b, c, d, a);
-		}
+			// Left
+			GUI.DrawTexture(new Rect(
+				rect.x - Margin - Thickness - outletRadius,
+				rect.y - Margin - Thickness,
+				Thickness,
+				rect.height + (Margin + Thickness) * 2
+			), _Texture);
+
+			// Top
+			GUI.DrawTexture(new Rect(
+				rect.x - Margin - outletRadius,
+				rect.y - Margin - Thickness,
+				rect.width + Margin*2 + outletRadius*2,
+				Thickness
+			), _Texture);
+
+			// Right
+			GUI.DrawTexture(new Rect(
+				rect.x + rect.width + outletRadius + Margin,
+				rect.y - Margin - Thickness,
+				Thickness,
+				rect.height + (Margin + Thickness) * 2
+			), _Texture);
+
+			// Bottom
+			GUI.DrawTexture(new Rect(
+				rect.x - Margin - outletRadius,
+				rect.y + rect.height + Margin,
+				rect.width + Margin*2 + outletRadius*2,
+				Thickness
+			), _Texture);
+
+		} // Draw
 
 	}
 

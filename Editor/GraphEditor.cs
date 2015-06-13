@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Forge.Editor {
 
 	public enum GEType { None, Unresolved, Click, Drag }
-	public enum GEContext { None, Node, Output, Input }
+	public enum GEContext { None, Grid, Node, Output, Input }
 	public struct GraphEvent {
 		public GEType Type;
 		public GEContext Context;
@@ -26,6 +26,13 @@ namespace Forge.Editor {
 			Node = null;
 		}
 
+		public bool IsType(params GEType[] types) {
+			foreach (GEType type in types) {
+				if (Type == type) return true;
+			}
+			return false;;
+		}
+
 		public bool IsConnecting() {
 			return Type == GEType.Drag &&
 				(Context == GEContext.Input || Context == GEContext.Output);
@@ -33,12 +40,12 @@ namespace Forge.Editor {
 
 		public bool IsNodeDrag(Node node) {
 			return Node == node && Context == GEContext.Node &&
-				(Type == GEType.Unresolved || Type == GEType.Drag);
+				IsType(GEType.Unresolved, GEType.Drag);
 		}
 
 		public bool CanDragOutlet(Node node, GEContext context) {
 			return Node == node && Context == context &&
-				(Type == GEType.Unresolved || Type == GEType.Drag);
+				IsType(GEType.Unresolved, GEType.Drag);
 		}
 	}
 
@@ -99,26 +106,34 @@ namespace Forge.Editor {
 				node.Value.Draw(Zoom);
 			}
 
-			// Drag the ScrollView
-			if (CurrentEvent.Type == GEType.None && Event.current.type == EventType.MouseDrag && Event.current.button == 0) {
-				if (Event.current.delta.magnitude > 0) {
-					ScrollPoint.x += - Event.current.delta.x;
-					ScrollPoint.y += - Event.current.delta.y;
-					needsRepaint = true;
-					Event.current.Use();
+			if (Event.current.button == 0) {
+
+				// MouseDown
+				if (Event.current.type == EventType.MouseDown && CurrentEvent.Type == GEType.None) {
+					CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Grid, null, IOOutlet.None);
 				}
-			}
 
-			// Releasing mouse button
-			if (Event.current.type == EventType.MouseUp) {
-				needsRepaint = needsRepaint || CurrentEvent.IsConnecting();
-				CurrentEvent.Empty();
-			}
+				// MouseDrag
+				if (Event.current.type == EventType.MouseDrag && CurrentEvent.IsType(GEType.Unresolved, GEType.Drag) && CurrentEvent.Context == GEContext.Grid) {
+					if (Event.current.delta.magnitude > 0) {
+						CurrentEvent = new GraphEvent(GEType.Drag, GEContext.Grid, null, IOOutlet.None);
+						ScrollPoint.x += - Event.current.delta.x;
+						ScrollPoint.y += - Event.current.delta.y;
+						needsRepaint = true;
+					}
+				}
 
-			// Click on the grid, deselects
-			// if (CurrentEvent.Type == GEType.None && Event.current.type == EventType.MouseUp && Event.current.button == 0) {
-			// 	Selection.Clear();
-			// }
+				// MouseUp
+				if (Event.current.type == EventType.MouseUp) {
+					if (CurrentEvent.Type == GEType.Unresolved && CurrentEvent.Context == GEContext.Grid) {
+						Selection.Clear();
+						needsRepaint = true;
+					}
+					needsRepaint = needsRepaint || CurrentEvent.IsConnecting();
+					CurrentEvent.Empty();
+				}
+
+			} // Left mouse down/drag/up
 
 			if (needsRepaint) {
 				Repaint();

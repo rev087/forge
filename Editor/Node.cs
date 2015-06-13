@@ -148,7 +148,12 @@ namespace Forge.Editor {
 					// Mouse Up
 					if (ev.type == EventType.MouseUp && GraphEditor.CurrentEvent.Type == GEType.Unresolved) {
 						if (!GraphEditor.Selection.Contains(this)) {
-							GraphEditor.Selection.Add(this);
+							if (Event.current.modifiers == EventModifiers.Shift) {
+								GraphEditor.Selection.Add(this);
+							} else {
+								GraphEditor.Selection.Clear();
+								GraphEditor.Selection.Add(this);
+							}
 						}
 						needsRepaint = true;
 					}

@@ -69,6 +69,10 @@ namespace Forge.Editor.Renderers {
 
 		public static void Draw(this Node node, float scale) {
 
+			if (GraphEditor.Selection.Contains(node)) {
+				SelectionRenderer.DrawNodeSelection(node.NodeRect, scale);
+			}
+
 			if (!_HasInitializedStyles) InitializeStyles();
 
 			var op = node.Operator;
@@ -117,15 +121,6 @@ namespace Forge.Editor.Renderers {
 				}
 
 				y += ioHeight;
-			}
-
-			if (GraphEditor.Selection.Contains(node)) {
-				SelectionRenderer.Draw(new Rect(
-					op.EditorPosition.x * scale,
-					op.EditorPosition.y * scale,
-					Node.BaseWidth * scale,
-					(Node.TitleHeight + Node.TitleSeparator + (Node.IOHeight * ioCount)) * scale
-				));
 			}
 		}
 

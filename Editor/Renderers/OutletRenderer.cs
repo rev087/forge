@@ -5,7 +5,7 @@ namespace Forge.Editor.Renderers {
 	public class OutletRenderer {
 
 		public const int Radius = 8;
-		private const int _Outline = 3;
+		private const int Outline = 3;
 		public Vector2 Center = Vector3.zero;
 
 		private Color _outlineColor = new Color(0.282f, 0.294f, 0.302f);
@@ -37,7 +37,7 @@ namespace Forge.Editor.Renderers {
 					float ySqr = Mathf.Pow(y - radius, 2);
 
 					float radOutlineSqr = Mathf.Pow(radius, 2);
-					float radiusOutline = radius - _Outline * scale;
+					float radiusOutline = radius - Outline * scale;
 					float radSqr = Mathf.Pow(radiusOutline, 2);
 
 					if (xSqr + ySqr < radSqr) {
