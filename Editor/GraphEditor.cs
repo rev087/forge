@@ -7,6 +7,8 @@ namespace Forge.Editor {
 
 	public class GraphEditor : EditorWindow {
 
+		public static float InspectorWidth = 250f;
+
 		private GridRenderer _gridRenderer;
 		public Vector2 ScrollPoint = Vector2.zero;
 		public float Zoom = 1f;
@@ -14,7 +16,7 @@ namespace Forge.Editor {
 		private Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
 		public Template Template = new Template();
 
-		public static List<Node> Selection = new List<Node>();
+		public static Selection Selection = new Selection();
 		public static GraphEvent CurrentEvent;
 
 		[MenuItem ("Window/Forge/Graph Editor")]
@@ -37,18 +39,22 @@ namespace Forge.Editor {
 		}
 
 		void OnGUI () {
+			NodeInspector.Draw(new Rect(position.width - InspectorWidth, 0, InspectorWidth, position.height));
+			
 			if (_gridRenderer == null) _gridRenderer = new GridRenderer();
+			Event currentEvent = Event.current;
 
-			ScrollPoint = GUI.BeginScrollView(new Rect(0, 0, position.width, position.height), ScrollPoint, Canvas);
+			Rect scrollViewRect = new Rect(0, 0, position.width - InspectorWidth, position.height);
+			ScrollPoint = GUI.BeginScrollView(scrollViewRect, ScrollPoint, Canvas);
 
 			bool needsRepaint = false;
 
-			if (Event.current.type == EventType.ScrollWheel) {
-				Zoom += -Event.current.delta.y / 50;
+			if (currentEvent.type == EventType.ScrollWheel) {
+				Zoom += -currentEvent.delta.y / 50;
 				if (Zoom < 0.25f) Zoom = 0.25f;
 				if (Zoom > 1f) Zoom = 1f;
 				needsRepaint = true;
-				Event.current.Use();
+				currentEvent.Use();
 			}
 
 			Canvas = new Rect(0f, 0f, position.width*4*Zoom, position.height*4*Zoom);
@@ -62,25 +68,25 @@ namespace Forge.Editor {
 				node.Value.Draw(Zoom);
 			}
 
-			if (Event.current.button == 0) {
+			if (currentEvent.button == 0) {
 
 				// MouseDown
-				if (Event.current.type == EventType.MouseDown && CurrentEvent.Type == GEType.None) {
+				if (currentEvent.type == EventType.MouseDown && CurrentEvent.Type == GEType.None) {
 					CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Grid, null, IOOutlet.None);
 				}
 
 				// MouseDrag
-				if (Event.current.type == EventType.MouseDrag && CurrentEvent.IsType(GEType.Unresolved, GEType.Drag) && CurrentEvent.Context == GEContext.Grid) {
-					if (Event.current.delta.magnitude > 0) {
+				if (currentEvent.type == EventType.MouseDrag && CurrentEvent.IsType(GEType.Unresolved, GEType.Drag) && CurrentEvent.Context == GEContext.Grid) {
+					if (currentEvent.delta.magnitude > 0) {
 						CurrentEvent = new GraphEvent(GEType.Drag, GEContext.Grid, null, IOOutlet.None);
-						ScrollPoint.x += - Event.current.delta.x;
-						ScrollPoint.y += - Event.current.delta.y;
+						ScrollPoint.x += - currentEvent.delta.x;
+						ScrollPoint.y += - currentEvent.delta.y;
 						needsRepaint = true;
 					}
 				}
 
 				// MouseUp
-				if (Event.current.type == EventType.MouseUp) {
+				if (currentEvent.type == EventType.MouseUp) {
 					if (CurrentEvent.Type == GEType.Unresolved && CurrentEvent.Context == GEContext.Grid) {
 						Selection.Clear();
 						needsRepaint = true;
@@ -96,6 +102,7 @@ namespace Forge.Editor {
 			}
 
 			GUI.EndScrollView();
+
 		} // OnGUI
 
 	}

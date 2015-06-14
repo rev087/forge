@@ -41,8 +41,8 @@ namespace Forge {
 			f.EditorPosition = new Vector2(50f, 350f);
 			AddOperator(f);
 
-			var output = new IOOutlet(typeof(Geometry), "Output");
-			var input = new IOOutlet(typeof(Axis), "Axis");
+			var output = c.GetOutput("Output");
+			var input = m.GetInput("Axis");
 			Connect(c, output, m, input);
 		}
 

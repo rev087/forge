@@ -1,22 +1,29 @@
 using UnityEngine;
+using System.Reflection;
+using Forge.Extensions;
 
 namespace Forge {
 
 	public struct IOOutlet {
-		public System.Type Type;
-		public string Name;
+		public MemberInfo Member;
 
-		public IOOutlet(System.Type type, string name) {
-			Type = type;
-			Name = name;
+		public System.Type Type {
+			get { return Member.OutletType(); }
+		}
+		public string Name {
+			get { return Member.Name; }
+		}
+
+		public IOOutlet(MemberInfo member) {
+			Member = member;
 		}
 
 		public static IOOutlet None {
-			get { return new IOOutlet(typeof(System.Boolean), null); }
+			get { return new IOOutlet() { Member=null }; }
 		}
 
 		public bool IsNone() {
-			return Type == typeof(System.Boolean) && Name == null;
+			return Member == null;
 		}
 
 		public static bool CanConnect(IOOutlet output, IOOutlet input) {
