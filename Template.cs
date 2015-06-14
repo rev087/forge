@@ -33,6 +33,10 @@ namespace Forge {
 			m.EditorPosition = new Vector2(300f, 50f);
 			AddOperator(m);
 
+			var co = c.GetOutput("Output");
+			var mi = m.GetInput("Input");
+			Connect(c, co, m, mi);
+
 			var c2 = new Circle();
 			c2.EditorPosition = new Vector2(300f, 200f);
 			AddOperator(c2);
@@ -40,10 +44,10 @@ namespace Forge {
 			var f = new FloatValue();
 			f.EditorPosition = new Vector2(50f, 350f);
 			AddOperator(f);
-
-			var output = c.GetOutput("Output");
-			var input = m.GetInput("Axis");
-			Connect(c, output, m, input);
+			
+			var ff = f.GetOutput("Float");
+			var c2r = c2.GetInput("Radius");
+			Connect(f, ff, c2, c2r);
 		}
 
 		public void AddOperator(Operator op) {

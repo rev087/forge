@@ -99,12 +99,12 @@ namespace Forge.Editor {
 				if (ev.type == EventType.MouseDown) {
 
 					// Input
-					if (mouseInInputs) {
+					if (mouseInInputs && inputIndex < Operator.Inputs.Length) {
 						GraphEditor.CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Input, this, Operator.Inputs[inputIndex]);
 					}
 
 					// Output
-					if (mouseInOutputs) {
+					if (mouseInOutputs && outputIndex < Operator.Outputs.Length) {
 						GraphEditor.CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Output, this, Operator.Outputs[outputIndex]);
 					}
 				}
