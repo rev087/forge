@@ -5,6 +5,11 @@ using System.Collections.Generic;
 
 namespace Forge.Editor {
 
+	public struct MenuActionPayload {
+		public System.Type OperatorType;
+		public Vector2 Position;
+	}
+
 	public class GraphEditor : EditorWindow {
 
 		private GridRenderer _gridRenderer;
@@ -19,29 +24,30 @@ namespace Forge.Editor {
 
 		[MenuItem ("Window/Forge/Graph Editor")]
 		public static void ShowEditor() {
-			var editor = (GraphEditor) EditorWindow.GetWindow(typeof(GraphEditor));
+			GraphEditor editor = (GraphEditor) EditorWindow.GetWindow(typeof(GraphEditor));
 			editor.title = "Forge Graph";
 			editor.Show();
 		}
 
-		public static void LoadTemplate(Template template) {
-			// Debug.Log("Loading Template");
-			Template = template;
-
-			_nodes = new Dictionary<string, Node>();
-			foreach (KeyValuePair<string, Operator> op in Template.Operators) {
-				var node = new Node(op.Value);
-				_nodes.Add(op.Key, node);
+		public void OnSelectionChange() {
+			var selected = UnityEditor.Selection.activeObject as Template;
+			if (Template != selected) {
+				Template = selected;
+				_nodes.Clear();
+				Selection.Clear();
+				Repaint();
 			}
 		}
 
+		public static Node GetNode(string GUID) {
+			if (!_nodes.ContainsKey(GUID)) {
+				_nodes[GUID] = new Node(Template.Operators[GUID]);
+			}
+			return _nodes[GUID];
+		}
+
 		public void OnEnable() {
-			Template template = (Template) ScriptableObject.CreateInstance(typeof(Template));
-			template.LoadDemo();
-			LoadTemplate(template);
-
 			Canvas = new Rect(0, 0, position.width*2, position.height*2);
-
 			wantsMouseMove = true;
 		}
 
@@ -66,41 +72,61 @@ namespace Forge.Editor {
 
 			_gridRenderer.Draw(ScrollPoint, Zoom, Canvas);
 
-			Template.DrawConnections(_nodes);
+			if (Template != null) {
 
-			foreach (KeyValuePair<string, Node> node in _nodes) {
-				needsRepaint = needsRepaint || node.Value.EventsNeedRepaint(Zoom, this);
-				node.Value.Draw(Zoom);
+				// Draw the connections
+				Template.DrawConnections();
+
+				// Draw the nodes
+				foreach (var kvp in Template.Operators) {
+					Node node = GetNode(kvp.Key); // kvp.Key = GUID
+					needsRepaint = needsRepaint || node.EventsNeedRepaint(Zoom, this);
+					node.Draw(Zoom);
+				}
+
+				// Handle left mouse button events
+				if (currentEvent.button == 0) {
+
+					// MouseDown
+					if (currentEvent.type == EventType.MouseDown && CurrentEvent.Type == GEType.None) {
+						CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Grid, null, IOOutlet.None);
+					}
+
+					// MouseDrag
+					if (currentEvent.type == EventType.MouseDrag && CurrentEvent.IsType(GEType.Unresolved, GEType.Drag) && CurrentEvent.Context == GEContext.Grid) {
+						if (currentEvent.delta.magnitude > 0) {
+							CurrentEvent = new GraphEvent(GEType.Drag, GEContext.Grid, null, IOOutlet.None);
+							ScrollPoint.x += - currentEvent.delta.x;
+							ScrollPoint.y += - currentEvent.delta.y;
+							needsRepaint = true;
+						}
+					}
+
+					// MouseUp
+					if (currentEvent.type == EventType.MouseUp) {
+						if (CurrentEvent.Type == GEType.Unresolved && CurrentEvent.Context == GEContext.Grid) {
+							Selection.Clear();
+							needsRepaint = true;
+						}
+						needsRepaint = needsRepaint || CurrentEvent.IsConnecting();
+						CurrentEvent.Empty();
+					}
+
+				} // Left mouse down/drag/up
+
+				if (currentEvent.button == 1 && currentEvent.type == EventType.MouseUp) {
+					var menu = new GenericMenu();
+
+					var opTypes = Operator.GetAvailableOperators();
+					foreach (var opType in opTypes) {
+						var payload = new MenuActionPayload() {OperatorType=opType, Position=currentEvent.mousePosition};
+						menu.AddItem(new GUIContent(opType.Name), false, MenuAction, payload);
+					}
+
+					menu.ShowAsContext();
+				}
+
 			}
-
-			if (currentEvent.button == 0) {
-
-				// MouseDown
-				if (currentEvent.type == EventType.MouseDown && CurrentEvent.Type == GEType.None) {
-					CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Grid, null, IOOutlet.None);
-				}
-
-				// MouseDrag
-				if (currentEvent.type == EventType.MouseDrag && CurrentEvent.IsType(GEType.Unresolved, GEType.Drag) && CurrentEvent.Context == GEContext.Grid) {
-					if (currentEvent.delta.magnitude > 0) {
-						CurrentEvent = new GraphEvent(GEType.Drag, GEContext.Grid, null, IOOutlet.None);
-						ScrollPoint.x += - currentEvent.delta.x;
-						ScrollPoint.y += - currentEvent.delta.y;
-						needsRepaint = true;
-					}
-				}
-
-				// MouseUp
-				if (currentEvent.type == EventType.MouseUp) {
-					if (CurrentEvent.Type == GEType.Unresolved && CurrentEvent.Context == GEContext.Grid) {
-						Selection.Clear();
-						needsRepaint = true;
-					}
-					needsRepaint = needsRepaint || CurrentEvent.IsConnecting();
-					CurrentEvent.Empty();
-				}
-
-			} // Left mouse down/drag/up
 
 			if (needsRepaint) {
 				Repaint();
@@ -109,6 +135,15 @@ namespace Forge.Editor {
 			GUI.EndScrollView();
 
 		} // OnGUI
+
+		public void MenuAction(object payloadObj) {
+			var payload = (MenuActionPayload)payloadObj;
+			var opType = (System.Type)payload.OperatorType;
+			var op = (Operator)System.Activator.CreateInstance(opType);
+			op.EditorPosition = payload.Position;
+			Template.AddOperator(op);
+			Repaint();
+		}
 
 	}
 

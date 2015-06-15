@@ -5,8 +5,8 @@ namespace Forge.Operators {
 
 	public class Cuboid : Operator {
 
-		public Vector3 Size = Vector3.one;
-		public Vector3 Center = Vector3.zero;
+		[Input] public Vector3 Size = Vector3.one;
+		[Input] public Vector3 Center = Vector3.zero;
 
 		[Output]
 		public Geometry Output() {

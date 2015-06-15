@@ -60,6 +60,7 @@ namespace Forge.Editor {
 					op.SetValue<Vector3>(input, newValue);
 				}
 
+				// Unsupported
 				else {
 					EditorGUILayout.LabelField(input.Name, input.Type.ToString());
 				}

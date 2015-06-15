@@ -6,11 +6,26 @@ namespace Forge.Editor {
 	[CustomEditor(typeof(Template))]
 	public class TemplateEditor : UnityEditor.Editor {
 
-		private bool m_displayJson = false;
+		private bool _DisplayJson = false;
+
+		void OnEnable() {
+			if (GraphEditor.Selection != null) {
+				GraphEditor.Selection.SelectionChanged += OnSelectionChangedHandler;
+			}
+		}
+
+		void OnDisable() {
+			if (GraphEditor.Selection != null) {
+				GraphEditor.Selection.SelectionChanged -= OnSelectionChangedHandler;
+			}
+		}
+
+		void OnSelectionChangedHandler(GraphSelection graphSelection) {
+			Repaint();
+		}
 
 		public override void OnInspectorGUI() {
 			Template template = (Template) serializedObject.targetObject;
-			if (GraphEditor.Template != template) GraphEditor.LoadTemplate(template);
 
 			EditorGUILayout.LabelField(template.ToString());
 			EditorGUILayout.LabelField("Operators", template.Operators.Count.ToString());
@@ -20,7 +35,6 @@ namespace Forge.Editor {
 				template.Connections.Clear();
 				template.Operators.Clear();
 				template.LoadDemo();
-				GraphEditor.LoadTemplate(template);
 			}
 
 			if (GUILayout.Button("Serialize")) {
@@ -30,8 +44,9 @@ namespace Forge.Editor {
 
 			EditorGUILayout.Space();
 
-			m_displayJson = EditorGUILayout.Foldout(m_displayJson, "JSON");
-			if (m_displayJson) {
+			string jsonTitle = System.String.Format("JSON ({0})", template.JSON.Length);
+			_DisplayJson = EditorGUILayout.Foldout(_DisplayJson, jsonTitle);
+			if (_DisplayJson) {
 				EditorGUILayout.TextArea(template.JSON);
 			}
 

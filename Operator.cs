@@ -122,13 +122,15 @@ namespace Forge {
 			}
 		}
 
-		public static void Operators() {
-			var types = typeof(Operator).Assembly.GetTypes();
-			foreach (var type in types) {
+		public static System.Type[] GetAvailableOperators() {
+			var opTypes = new List<System.Type>();
+			var allTypes = typeof(Operator).Assembly.GetTypes();
+			foreach (var type in allTypes) {
 				if (type.IsSubclassOf(typeof(Operator))) {
-					Debug.Log(type.Name);
+					opTypes.Add(type);
 				}
 			}
+			return opTypes.ToArray();
 		}
 
 	}

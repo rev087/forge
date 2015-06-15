@@ -17,7 +17,7 @@ namespace Forge.Editor.Renderers {
 			Handles.DrawBezier(inPoint, outPoint, inTan, outTan, Color.white, null, 2f);
 		}
 
-		public static void DrawConnections(this Template template, Dictionary<string, Node> nodes) {
+		public static void DrawConnections(this Template template) {
 
 			if (_FloatingTextStyle == null) {
 				_FloatingTextStyle = new GUIStyle();
@@ -28,8 +28,8 @@ namespace Forge.Editor.Renderers {
 
 			// Connections
 			foreach (IOConnection conn in template.Connections) {
-				Node a = nodes[conn.From.GUID];
-				Node b = nodes[conn.To.GUID];
+				Node a = GraphEditor.GetNode(conn.From.GUID);
+				Node b = GraphEditor.GetNode(conn.To.GUID);
 
 				DrawBezier(a.OutputOutlet(conn.Output), b.InputOutlet(conn.Input));
 			}
@@ -42,7 +42,6 @@ namespace Forge.Editor.Renderers {
 				Vector2 mousePos = Event.current.mousePosition;
 
 				bool validConnection = false;
-
 
 				// Dragging from Input
 				if (GraphEditor.CurrentEvent.Context == GEContext.Input) {
