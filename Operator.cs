@@ -11,6 +11,7 @@ namespace Forge {
 	[System.AttributeUsage(System.AttributeTargets.Method | System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple = false)]
 	public class InputAttribute : System.Attribute {}
 
+	[System.Serializable]
 	public class Operator {
 
 		public Vector2 EditorPosition = Vector2.zero;

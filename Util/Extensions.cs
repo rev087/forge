@@ -38,6 +38,12 @@ namespace Forge.Extensions {
 			}
 		}
 
+		public static void Add(this JSONObject json, params float[] values) {
+			foreach (float val in values) {
+				json.Add(val);
+			}
+		}
+
 	}
 
 }

@@ -7,16 +7,14 @@ namespace Forge.Editor {
 
 	public class GraphEditor : EditorWindow {
 
-		public static float InspectorWidth = 250f;
-
 		private GridRenderer _gridRenderer;
 		public Vector2 ScrollPoint = Vector2.zero;
 		public float Zoom = 1f;
 		public Rect Canvas;
-		private Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
-		public Template Template = new Template();
+		private static Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
+		public static Template Template = null;
 
-		public static Selection Selection = new Selection();
+		public static GraphSelection Selection = new GraphSelection();
 		public static GraphEvent CurrentEvent;
 
 		[MenuItem ("Window/Forge/Graph Editor")]
@@ -26,25 +24,32 @@ namespace Forge.Editor {
 			editor.Show();
 		}
 
-		public void OnEnable() {
-			Canvas = new Rect(0, 0, position.width*2, position.height*2);
+		public static void LoadTemplate(Template template) {
+			// Debug.Log("Loading Template");
+			Template = template;
 
 			_nodes = new Dictionary<string, Node>();
 			foreach (KeyValuePair<string, Operator> op in Template.Operators) {
 				var node = new Node(op.Value);
 				_nodes.Add(op.Key, node);
 			}
+		}
+
+		public void OnEnable() {
+			Template template = (Template) ScriptableObject.CreateInstance(typeof(Template));
+			template.LoadDemo();
+			LoadTemplate(template);
+
+			Canvas = new Rect(0, 0, position.width*2, position.height*2);
 
 			wantsMouseMove = true;
 		}
 
 		void OnGUI () {
-			NodeInspector.Draw(new Rect(position.width - InspectorWidth, 0, InspectorWidth, position.height));
-			
 			if (_gridRenderer == null) _gridRenderer = new GridRenderer();
 			Event currentEvent = Event.current;
 
-			Rect scrollViewRect = new Rect(0, 0, position.width - InspectorWidth, position.height);
+			Rect scrollViewRect = new Rect(0, 0, position.width, position.height);
 			ScrollPoint = GUI.BeginScrollView(scrollViewRect, ScrollPoint, Canvas);
 
 			bool needsRepaint = false;

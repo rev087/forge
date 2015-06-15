@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Forge.Editor {
 
-	public class Selection {
+	public class GraphSelection {
 
 		public List<Node> Nodes = new List<Node>();
 		public Node ActiveNode = null;

@@ -4,7 +4,7 @@ namespace Forge.Operators {
 
 	public class FloatValue : Operator {
 
-		[Output]
+		[Input][Output]
 		public float Float = 0.0f;
 
 	}

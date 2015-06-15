@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Forge.Operators;
+using System.Xml;
 
 namespace Forge {
 
@@ -18,12 +19,13 @@ namespace Forge {
 		}
 	}
 
-	public class Template {
+	public class Template : ScriptableObject {
 
 		public Dictionary<string, Operator> Operators = new Dictionary<string, Operator>();
 		public List<IOConnection> Connections = new List<IOConnection>();
+		public string JSON = null;
 
-		public Template() {
+		public void LoadDemo() {
 
 			var c = new Circle();
 			c.EditorPosition = new Vector2(50f, 50f);

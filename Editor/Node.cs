@@ -115,7 +115,7 @@ namespace Forge.Editor {
 					// Releasing Output on Input
 					if (mouseInInputs && GraphEditor.CurrentEvent.Type == GEType.Drag && GraphEditor.CurrentEvent.Context == GEContext.Output) {
 						if (IOOutlet.CanConnect(GraphEditor.CurrentEvent.Outlet, Operator.Inputs[inputIndex])) {
-							graphEditor.Template.Connect(
+							GraphEditor.Template.Connect(
 								GraphEditor.CurrentEvent.Node.Operator, GraphEditor.CurrentEvent.Outlet,
 								Operator, Operator.Inputs[inputIndex]
 							);
@@ -127,7 +127,7 @@ namespace Forge.Editor {
 					// Releasing Input on Output
 					if (mouseInOutputs && GraphEditor.CurrentEvent.Type == GEType.Drag && GraphEditor.CurrentEvent.Context == GEContext.Input) {
 						if (IOOutlet.CanConnect(Operator.Outputs[inputIndex], GraphEditor.CurrentEvent.Outlet)) {
-							graphEditor.Template.Connect(
+							GraphEditor.Template.Connect(
 								Operator, Operator.Outputs[inputIndex],
 								GraphEditor.CurrentEvent.Node.Operator, GraphEditor.CurrentEvent.Outlet
 							);

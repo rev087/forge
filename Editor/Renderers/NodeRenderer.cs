@@ -103,25 +103,29 @@ namespace Forge.Editor.Renderers {
 				if (i < op.Inputs.Length) {
 					_outletRenderer.Draw(x, y + ioHeight/2, scale, node.InputHover == i);
 					if (node.ShowType) {
-						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), op.Inputs[i].Name, _inputStyle);
+						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), op.Inputs[i].GetNiceName(), _inputStyle);
 						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), TypeAlias(op.Inputs[i].Type), _inputTypeStyle);
 					} else {
-						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight), op.Inputs[i].Name, _inputStyle);
+						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight), op.Inputs[i].GetNiceName(), _inputStyle);
 					}
 				}
 
 				if (i < op.Outputs.Length) {
 					_outletRenderer.Draw(x + width, y + ioHeight/2, scale, node.OutputHover == i);
 					if (node.ShowType) {
-						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight/2), op.Outputs[i].Name, _outputStyle);
+						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight/2), op.Outputs[i].GetNiceName(), _outputStyle);
 						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), TypeAlias(op.Outputs[i].Type), _outputTypeStyle);
 					} else {
-						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight), op.Outputs[i].Name, _outputStyle);
+						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight), op.Outputs[i].GetNiceName(), _outputStyle);
 					}
 				}
 
 				y += ioHeight;
 			}
+		}
+
+		public static string GetNiceName(this IOOutlet outlet) {
+			return ObjectNames.NicifyVariableName(outlet.Member.Name);
 		}
 
 		public static string TypeAlias(System.Type type) {
