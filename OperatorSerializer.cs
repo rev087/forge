@@ -9,11 +9,11 @@ namespace Forge {
 		public static JSONObject Serialize(this Operator op) {
 
 			var opJson = new JSONObject(JSONObject.Type.OBJECT);
-			opJson.AddField("type", op.GetType().ToString());
+			opJson.AddField("Type", op.GetType().ToString());
 			opJson.AddField("GUID", op.GUID);
 
 			var paramsJson = new JSONObject(JSONObject.Type.OBJECT);
-			opJson.AddField("params", paramsJson);
+			opJson.AddField("Params", paramsJson);
 
 			foreach (IOOutlet outlet in op.Inputs) {
 
@@ -69,6 +69,10 @@ namespace Forge {
 			}
 
 			return opJson;
+		}
+
+		public static void Deserialize(this Operator op, JSONObject js) {
+			op.GUID = js["GUID"].str;
 		}
 
 	}

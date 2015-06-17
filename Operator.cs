@@ -24,6 +24,9 @@ namespace Forge {
 				}
 				return _guid;
 			}
+			set {
+				_guid = value;
+			}
 		}
 
 		private string _title = null;

@@ -23,7 +23,7 @@ namespace Forge {
 
 		public Dictionary<string, Operator> Operators = new Dictionary<string, Operator>();
 		public List<IOConnection> Connections = new List<IOConnection>();
-		public string JSON = null;
+		public string JSON = "";
 
 		public void LoadDemo() {
 

@@ -12,7 +12,7 @@ namespace Forge {
 
 			// Operators
 			var opsJs = new JSONObject(JSONObject.Type.ARRAY);
-			tplJs.AddField("operators", opsJs);
+			tplJs.AddField("Operators", opsJs);
 
 			foreach (KeyValuePair<string, Operator> kvp in template.Operators) {
 				opsJs.Add(kvp.Value.Serialize());
@@ -20,7 +20,7 @@ namespace Forge {
 
 			// Connections
 			var connsJs = new JSONObject(JSONObject.Type.ARRAY);
-			tplJs.AddField("connections", connsJs);
+			tplJs.AddField("Connections", connsJs);
 
 			foreach (IOConnection conn in template.Connections) {
 				connsJs.Add(conn.Serialize());
@@ -36,6 +36,25 @@ namespace Forge {
 			connJs.AddField("To", conn.To.GUID);
 			connJs.AddField("Input", conn.Input.Name);
 			return connJs;
+		}
+
+		public static void Deserialize(this Template template, string json) {
+			var tplJs = new JSONObject(json);
+
+			if (!tplJs.HasField("Operators") || !tplJs.HasField("Connections")) {
+				Debug.LogWarning("Invalid JSON");
+			} else {
+				var opsJs = tplJs.GetField("Operators");
+				var connsJs = tplJs.GetField("Connections");
+				foreach (var opJs in opsJs.list) {
+					var type = System.Type.GetType(opJs["Type"].str);
+					var op = (Operator) System.Activator.CreateInstance(type);
+					op.Deserialize(opJs);
+				}
+				foreach (var connJs in connsJs.list) {
+					// Debug.Log(connJs);
+				}
+			}
 		}
 
 	}

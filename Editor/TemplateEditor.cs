@@ -42,6 +42,10 @@ namespace Forge.Editor {
 				template.JSON = jsonString;
 			}
 
+			if (GUILayout.Button("Deserialize")) {
+				template.Deserialize(template.JSON);
+			}
+
 			EditorGUILayout.Space();
 
 			string jsonTitle = System.String.Format("JSON ({0})", template.JSON.Length);
