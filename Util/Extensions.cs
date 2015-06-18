@@ -44,6 +44,17 @@ namespace Forge.Extensions {
 			}
 		}
 
+		// public static string GetField(string name, FieldNotFound fail = null) {
+		// 	if(type == Type.OBJECT) {
+		// 		int index = keys.IndexOf(name);
+		// 		if(index >= 0) {
+		// 			field = list[index].b;
+		// 			return;
+		// 		}
+		// 	}
+		// 	if(fail != null) fail.Invoke(name);
+		// }
+
 	}
 
 }

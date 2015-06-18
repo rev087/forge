@@ -111,6 +111,8 @@ namespace Forge {
 		}
 
 		public void SetValue<T>(IOOutlet outlet, T val) {
+			Debug.LogFormat("{0}: {1}", outlet.Name, val);
+			
 			if (outlet.Member is PropertyInfo) {
 				((PropertyInfo)outlet.Member).SetValue(this, (object)val, null);
 			}

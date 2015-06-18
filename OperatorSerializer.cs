@@ -71,8 +71,39 @@ namespace Forge {
 			return opJson;
 		}
 
-		public static void Deserialize(this Operator op, JSONObject js) {
-			op.GUID = js["GUID"].str;
+		public static void Deserialize(this Operator op, JSONObject opJs) {
+			op.GUID = opJs["GUID"].str;
+
+			var paramsJs = opJs["Params"];
+			for (int i = 0; i < op.Inputs.Length; i++) {
+				string param = op.Inputs[i].Name;
+
+				// float
+				if (op.Inputs[i].Type == typeof(System.Single)) {
+					op.SetValue<float>(op.Inputs[i], paramsJs[param].n);
+				}
+
+				// bool
+				else if (op.Inputs[i].Type == typeof(System.Boolean)) {
+					op.SetValue<bool>(op.Inputs[i], paramsJs[param].b);
+				}
+
+				// int
+				else if (op.Inputs[i].Type == typeof(System.Int32)) {
+					op.SetValue<int>(op.Inputs[i], (int) paramsJs[param].n);
+				}
+
+				// Vector3
+				else if (op.Inputs[i].Type == typeof(Vector3)) {
+					op.SetValue<Vector3>(op.Inputs[i], new Vector3(
+						paramsJs[param][0].n,
+						paramsJs[param][1].n,
+						paramsJs[param][2].n
+					));
+				}
+
+				// Debug.LogFormat("{0} - {1}\n{2}", paramsJs[param], op.Inputs[i].Type, paramsJs.list[i]);
+			}
 		}
 
 	}

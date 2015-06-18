@@ -60,6 +60,11 @@ namespace Forge {
 			Connections.Add(new IOConnection() { From=outOp, Output=output, To=inOp, Input=input });
 		}
 
+		public void Clear() {
+			Operators.Clear();
+			Connections.Clear();
+		}
+
 	}
 
 }

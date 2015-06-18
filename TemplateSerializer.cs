@@ -39,6 +39,7 @@ namespace Forge {
 		}
 
 		public static void Deserialize(this Template template, string json) {
+			template.Clear();
 			var tplJs = new JSONObject(json);
 
 			if (!tplJs.HasField("Operators") || !tplJs.HasField("Connections")) {
@@ -50,6 +51,7 @@ namespace Forge {
 					var type = System.Type.GetType(opJs["Type"].str);
 					var op = (Operator) System.Activator.CreateInstance(type);
 					op.Deserialize(opJs);
+					template.AddOperator(op);
 				}
 				foreach (var connJs in connsJs.list) {
 					// Debug.Log(connJs);
