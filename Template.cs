@@ -19,6 +19,7 @@ namespace Forge {
 		}
 	}
 
+	[System.Serializable]
 	public class Template : ScriptableObject {
 
 		public Dictionary<string, Operator> Operators = new Dictionary<string, Operator>();
