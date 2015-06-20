@@ -40,6 +40,7 @@ namespace Forge.Editor {
 			if (GUILayout.Button("Serialize")) {
 				string jsonString = template.Serialize();
 				template.JSON = jsonString;
+				EditorUtility.SetDirty(template);
 			}
 
 			if (GUILayout.Button("Deserialize")) {
