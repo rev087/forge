@@ -5,20 +5,6 @@ using System.Xml;
 
 namespace Forge {
 
-	public struct IOConnection {
-		public Operator From;
-		public IOOutlet Output;
-		public Operator To;
-		public IOOutlet Input;
-
-		public IOConnection(Operator a, IOOutlet o, Operator b, IOOutlet i) {
-			From = a;
-			Output = o;
-			To = b;
-			Input = i;
-		}
-	}
-
 	[System.Serializable]
 	public class Template : ScriptableObject {
 
@@ -77,6 +63,7 @@ namespace Forge {
 			Connections.Clear();
 		}
 
+		// Retrieves the first Operator with IsGeometryOutput = true
 		public Operator GetGeometryOutput() {
 			foreach (var kvp in Operators) {
 				if (kvp.Value.IsGeometryOutput) {
@@ -86,14 +73,26 @@ namespace Forge {
 			return null;
 		}
 
-		public Geometry Build() {
+		public virtual Geometry Build() {
 			var geoOutputOp = GetGeometryOutput();
 			if (geoOutputOp != null) {
+
+				// Connections
+				Debug.Log(Connections.Count);
+				foreach (IOConnection conn in Connections) {
+					object val = conn.From.GetValue(conn.Output);
+					Debug.LogFormat("{0}: {1}", conn.Output.Name, val);
+					conn.To.SetValue(conn.Input, val);
+				}
+
+				// For now, we just retrieve the Output with the Geometry type in the
+				// Operator marked as IsGeometryOutput.
 				foreach (IOOutlet output in geoOutputOp.Outputs) {
 					if (output.Type == typeof(Geometry)) {
 						return geoOutputOp.GetValue<Geometry>(output);
 					}
 				}
+
 			}
 			return Geometry.Empty;
 		}

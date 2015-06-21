@@ -111,6 +111,21 @@ namespace Forge {
 			}
 		}
 
+		public object GetValue(IOOutlet outlet) {
+			if (outlet.Member is PropertyInfo) {
+				return (object) ((PropertyInfo)outlet.Member).GetValue(this, null);
+			}
+			else if (outlet.Member is FieldInfo) {
+				return (object) ((FieldInfo)outlet.Member).GetValue(this);
+			}
+			else if (outlet.Member is MethodInfo) {
+				return (object) ((MethodInfo)outlet.Member).Invoke(this, null);
+			}
+			else {
+				throw new System.ArgumentException(System.String.Format("Operator {0} could not retrieve the value of {1}", Title, outlet.Name));
+			}
+		}
+
 		public void SetValue<T>(IOOutlet outlet, T val) {
 			
 			if (outlet.Member is PropertyInfo) {
@@ -121,6 +136,22 @@ namespace Forge {
 			}
 			else if (outlet.Member is MethodInfo) {
 				((MethodInfo)outlet.Member).Invoke(this, new object[] {(object)val});
+			}
+			else {
+				throw new System.ArgumentException(System.String.Format("Operator {0} could not set the value of {1} to {2}", Title, outlet.Name, val));
+			}
+		}
+
+		public void SetValue(IOOutlet outlet, object val) {
+			
+			if (outlet.Member is PropertyInfo) {
+				((PropertyInfo)outlet.Member).SetValue(this, val, null);
+			}
+			else if (outlet.Member is FieldInfo) {
+				((FieldInfo)outlet.Member).SetValue(this, val);
+			}
+			else if (outlet.Member is MethodInfo) {
+				((MethodInfo)outlet.Member).Invoke(this, new object[] {val});
 			}
 			else {
 				throw new System.ArgumentException(System.String.Format("Operator {0} could not set the value of {1} to {2}", Title, outlet.Name, val));

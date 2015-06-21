@@ -91,6 +91,7 @@ namespace Forge {
 
 		#if UNITY_EDITOR
 		void OnDrawGizmosSelected() {
+			if (!IsBuilt) Generate();
 			MeshDisplay.DrawHandles(this, transform);
 		}
 		#endif
