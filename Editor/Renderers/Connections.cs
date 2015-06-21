@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using Forge.Extensions;
 
 namespace Forge.Editor.Renderers {
 
@@ -59,7 +60,7 @@ namespace Forge.Editor.Renderers {
 
 				if (validConnection) {
 					var point = mousePos + new Vector2(0f, 20f);
-					string label = System.String.Format("{0}\n{1}", outlet.Name, NodeRenderer.TypeAlias(outlet.Type), _FloatingTextStyle);
+					string label = System.String.Format("{0}\n{1}", outlet.Name, outlet.Type.TypeAlias(), _FloatingTextStyle);
 					Handles.Label(point, label);
 				}
 

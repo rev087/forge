@@ -8,10 +8,10 @@ namespace Forge.Editor.Renderers {
 		private const int Outline = 3;
 		public Vector2 Center = Vector3.zero;
 
-		private Color _outlineColor = new Color(0.282f, 0.294f, 0.302f);
-		private Color _mainColor = new Color(0.682f, 0.714f, 0.735f);
-		private Color _mainActiveColor = new Color(0.882f, 0.914f, 0.935f);
-		private Color _clearColor = new Color(0.282f, 0.294f, 0.302f, 0f);
+		private static Color _outlineColor = new Color(0.282f, 0.294f, 0.302f);
+		private static Color _mainColor = new Color(0.682f, 0.714f, 0.735f);
+		private static Color _mainActiveColor = new Color(0.882f, 0.914f, 0.935f);
+		private static Color _clearColor = new Color(0.282f, 0.294f, 0.302f, 0f);
 
 		private static Texture2D _tex;
 		private static Texture2D _texActive;

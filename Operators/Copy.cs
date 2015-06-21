@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace Forge.Operators {
 
-	public class Copy {
+	public class Copy : Operator {
 
-		public int Copies = 1;
-		public Vector3 Position = Vector3.zero;
-		public Vector3 Rotation = Vector3.zero;
-		public Vector3 Scale = Vector3.one;
+		[Input] public int Copies = 1;
+		[Input] public Vector3 Position = Vector3.zero;
+		[Input] public Vector3 Rotation = Vector3.zero;
+		[Input] public Vector3 Scale = Vector3.one;
 
 		private Geometry _geometry;
 
@@ -17,10 +17,11 @@ namespace Forge.Operators {
 			Input(geometry);
 		}
 
-		public void Input(Geometry geometry) {
+		[Input] public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}
 
+		[Output]
 		public Geometry Output() {
 
 			Vector3 scaleDelta = Vector3.one - Scale;

@@ -114,6 +114,7 @@ namespace Forge.Editor {
 
 					// Releasing Output on Input
 					if (mouseInInputs && GraphEditor.CurrentEvent.Type == GEType.Drag && GraphEditor.CurrentEvent.Context == GEContext.Output) {
+
 						if (IOOutlet.CanConnect(GraphEditor.CurrentEvent.Outlet, Operator.Inputs[inputIndex])) {
 							GraphEditor.Template.Connect(
 								GraphEditor.CurrentEvent.Node.Operator, GraphEditor.CurrentEvent.Outlet,

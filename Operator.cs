@@ -51,7 +51,7 @@ namespace Forge {
 					MemberInfo[] members = type.GetMembers();
 					foreach (MemberInfo member in members) {
 						if (System.Attribute.IsDefined(member, typeof(InputAttribute))) {
-							inputs.Add(new IOOutlet(member));
+							inputs.Add(new IOOutlet(member, true));
 						}
 					}
 
@@ -144,12 +144,28 @@ namespace Forge {
 
 		public void SetValue(IOOutlet outlet, object val) {
 			
+			// Properties
 			if (outlet.Member is PropertyInfo) {
 				((PropertyInfo)outlet.Member).SetValue(this, val, null);
 			}
+
+			// Fields
 			else if (outlet.Member is FieldInfo) {
-				((FieldInfo)outlet.Member).SetValue(this, val);
+
+				// Multi inputs
+				if (outlet.Type.IsCollection()) {
+					var methodInfo = outlet.Type.GetMethod("Add");
+					var list = GetValue(outlet);
+					methodInfo.Invoke(list, new object[] {val});
+				}
+
+				// Single inputs
+				else {
+					((FieldInfo)outlet.Member).SetValue(this, val);
+				}
 			}
+
+			// Methods
 			else if (outlet.Member is MethodInfo) {
 				((MethodInfo)outlet.Member).Invoke(this, new object[] {val});
 			}

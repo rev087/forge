@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using Forge;
 using Forge.Operators;
+using Forge.Extensions;
 
 namespace Forge.Editor.Renderers {
 
@@ -104,7 +105,7 @@ namespace Forge.Editor.Renderers {
 					_outletRenderer.Draw(x, y + ioHeight/2, scale, node.InputHover == i);
 					if (node.ShowType) {
 						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), op.Inputs[i].GetNiceName(), _inputStyle);
-						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), TypeAlias(op.Inputs[i].Type), _inputTypeStyle);
+						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), op.Inputs[i].Type.TypeAlias(), _inputTypeStyle);
 					} else {
 						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight), op.Inputs[i].GetNiceName(), _inputStyle);
 					}
@@ -114,7 +115,7 @@ namespace Forge.Editor.Renderers {
 					_outletRenderer.Draw(x + width, y + ioHeight/2, scale, node.OutputHover == i);
 					if (node.ShowType) {
 						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight/2), op.Outputs[i].GetNiceName(), _outputStyle);
-						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), TypeAlias(op.Outputs[i].Type), _outputTypeStyle);
+						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), op.Outputs[i].Type.TypeAlias(), _outputTypeStyle);
 					} else {
 						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight), op.Outputs[i].GetNiceName(), _outputStyle);
 					}
@@ -126,28 +127,6 @@ namespace Forge.Editor.Renderers {
 
 		public static string GetNiceName(this IOOutlet outlet) {
 			return ObjectNames.NicifyVariableName(outlet.Member.Name);
-		}
-
-		public static string TypeAlias(System.Type type) {
-			// See https://msdn.microsoft.com/en-us/library/ya5y69ds
-
-			if (type == typeof(System.Boolean)) return "bool";
-			else if (type == typeof(System.String)) return "string";
-			else if (type == typeof(System.Int32)) return "int";			
-			else if (type == typeof(System.Single)) return "float";
-			else if (type == typeof(System.Double)) return "double";
-
-			else if (type == typeof(System.Byte)) return "byte";
-			else if (type == typeof(System.SByte)) return "sbyte";
-			else if (type == typeof(System.Char)) return "char";
-			else if (type == typeof(System.Decimal)) return "decimal";
-			else if (type == typeof(System.UInt32)) return "uint";
-			else if (type == typeof(System.Int64)) return "long";
-			else if (type == typeof(System.UInt64)) return "ulong";
-			else if (type == typeof(System.Int16)) return "short";
-			else if (type == typeof(System.UInt16)) return "ushort";
-
-			return type.Name;
 		}
 
 	}

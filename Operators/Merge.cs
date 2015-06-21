@@ -5,8 +5,7 @@ namespace Forge.Operators {
 
 	public class Merge : Operator {
 
-		[Input]
-		public List<Geometry> _geometries = new List<Geometry>();
+		private List<Geometry> _geometries = new List<Geometry>();
 
 		private int _totalVerts = 0;
 		private int _totalTris = 0;
@@ -20,6 +19,7 @@ namespace Forge.Operators {
 			}
 		}
 
+		[Input]
 		public void Input(Geometry geometry) {
 			_totalVerts += geometry.Vertices.Length;
 			_totalTris += geometry.Triangles.Length;

@@ -91,7 +91,7 @@ namespace Forge.EditorUtils {
 			Vector3 camPos = SceneView.lastActiveSceneView.camera.transform.position;
 
 			// Face display options
-			if (geo.Triangles != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal) && canDisplayVertexData) {
+			if (geo.Triangles != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal || DisplayFaceOrder) && canDisplayVertexData) {
 
 				for (int i = 0; i <= geo.Triangles.Length - 3; i += 3) {
 					
@@ -128,6 +128,7 @@ namespace Forge.EditorUtils {
 
 					}
 
+					// Face Order
 					if (DisplayFaceOrder) {
 						Vector3 la = Vector3.Lerp(aVert, mid, 0.15f);
 						Vector3 lb = Vector3.Lerp(bVert, mid, 0.15f);
