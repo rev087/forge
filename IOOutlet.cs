@@ -4,30 +4,44 @@ using Forge.Extensions;
 
 namespace Forge {
 
-	public enum IOOutletType { Input, Output }
+	public enum IOOutletType { None, Input, Output }
 
 	public struct IOOutlet {
 		public MemberInfo Member;
 		public System.Type DataType;
+		public IOOutletType Type;
 
 		public string Name {
 			get { return Member.Name; }
 		}
 
-		public IOOutlet(MemberInfo member, bool isInput=false) {
+		public IOOutlet(MemberInfo member, IOOutletType outletType) {
 			Member = member;
-			DataType = member.OutletType(isInput);
+			DataType = member.OutletDataType(outletType);
+			Type = outletType;
 		}
 
 		public static IOOutlet None {
-			get { return new IOOutlet() { Member=null, DataType=null }; }
+			get { return new IOOutlet() { Member=null, DataType=null, Type=IOOutletType.None }; }
+		}
+
+		public bool IsInput {
+			get { return Type == IOOutletType.Input; }
+		}
+
+		public bool IsOutput {
+			get { return Type == IOOutletType.Output; }
 		}
 
 		public bool IsNone() {
-			return Member == null && DataType == null;
+			return Member == null && DataType == null && Type == IOOutletType.None;
 		}
 
 		public static bool CanConnect(IOOutlet output, IOOutlet input) {
+
+			if (!output.IsOutput || !input.IsInput) {
+				return false;
+			}
 
 			// Multiple inputs
 			if (input.DataType.IsCollection()) {

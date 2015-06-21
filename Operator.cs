@@ -51,7 +51,7 @@ namespace Forge {
 					MemberInfo[] members = type.GetMembers();
 					foreach (MemberInfo member in members) {
 						if (System.Attribute.IsDefined(member, typeof(InputAttribute))) {
-							inputs.Add(new IOOutlet(member, true));
+							inputs.Add(new IOOutlet(member, IOOutletType.Input));
 						}
 					}
 
@@ -72,7 +72,7 @@ namespace Forge {
 					MemberInfo[] members = type.GetMembers();
 					foreach (MemberInfo member in members) {
 						if (System.Attribute.IsDefined(member, typeof(OutputAttribute))) {
-							outputs.Add(new IOOutlet(member));
+							outputs.Add(new IOOutlet(member, IOOutletType.Output));
 						}
 					}
 

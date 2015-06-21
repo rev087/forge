@@ -25,24 +25,30 @@ namespace Forge.Extensions {
 			return range;
 		}
 
-		public static System.Type OutletType(this MemberInfo member, bool isInput = false) {
+		public static System.Type OutletDataType(this MemberInfo member, IOOutletType outletType) {
 			switch (member.MemberType) {
 				case MemberTypes.Method:
-					if (isInput) {
+					if (outletType == IOOutletType.Input) {
 						var paramsInfo = ((MethodInfo)member).GetParameters();
 						if (paramsInfo.Length != 1) {
-							Debug.LogErrorFormat("{0}.{1} must accept exactly one parameter to be a valid operator input", ((MethodInfo)member).DeclaringType.Name, ((MethodInfo)member).Name);
+							throw new System.ArgumentException(
+								System.String.Format("{0}.{1} must accept exactly one parameter to be a valid operator input",
+									((MethodInfo)member).DeclaringType.Name,
+									((MethodInfo)member).Name)
+							);
 						}
 						return paramsInfo[0].ParameterType;
-					} else {
+					} else if (outletType == IOOutletType.Output) {
 						return ((MethodInfo)member).ReturnType;
+					} else {
+						throw new System.ArgumentException("Invalid outlet type");
 					}
 				case MemberTypes.Field:
 					return ((FieldInfo)member).FieldType;
 				case MemberTypes.Property:
 					return ((PropertyInfo)member).PropertyType;
         default:
-					throw new System.ArgumentException("OutletType can only be used with FieldInfo, MethodInfo, or PropertyInfo");
+					throw new System.ArgumentException("OutletDataType can only be used with FieldInfo, MethodInfo, or PropertyInfo");
 			}
 		}
 
