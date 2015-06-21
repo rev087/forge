@@ -110,6 +110,12 @@ namespace Forge {
 					));
 				}
 
+				// Enum
+				else if (op.Inputs[i].Type.IsEnum) {
+					object val = System.Enum.Parse(op.Inputs[i].Type, paramsJs[param].str);
+					op.SetValue(op.Inputs[i], val);
+				}
+
 			}
 		}
 
