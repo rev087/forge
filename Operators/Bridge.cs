@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Forge.Operators {
 	
-	public class Bridge {
+	public class Bridge : Operator {
 
-		public bool RecalculateNormals = false;
+		[Input] public bool RecalculateNormals = false;
 
 		private Geometry _geometry;
 
@@ -14,10 +14,12 @@ namespace Forge.Operators {
 			Input(geometry);
 		}
 
+		[Input]
 		public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}
 
+		[Output]
 		public Geometry Output() {
 
 			if (_geometry.Polygons.Length == 0) return Geometry.Empty;

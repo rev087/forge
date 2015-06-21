@@ -45,6 +45,12 @@ namespace Forge.Editor {
 
 			op.IsGeometryOutput = EditorGUILayout.Toggle("Geometry Output", op.IsGeometryOutput);
 
+			if (op.IsGeometryOutput) {
+				foreach (var kvp in GraphEditor.Template.Operators) {
+					if (kvp.Value != op) kvp.Value.IsGeometryOutput = false;
+				}
+			}
+
 			foreach (IOOutlet input in op.Inputs) {
 
 				// Value comes from outlet connection
@@ -57,29 +63,29 @@ namespace Forge.Editor {
 				}
 
 				// Float input
-				if (input.Type == typeof(System.Single)) {
+				if (input.DataType == typeof(System.Single)) {
 					float newValue = EditorGUILayout.FloatField(input.Name, op.GetValue<float>(input));
 					op.SetValue<float>(input, newValue);
 				}
 
 				// Integer field
-				else if (input.Type == typeof(System.Int32)) {
+				else if (input.DataType == typeof(System.Int32)) {
 					int newValue = EditorGUILayout.IntField(input.Name, op.GetValue<int>(input));
 					op.SetValue<int>(input, newValue);
 				}
 
 				// Boolean input
-				else if (input.Type == typeof(System.Boolean)) {
+				else if (input.DataType == typeof(System.Boolean)) {
 					bool newValue = EditorGUILayout.Toggle(input.Name, op.GetValue<bool>(input));
 					op.SetValue<bool>(input, newValue);
 				}
 
 				// Enum input
-				else if (input.Type.IsEnum) {
+				else if (input.DataType.IsEnum) {
 					if (input.Member is System.Reflection.FieldInfo) {
 						object objValue = ((System.Reflection.FieldInfo) input.Member).GetValue(op);
-						string[] enumNames = System.Enum.GetNames(input.Type);
-						System.Array enumValues = System.Enum.GetValues(input.Type);
+						string[] enumNames = System.Enum.GetNames(input.DataType);
+						System.Array enumValues = System.Enum.GetValues(input.DataType);
 						int selectedIndex = System.Array.IndexOf(enumValues, objValue);
 
 						selectedIndex = EditorGUILayout.Popup(input.Name, selectedIndex, enumNames);
@@ -91,14 +97,14 @@ namespace Forge.Editor {
 				}
 
 				// Vector3
-				else if (input.Type == typeof(Vector3)) {
+				else if (input.DataType == typeof(Vector3)) {
 					Vector3 newValue = EditorGUILayout.Vector3Field(input.Name, op.GetValue<Vector3>(input));
 					op.SetValue<Vector3>(input, newValue);
 				}
 
 				// Unsupported
 				else {
-					EditorGUILayout.LabelField(input.Name, input.Type.ToString());
+					EditorGUILayout.LabelField(input.Name, input.DataType.ToString());
 				}
 			}
 

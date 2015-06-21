@@ -153,8 +153,8 @@ namespace Forge {
 			else if (outlet.Member is FieldInfo) {
 
 				// Multi inputs
-				if (outlet.Type.IsCollection()) {
-					var methodInfo = outlet.Type.GetMethod("Add");
+				if (outlet.DataType.IsCollection()) {
+					var methodInfo = outlet.DataType.GetMethod("Add");
 					var list = GetValue(outlet);
 					methodInfo.Invoke(list, new object[] {val});
 				}

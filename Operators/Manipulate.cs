@@ -4,9 +4,9 @@ namespace Forge.Operators {
 
 	public class Manipulate {
 
-		public Vector3 Position = Vector3.zero;
-		public Vector3 Rotation = Vector3.zero;
-		public Vector3 Scale = Vector3.one;
+		[Input] public Vector3 Position = Vector3.zero;
+		[Input] public Vector3 Rotation = Vector3.zero;
+		[Input] public Vector3 Scale = Vector3.one;
 
 		private Geometry _geometry;
 
@@ -16,10 +16,11 @@ namespace Forge.Operators {
 			Input(geometry);
 		}
 
-		public void Input(Geometry geometry) {
+		[Input] public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}
 
+		[Input]
 		public Geometry Output() {
 			Geometry geo = _geometry.Copy();
 

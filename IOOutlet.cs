@@ -4,9 +4,11 @@ using Forge.Extensions;
 
 namespace Forge {
 
+	public enum IOOutletType { Input, Output }
+
 	public struct IOOutlet {
 		public MemberInfo Member;
-		public System.Type Type;
+		public System.Type DataType;
 
 		public string Name {
 			get { return Member.Name; }
@@ -14,27 +16,27 @@ namespace Forge {
 
 		public IOOutlet(MemberInfo member, bool isInput=false) {
 			Member = member;
-			Type = member.OutletType(isInput);
+			DataType = member.OutletType(isInput);
 		}
 
 		public static IOOutlet None {
-			get { return new IOOutlet() { Member=null, Type=null }; }
+			get { return new IOOutlet() { Member=null, DataType=null }; }
 		}
 
 		public bool IsNone() {
-			return Member == null && Type == null;
+			return Member == null && DataType == null;
 		}
 
 		public static bool CanConnect(IOOutlet output, IOOutlet input) {
 
 			// Multiple inputs
-			if (input.Type.IsCollection()) {
-				return output.Type == input.Type.GetGenericArguments()[0];
+			if (input.DataType.IsCollection()) {
+				return output.DataType == input.DataType.GetGenericArguments()[0];
 			}
 
 			// Single inputs
 			else {
-				return output.Type == input.Type;
+				return output.DataType == input.DataType;
 			}
 
 		}

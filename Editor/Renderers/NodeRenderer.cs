@@ -90,8 +90,9 @@ namespace Forge.Editor.Renderers {
 			_outputTypeStyle.fontSize = Mathf.CeilToInt(_IOAltFontSize * scale);
 
 			// Title box
+			string title = op.IsGeometryOutput ? op.Title + "*" : op.Title;
 			GUI.DrawTexture(new Rect(x, y, width, titleHeight), _bg);
-			GUI.Label(new Rect(x, y, width, titleHeight), op.Title, _titleStyle);
+			GUI.Label(new Rect(x, y, width, titleHeight), title, _titleStyle);
 
 			y += titleHeight + Node.TitleSeparator;
 
@@ -105,7 +106,7 @@ namespace Forge.Editor.Renderers {
 					_outletRenderer.Draw(x, y + ioHeight/2, scale, node.InputHover == i);
 					if (node.ShowType) {
 						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), op.Inputs[i].GetNiceName(), _inputStyle);
-						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), op.Inputs[i].Type.TypeAlias(), _inputTypeStyle);
+						GUI.Label(new Rect(x + ioMargin, y+ioHeight/2, width, ioHeight/2), op.Inputs[i].DataType.TypeAlias(), _inputTypeStyle);
 					} else {
 						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight), op.Inputs[i].GetNiceName(), _inputStyle);
 					}
@@ -115,7 +116,7 @@ namespace Forge.Editor.Renderers {
 					_outletRenderer.Draw(x + width, y + ioHeight/2, scale, node.OutputHover == i);
 					if (node.ShowType) {
 						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight/2), op.Outputs[i].GetNiceName(), _outputStyle);
-						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), op.Outputs[i].Type.TypeAlias(), _outputTypeStyle);
+						GUI.Label(new Rect(x, y+ioHeight/2, width - ioMargin, ioHeight/2), op.Outputs[i].DataType.TypeAlias(), _outputTypeStyle);
 					} else {
 						GUI.Label(new Rect(x, y, width - ioMargin, ioHeight), op.Outputs[i].GetNiceName(), _outputStyle);
 					}

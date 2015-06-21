@@ -60,7 +60,7 @@ namespace Forge.Editor.Renderers {
 
 				if (validConnection) {
 					var point = mousePos + new Vector2(0f, 20f);
-					string label = System.String.Format("{0}\n{1}", outlet.Name, outlet.Type.TypeAlias(), _FloatingTextStyle);
+					string label = System.String.Format("{0}\n{1}", outlet.Name, outlet.DataType.TypeAlias(), _FloatingTextStyle);
 					Handles.Label(point, label);
 				}
 

@@ -88,7 +88,7 @@ namespace Forge {
 				// For now, we just retrieve the Output with the Geometry type in the
 				// Operator marked as IsGeometryOutput.
 				foreach (IOOutlet output in geoOutputOp.Outputs) {
-					if (output.Type == typeof(Geometry)) {
+					if (output.DataType == typeof(Geometry)) {
 						return geoOutputOp.GetValue<Geometry>(output);
 					}
 				}

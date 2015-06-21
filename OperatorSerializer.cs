@@ -24,22 +24,22 @@ namespace Forge {
 			foreach (IOOutlet outlet in op.Inputs) {
 
 				// float
-				if (outlet.Type == typeof(System.Single)) {
+				if (outlet.DataType == typeof(System.Single)) {
 					paramsJs.AddField(outlet.Name, op.GetValue<float>(outlet));
 				}
 
 				// bool
-				else if (outlet.Type == typeof(System.Boolean)) {
+				else if (outlet.DataType == typeof(System.Boolean)) {
 					paramsJs.AddField(outlet.Name, op.GetValue<bool>(outlet));
 				}
 
 				// int
-				else if (outlet.Type == typeof(System.Int32)) {
+				else if (outlet.DataType == typeof(System.Int32)) {
 					paramsJs.AddField(outlet.Name, op.GetValue<int>(outlet));
 				}
 
 				// Vector2
-				else if (outlet.Type == typeof(Vector2)) {
+				else if (outlet.DataType == typeof(Vector2)) {
 					var vJs = new JSONObject(JSONObject.Type.ARRAY);
 					var v = op.GetValue<Vector2>(outlet);
 					vJs.Add(v.x, v.y);
@@ -47,7 +47,7 @@ namespace Forge {
 				}
 
 				// Vector3
-				else if (outlet.Type == typeof(Vector3)) {
+				else if (outlet.DataType == typeof(Vector3)) {
 					var vJs = new JSONObject(JSONObject.Type.ARRAY);
 					var v = op.GetValue<Vector3>(outlet);
 					vJs.Add(v.x, v.y, v.z);
@@ -55,7 +55,7 @@ namespace Forge {
 				}
 
 				// Vector4
-				else if (outlet.Type == typeof(Vector4)) {
+				else if (outlet.DataType == typeof(Vector4)) {
 					var vJs = new JSONObject(JSONObject.Type.ARRAY);
 					var v = op.GetValue<Vector4>(outlet);
 					vJs.Add(v.x, v.y, v.z, v.w);
@@ -63,7 +63,7 @@ namespace Forge {
 				}
 
 				// Enum
-				else if (outlet.Type.IsEnum) {
+				else if (outlet.DataType.IsEnum) {
 					object objValue = ((System.Reflection.FieldInfo) outlet.Member).GetValue(op);
 					paramsJs.AddField(outlet.Name, objValue.ToString());
 				}
@@ -87,22 +87,22 @@ namespace Forge {
 				string param = op.Inputs[i].Name;
 
 				// float
-				if (op.Inputs[i].Type == typeof(System.Single)) {
+				if (op.Inputs[i].DataType == typeof(System.Single)) {
 					op.SetValue<float>(op.Inputs[i], paramsJs[param].n);
 				}
 
 				// bool
-				else if (op.Inputs[i].Type == typeof(System.Boolean)) {
+				else if (op.Inputs[i].DataType == typeof(System.Boolean)) {
 					op.SetValue<bool>(op.Inputs[i], paramsJs[param].b);
 				}
 
 				// int
-				else if (op.Inputs[i].Type == typeof(System.Int32)) {
+				else if (op.Inputs[i].DataType == typeof(System.Int32)) {
 					op.SetValue<int>(op.Inputs[i], (int) paramsJs[param].n);
 				}
 
 				// Vector3
-				else if (op.Inputs[i].Type == typeof(Vector3)) {
+				else if (op.Inputs[i].DataType == typeof(Vector3)) {
 					op.SetValue<Vector3>(op.Inputs[i], new Vector3(
 						paramsJs[param][0].n,
 						paramsJs[param][1].n,
@@ -111,8 +111,8 @@ namespace Forge {
 				}
 
 				// Enum
-				else if (op.Inputs[i].Type.IsEnum) {
-					object val = System.Enum.Parse(op.Inputs[i].Type, paramsJs[param].str);
+				else if (op.Inputs[i].DataType.IsEnum) {
+					object val = System.Enum.Parse(op.Inputs[i].DataType, paramsJs[param].str);
 					op.SetValue(op.Inputs[i], val);
 				}
 
