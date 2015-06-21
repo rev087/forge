@@ -38,8 +38,7 @@ namespace Forge.Editor {
 			}
 
 			if (GUILayout.Button("Serialize")) {
-				string jsonString = template.Serialize();
-				template.JSON = jsonString;
+				template.Serialize();
 				EditorUtility.SetDirty(template);
 			}
 
@@ -56,12 +55,6 @@ namespace Forge.Editor {
 			}
 
 			EditorGUILayout.Space();
-
-			foreach (Node node in GraphEditor.Selection.Nodes) {
-				EditorGUILayout.LabelField(node.Operator.GUID);
-				node.Operator.DrawInspector();
-				EditorGUILayout.Space();
-			}
 		}
 
 	}

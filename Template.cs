@@ -78,10 +78,8 @@ namespace Forge {
 			if (geoOutputOp != null) {
 
 				// Connections
-				Debug.Log(Connections.Count);
 				foreach (IOConnection conn in Connections) {
 					object val = conn.From.GetValue(conn.Output);
-					Debug.LogFormat("{0}: {1}", conn.Output.Name, val);
 					conn.To.SetValue(conn.Input, val);
 				}
 

@@ -5,7 +5,7 @@ namespace Forge {
 
 	public static class TemplateSerializer {
 
-		public static string Serialize(this Template template) {
+		public static void Serialize(this Template template) {
 
 			// Template
 			var tplJs = new JSONObject(JSONObject.Type.OBJECT);
@@ -26,7 +26,7 @@ namespace Forge {
 				connsJs.Add(conn.Serialize());
 			}
 
-			return tplJs.Print(true);
+			template.JSON = tplJs.Print(true);
 		}
 
 		public static JSONObject Serialize(this IOConnection conn) {

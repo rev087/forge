@@ -18,6 +18,7 @@ namespace Forge.Editor {
 		public Rect Canvas;
 		private static Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
 		public static Template Template = null;
+		public const float SidebarWidth = 250f;
 
 		public static GraphSelection Selection = new GraphSelection();
 		public static GraphEvent CurrentEvent;
@@ -45,7 +46,6 @@ namespace Forge.Editor {
 			var go = UnityEditor.Selection.activeObject as GameObject;
 			if (go != null) {
 				var asset = go.GetComponent<ProceduralAsset>();
-				Debug.LogFormat("GameObject Asset Template: {0}", asset.Template);
 				if (asset != null && Template != asset.Template) {
 					Template = asset.Template;
 					_nodes.Clear();
@@ -72,7 +72,11 @@ namespace Forge.Editor {
 			if (_gridRenderer == null) _gridRenderer = new GridRenderer();
 			Event currentEvent = Event.current;
 
-			Rect scrollViewRect = new Rect(0, 0, position.width, position.height);
+			Rect scrollViewRect = new Rect(0, 0, position.width - SidebarWidth, position.height);
+			Rect sidebarRect = new Rect(position.width - SidebarWidth, 0, SidebarWidth, position.height);
+
+			OperatorInspector.DrawInspector(sidebarRect);
+
 			ScrollPoint = GUI.BeginScrollView(scrollViewRect, ScrollPoint, Canvas);
 
 			bool needsRepaint = false;

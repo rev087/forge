@@ -110,7 +110,6 @@ namespace Forge {
 					));
 				}
 
-				// Debug.LogFormat("{0} - {1}\n{2}", paramsJs[param], op.Inputs[i].Type, paramsJs.list[i]);
 			}
 		}
 

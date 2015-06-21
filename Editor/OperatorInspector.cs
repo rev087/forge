@@ -3,12 +3,38 @@ using UnityEditor;
 
 namespace Forge.Editor {
 
-	public static class OperatorEditor {
+	public static class OperatorInspector {
 
 		private static GUIStyle _TitleStyle = null;
 		private const float Margin = 5f;
+		private static Vector2 ScrollPosition = Vector2.zero;
 
-		public static void DrawInspector(this Operator op) {
+		public static void DrawInspector(Rect rect) {
+			GUILayout.BeginArea(rect);
+			ScrollPosition = GUILayout.BeginScrollView(ScrollPosition, GUILayout.Width(rect.width), GUILayout.Height(rect.height));
+			foreach (Node node in GraphEditor.Selection.Nodes) {
+				EditorGUILayout.LabelField(node.Operator.GUID);
+				DrawNodeInspector(node.Operator);
+				EditorGUILayout.Space();
+			}
+			GUILayout.EndScrollView();
+			GUILayout.EndArea();
+
+			if (GUI.changed) {
+				GraphEditor.Template.Serialize();
+				EditorUtility.SetDirty(GraphEditor.Template);
+				
+				var go = UnityEditor.Selection.activeObject as GameObject;
+				if (go != null) {
+					var asset = go.GetComponent<ProceduralAsset>();
+					if (asset != null) {
+						asset.Generate();
+					}
+				}
+			}
+		}
+
+		public static void DrawNodeInspector(Operator op) {
 
 			if (_TitleStyle == null) {
 				_TitleStyle = new GUIStyle();
@@ -21,6 +47,16 @@ namespace Forge.Editor {
 			op.IsGeometryOutput = EditorGUILayout.Toggle("Geometry Output", op.IsGeometryOutput);
 
 			foreach (IOOutlet input in op.Inputs) {
+
+				// Value comes from outlet connection
+				foreach (IOConnection conn in GraphEditor.Template.Connections) {
+					if (op.GUID == conn.To.GUID && input.Name == conn.Input.Name) {
+						var valueFrom = System.String.Format("{0}.{1}", conn.From.Title, conn.Output.Name);
+						EditorGUILayout.LabelField(input.Name, valueFrom);
+						continue;
+					}
+				}
+
 				// Float input
 				if (input.Type == typeof(System.Single)) {
 					float newValue = EditorGUILayout.FloatField(input.Name, op.GetValue<float>(input));
