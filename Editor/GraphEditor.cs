@@ -32,9 +32,11 @@ namespace Forge.Editor {
 
 		public void OnSelectionChange() {
 
+			Debug.Log("OnSelectionChange");
+
 			// Selected a Template asset
 			var selected = UnityEditor.Selection.activeObject as Template;
-			if (Template != selected) {
+			if (selected != null) {
 				Template = selected;
 				_nodes.Clear();
 				Selection.Clear();
@@ -46,7 +48,7 @@ namespace Forge.Editor {
 			var go = UnityEditor.Selection.activeObject as GameObject;
 			if (go != null) {
 				var asset = go.GetComponent<ProceduralAsset>();
-				if (asset != null && Template != asset.Template) {
+				if (asset != null) {
 					Template = asset.Template;
 					_nodes.Clear();
 					Selection.Clear();
