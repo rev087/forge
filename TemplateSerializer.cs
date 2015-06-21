@@ -38,9 +38,10 @@ namespace Forge {
 			return connJs;
 		}
 
-		public static void Deserialize(this Template template, string json) {
+		public static void Deserialize(this Template template) {
 			template.Clear();
-			var tplJs = new JSONObject(json);
+
+			var tplJs = new JSONObject(template.JSON);
 
 			if (!tplJs.HasField("Operators") || !tplJs.HasField("Connections")) {
 				Debug.LogWarning("Invalid JSON");

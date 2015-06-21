@@ -44,7 +44,7 @@ namespace Forge.Editor {
 			}
 
 			if (GUILayout.Button("Deserialize")) {
-				template.Deserialize(template.JSON);
+				template.Deserialize();
 			}
 
 			EditorGUILayout.Space();

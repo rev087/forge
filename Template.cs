@@ -26,6 +26,10 @@ namespace Forge {
 		public List<IOConnection> Connections = new List<IOConnection>();
 		public string JSON = "";
 
+		void OnEnable() {
+			TemplateSerializer.Deserialize(this);
+		}
+
 		public void LoadDemo() {
 
 			var c = new Circle();
