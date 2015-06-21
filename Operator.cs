@@ -15,6 +15,7 @@ namespace Forge {
 	public class Operator {
 
 		public Vector2 EditorPosition = Vector2.zero;
+		public bool IsGeometryOutput = false;
 
 		private string _guid = null;
 		public string GUID {

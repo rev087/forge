@@ -10,8 +10,10 @@ namespace Forge {
 	[RequireComponent(typeof(MeshFilter))]
 	[RequireComponent(typeof(MeshRenderer))]
 
+	[System.Serializable]
 	public class ProceduralAsset : MonoBehaviour {
 
+		public Template Template = null;
 		[HideInInspector] public Mesh Mesh = null;
 
 		#if UNITY_EDITOR
@@ -52,7 +54,10 @@ namespace Forge {
 			#endif
 
 			// Build it
-			Geometry = Build();
+			if (Template != null)
+				Geometry = Template.Build();
+			else
+				Geometry = Build();
 
 			// Statistics
 			#if UNITY_EDITOR
@@ -86,7 +91,6 @@ namespace Forge {
 
 		#if UNITY_EDITOR
 		void OnDrawGizmosSelected() {
-			if (!IsBuilt) Generate();
 			MeshDisplay.DrawHandles(this, transform);
 		}
 		#endif

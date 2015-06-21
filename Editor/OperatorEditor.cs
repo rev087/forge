@@ -3,13 +3,12 @@ using UnityEditor;
 
 namespace Forge.Editor {
 
-	public class NodeInspector {
+	public static class OperatorEditor {
 
 		private static GUIStyle _TitleStyle = null;
 		private const float Margin = 5f;
-		// private static Vector2 _scrollPoint = Vector2.zero;
 
-		public static void Draw(Operator op) {
+		public static void DrawInspector(this Operator op) {
 
 			if (_TitleStyle == null) {
 				_TitleStyle = new GUIStyle();
@@ -18,6 +17,8 @@ namespace Forge.Editor {
 
 			EditorGUILayout.LabelField(op.Title, _TitleStyle);
 			EditorGUILayout.Space();
+
+			op.IsGeometryOutput = EditorGUILayout.Toggle("Geometry Output", op.IsGeometryOutput);
 
 			foreach (IOOutlet input in op.Inputs) {
 				// Float input

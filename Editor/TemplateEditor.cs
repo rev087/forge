@@ -59,7 +59,7 @@ namespace Forge.Editor {
 
 			foreach (Node node in GraphEditor.Selection.Nodes) {
 				EditorGUILayout.LabelField(node.Operator.GUID);
-				NodeInspector.Draw(node.Operator);
+				node.Operator.DrawInspector();
 				EditorGUILayout.Space();
 			}
 		}

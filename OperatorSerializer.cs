@@ -16,6 +16,8 @@ namespace Forge {
 			posJs.Add(op.EditorPosition.x, op.EditorPosition.y);
 			opJs.AddField("EditorPosition", posJs);
 
+			opJs.AddField("IsGeometryOutput", new JSONObject(op.IsGeometryOutput));
+
 			var paramsJs = new JSONObject(JSONObject.Type.OBJECT);
 			opJs.AddField("Params", paramsJs);
 
@@ -78,6 +80,7 @@ namespace Forge {
 		public static void Deserialize(this Operator op, JSONObject opJs) {
 			op.GUID = opJs["GUID"].str;
 			op.EditorPosition = new Vector2(opJs["EditorPosition"][0].n, opJs["EditorPosition"][1].n);
+			op.IsGeometryOutput = opJs["IsGeometryOutput"].b;
 
 			var paramsJs = opJs["Params"];
 			for (int i = 0; i < op.Inputs.Length; i++) {

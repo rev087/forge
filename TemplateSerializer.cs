@@ -43,9 +43,8 @@ namespace Forge {
 
 			var tplJs = new JSONObject(template.JSON);
 
-			if (!tplJs.HasField("Operators") || !tplJs.HasField("Connections")) {
-				Debug.LogWarning("Invalid JSON");
-			} else {
+			// Discard templates without the Operators and Connections fields
+			if (tplJs.HasField("Operators") && tplJs.HasField("Connections")) {
 				var opsJs = tplJs.GetField("Operators");
 				var connsJs = tplJs.GetField("Connections");
 				foreach (var opJs in opsJs.list) {
@@ -55,7 +54,20 @@ namespace Forge {
 					template.AddOperator(op);
 				}
 				foreach (var connJs in connsJs.list) {
-					// Debug.Log(connJs);
+
+					// Discard connections with invalid Operator GUIDs
+					if (!template.Operators.ContainsKey(connJs["From"].str) || !template.Operators.ContainsKey(connJs["To"].str)) {
+						Debug.LogWarning("Discarding connection in template due to an invalid Operator GUID");
+						continue;
+					}
+
+					Operator fromOp = template.Operators[connJs["From"].str];
+					IOOutlet output = fromOp.GetOutput(connJs["Output"].str);
+
+					Operator toOp = template.Operators[connJs["To"].str];
+					IOOutlet input = toOp.GetInput(connJs["Input"].str);
+
+					template.Connect(fromOp, output, toOp, input);
 				}
 			}
 		}

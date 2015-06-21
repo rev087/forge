@@ -30,12 +30,26 @@ namespace Forge.Editor {
 		}
 
 		public void OnSelectionChange() {
+			// Selected a Template asset
 			var selected = UnityEditor.Selection.activeObject as Template;
 			if (Template != selected) {
 				Template = selected;
 				_nodes.Clear();
 				Selection.Clear();
 				Repaint();
+				return;
+			}
+
+			// Selected a ProceduralAsset in hierarchy or prefab asset
+			var go = UnityEditor.Selection.activeObject as GameObject;
+			if (go != null) {
+				var asset = go.GetComponent<ProceduralAsset>();
+				if (asset != null && Template != asset.Template) {
+					Template = asset.Template;
+					_nodes.Clear();
+					Selection.Clear();
+					Repaint();
+				}
 			}
 		}
 
@@ -47,6 +61,7 @@ namespace Forge.Editor {
 		}
 
 		public void OnEnable() {
+			OnSelectionChange();
 			Canvas = new Rect(0, 0, position.width*2, position.height*2);
 			wantsMouseMove = true;
 		}

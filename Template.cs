@@ -61,6 +61,13 @@ namespace Forge {
 			Operators.Add(op.GUID, op);
 		}
 
+		public Operator OperatorWithGUID(string GUID) {
+			foreach (var kvp in Operators) {
+				if (kvp.Value.GUID == GUID) return kvp.Value;
+			}
+			return null;
+		}
+
 		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input) {
 			Connections.Add(new IOConnection() { From=outOp, Output=output, To=inOp, Input=input });
 		}
@@ -68,6 +75,27 @@ namespace Forge {
 		public void Clear() {
 			Operators.Clear();
 			Connections.Clear();
+		}
+
+		public Operator GetGeometryOutput() {
+			foreach (var kvp in Operators) {
+				if (kvp.Value.IsGeometryOutput) {
+					return kvp.Value;
+				}
+			}
+			return null;
+		}
+
+		public Geometry Build() {
+			var geoOutputOp = GetGeometryOutput();
+			if (geoOutputOp != null) {
+				foreach (IOOutlet output in geoOutputOp.Outputs) {
+					if (output.Type == typeof(Geometry)) {
+						return geoOutputOp.GetValue<Geometry>(output);
+					}
+				}
+			}
+			return Geometry.Empty;
 		}
 
 	}
