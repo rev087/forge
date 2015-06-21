@@ -157,6 +157,10 @@ namespace Forge.Editor {
 						}
 						needsRepaint = true;
 					}
+					else if (GraphEditor.CurrentEvent.IsNodeDrag(this)) {
+						GraphEditor.Template.Serialize();
+					}
+
 				}
 
 				// MouseDrag

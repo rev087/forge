@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace Forge {
 
 	public static class TemplateSerializer {
@@ -27,6 +31,10 @@ namespace Forge {
 			}
 
 			template.JSON = tplJs.Print(true);
+
+#if UNITY_EDITOR
+			EditorUtility.SetDirty(template);
+#endif
 		}
 
 		public static JSONObject Serialize(this IOConnection conn) {

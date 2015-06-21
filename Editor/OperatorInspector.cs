@@ -22,7 +22,6 @@ namespace Forge.Editor {
 
 			if (GUI.changed) {
 				GraphEditor.Template.Serialize();
-				EditorUtility.SetDirty(GraphEditor.Template);
 				
 				var go = UnityEditor.Selection.activeObject as GameObject;
 				if (go != null) {

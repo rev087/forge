@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
-	public class Merge {
+	public class Merge : Operator {
 
-		private List<Geometry> _geometries = new List<Geometry>();
+		[Input]
+		public List<Geometry> _geometries = new List<Geometry>();
 
 		private int _totalVerts = 0;
 		private int _totalTris = 0;
@@ -26,6 +27,7 @@ namespace Forge.Operators {
 			_geometries.Add(geometry.Copy());
 		}
 
+		[Output]
 		public Geometry Output() {
 
 			Geometry result = new Geometry(_totalVerts, _totalTris, _totalPolys);

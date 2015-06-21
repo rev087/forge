@@ -39,7 +39,6 @@ namespace Forge.Editor {
 
 			if (GUILayout.Button("Serialize")) {
 				template.Serialize();
-				EditorUtility.SetDirty(template);
 			}
 
 			if (GUILayout.Button("Deserialize")) {

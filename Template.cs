@@ -45,6 +45,7 @@ namespace Forge {
 
 		public void AddOperator(Operator op) {
 			Operators.Add(op.GUID, op);
+			TemplateSerializer.Serialize(this);
 		}
 
 		public Operator OperatorWithGUID(string GUID) {
@@ -56,6 +57,7 @@ namespace Forge {
 
 		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input) {
 			Connections.Add(new IOConnection() { From=outOp, Output=output, To=inOp, Input=input });
+			TemplateSerializer.Serialize(this);
 		}
 
 		public void Clear() {

@@ -32,8 +32,6 @@ namespace Forge.Editor {
 
 		public void OnSelectionChange() {
 
-			Debug.Log("OnSelectionChange");
-
 			// Selected a Template asset
 			var selected = UnityEditor.Selection.activeObject as Template;
 			if (selected != null) {
