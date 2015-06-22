@@ -5,37 +5,30 @@ namespace Forge.Operators {
 
 	public class Merge : Operator {
 
-		private List<Geometry> _geometries = new List<Geometry>();
-
-		private int _totalVerts = 0;
-		private int _totalTris = 0;
-		private int _totalPolys = 0;
+		[Input]
+		public List<Geometry> Input = new List<Geometry>();
 
 		public Merge() {}
 
 		public Merge(params Geometry[] geometries) {
-			foreach (Geometry geometry in geometries) {
-				Input(geometry);
-			}
-		}
-
-		[Input]
-		public void Input(Geometry geometry) {
-			_totalVerts += geometry.Vertices.Length;
-			_totalTris += geometry.Triangles.Length;
-			_totalPolys += geometry.Polygons.Length;
-			_geometries.Add(geometry.Copy());
+			Input.AddRange(geometries);
 		}
 
 		[Output]
 		public Geometry Output() {
+			int totalVerts = 0, totalTris = 0, totalPolys = 0;
+			foreach (var inputGeo in Input) {
+				totalVerts += inputGeo.Vertices.Length;
+				totalTris += inputGeo.Triangles.Length;
+				totalPolys += inputGeo.Polygons.Length;
+			}
 
-			Geometry result = new Geometry(_totalVerts, _totalTris, _totalPolys);
+			Geometry result = new Geometry(totalVerts, totalTris, totalPolys);
 
 			int vCount = 0;
 			int tCount = 0;
 			int pCount = 0;
-			foreach (Geometry geo in _geometries) {
+			foreach (Geometry geo in Input) {
 
 				// Vertices, Normals and UV
 				for (int v = 0; v < geo.Vertices.Length; v++) {
@@ -75,10 +68,7 @@ namespace Forge.Operators {
 		}
 
 		public static Geometry Process(params Geometry[] geometries) {
-			Merge merge = new Merge();
-			for (int i = 0; i < geometries.Length; i++) {
-				merge.Input(geometries[i]);
-			}
+			Merge merge = new Merge(geometries);
 			return merge.Output();
 		}
 

@@ -44,12 +44,12 @@ namespace Forge.Operators {
 
 			// Merge all sides
 			Merge merge = new Merge();
-			merge.Input(Reverse.Process(bottom.Output()));
-			merge.Input(right.Output());
-			merge.Input(Reverse.Process(left.Output()));
-			merge.Input(front.Output());
-			merge.Input(Reverse.Process(back.Output()));
-			merge.Input(top.Output());
+			merge.Input.Add(Reverse.Process(bottom.Output()));
+			merge.Input.Add(right.Output());
+			merge.Input.Add(Reverse.Process(left.Output()));
+			merge.Input.Add(front.Output());
+			merge.Input.Add(Reverse.Process(back.Output()));
+			merge.Input.Add(top.Output());
 
 			return merge.Output();
 		}

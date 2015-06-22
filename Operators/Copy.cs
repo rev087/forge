@@ -40,7 +40,7 @@ namespace Forge.Operators {
 					manipulate.Scale = scale;
 				}
 
-				merge.Input(manipulate.Output());
+				merge.Input.Add(manipulate.Output());
 
 				if (i > 0) {
 					position += Position;

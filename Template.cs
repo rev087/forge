@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Forge.Operators;
-using System.Xml;
+using Forge.Extensions;
 
 namespace Forge {
 
@@ -93,8 +93,19 @@ namespace Forge {
 		}
 
 		public virtual Geometry Build() {
-			// Reset the operators
-			TemplateSerializer.Deserialize(this);
+
+			// Reset multi imputs
+			foreach (var kvp in Operators) {
+				foreach (IOOutlet input in kvp.Value.Inputs) {
+					if (input.DataType.IsCollection()) {
+						var clearMethod = input.DataType.GetMethod("Clear");
+						if (clearMethod != null) {
+							object collection = kvp.Value.GetValue(input);
+							clearMethod.Invoke(collection, null);
+						}
+					}
+				}
+			}
 
 			var geoOutputOp = GetGeometryOutput();
 			if (geoOutputOp != null) {

@@ -35,12 +35,12 @@ namespace Forge.Operators {
 
 			if (CapTop) {
 				top.Surface = true;
-				cylinder.Input(top.Output());
+				cylinder.Input.Add(top.Output());
 			}
 
 			if (CapBottom) {
 				bottom.Surface = true;
-				cylinder.Input(Reverse.Process(bottom.Output()));
+				cylinder.Input.Add(Reverse.Process(bottom.Output()));
 			}
 
 			var geo = cylinder.Output();

@@ -12,8 +12,8 @@ namespace Forge.Editor {
 
 		// UI Dimensions
 		public const float BaseWidth = 200f;
-		public const float IOHeight = 28f;
-		public const float TitleHeight = 28f;
+		public const float IOHeight = 24f;
+		public const float TitleHeight = 24f;
 		public const float TitleSeparator = 1f;
 
 		// State
@@ -158,7 +158,7 @@ namespace Forge.Editor {
 						}
 						needsRepaint = true;
 					}
-					else if (GraphEditor.CurrentEvent.Node == this && GraphEditor.CurrentEvent.Type == GEType.Drag) {
+					else if (ev.type == EventType.MouseUp && GraphEditor.CurrentEvent.Node == this && GraphEditor.CurrentEvent.Type == GEType.Drag) {
 						GraphEditor.Template.Serialize();
 					}
 
