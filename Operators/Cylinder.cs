@@ -3,18 +3,19 @@ using Forge.Operators;
 
 namespace Forge.Operators {
 
-	public class Cylinder {
+	public class Cylinder : Operator {
 
-		public float Radius = 0.5f;
-		public float Height = 1f;
-		public int Segments = 8;
-		public bool CapTop = true;
-		public bool CapBottom = true;
-		public Vector3 Center = Vector3.zero;
-		public OrientationPreset Orientation = OrientationPreset.XZ;
+		[Input] public float Radius = 0.5f;
+		[Input] public float Height = 1f;
+		[Input] public int Segments = 8;
+		[Input] public bool CapTop = true;
+		[Input] public bool CapBottom = true;
+		[Input] public Vector3 Center = Vector3.zero;
+		[Input] public OrientationPreset Orientation = OrientationPreset.XZ;
 
 		private Geometry _geometry;
 
+		[Output]
 		public Geometry Output() {
 
 			var bottom = new Circle();
@@ -27,7 +28,7 @@ namespace Forge.Operators {
 			top.Segments = Segments;
 			top.Center = new Vector3(Center.x, Center.y + Height/2, Center.z);
 
-			var scaffold = new Merge(top.Output(), bottom.Output());
+			var scaffold = new Merge(bottom.Output(), top.Output());
 
 			var bridge = new Bridge(scaffold.Output());
 
