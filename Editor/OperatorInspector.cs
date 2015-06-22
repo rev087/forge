@@ -12,7 +12,8 @@ namespace Forge.Editor {
 		public static void DrawInspector(Rect rect) {
 			GUILayout.BeginArea(rect);
 			ScrollPosition = GUILayout.BeginScrollView(ScrollPosition, GUILayout.Width(rect.width), GUILayout.Height(rect.height));
-			foreach (Node node in GraphEditor.Selection.Nodes) {
+			for (int i = 0; i < GraphEditor.Selection.Nodes.Count; i++) {
+				Node node = GraphEditor.Selection.Nodes[i];
 				EditorGUILayout.LabelField(node.Operator.GUID);
 				DrawNodeInspector(node.Operator);
 				EditorGUILayout.Space();
@@ -40,15 +41,23 @@ namespace Forge.Editor {
 				_TitleStyle.fontSize = 16;
 			}
 
-			EditorGUILayout.LabelField(op.Title, _TitleStyle);
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.LabelField(op.Title, _TitleStyle, GUILayout.Width(GraphEditor.SidebarWidth/2-20f));
+			if (op.IsGeometryOutput) {
+				EditorGUILayout.LabelField("(output)", GUILayout.Width(GraphEditor.SidebarWidth/2-20f));
+			} else {
+				if (GUILayout.Button("Output")) {
+					foreach (var kvp in GraphEditor.Template.Operators) {
+						kvp.Value.IsGeometryOutput = kvp.Value.GUID == op.GUID;
+					}
+				}
+			}
+			EditorGUILayout.EndHorizontal();
+
 			EditorGUILayout.Space();
 
-			op.IsGeometryOutput = EditorGUILayout.Toggle("Geometry Output", op.IsGeometryOutput);
-
 			if (op.IsGeometryOutput) {
-				foreach (var kvp in GraphEditor.Template.Operators) {
-					if (kvp.Value != op) kvp.Value.IsGeometryOutput = false;
-				}
+				EditorGUILayout.LabelField("[Geometry Output]");
 			}
 
 			foreach (IOOutlet input in op.Inputs) {
@@ -106,6 +115,13 @@ namespace Forge.Editor {
 				else {
 					EditorGUILayout.LabelField(input.Name, input.DataType.ToString());
 				}
+			}
+
+			if (GUILayout.Button("Delete Selection")) {
+				foreach (var node in GraphEditor.Selection.Nodes) {
+					GraphEditor.Template.RemoveOperator(node.Operator);
+				}
+				GraphEditor.Selection.Clear();
 			}
 
 		}

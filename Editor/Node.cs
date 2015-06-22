@@ -158,7 +158,7 @@ namespace Forge.Editor {
 						}
 						needsRepaint = true;
 					}
-					else if (GraphEditor.CurrentEvent.IsNodeDrag(this)) {
+					else if (GraphEditor.CurrentEvent.Node == this && GraphEditor.CurrentEvent.Type == GEType.Drag) {
 						GraphEditor.Template.Serialize();
 					}
 

@@ -10,6 +10,7 @@ namespace Forge {
 	public static class TemplateSerializer {
 
 		public static void Serialize(this Template template) {
+			Debug.Log("Serialize");
 
 			// Template
 			var tplJs = new JSONObject(JSONObject.Type.OBJECT);
@@ -47,6 +48,7 @@ namespace Forge {
 		}
 
 		public static void Deserialize(this Template template) {
+			Debug.Log("Deserialize");
 			template.Clear();
 
 			var tplJs = new JSONObject(template.JSON);
@@ -59,7 +61,7 @@ namespace Forge {
 					var type = System.Type.GetType(opJs["Type"].str);
 					var op = (Operator) System.Activator.CreateInstance(type);
 					op.Deserialize(opJs);
-					template.AddOperator(op);
+					template.AddOperator(op, false);
 				}
 				foreach (var connJs in connsJs.list) {
 
@@ -75,7 +77,7 @@ namespace Forge {
 					Operator toOp = template.Operators[connJs["To"].str];
 					IOOutlet input = toOp.GetInput(connJs["Input"].str);
 
-					template.Connect(fromOp, output, toOp, input);
+					template.Connect(fromOp, output, toOp, input, false);
 				}
 			}
 		}

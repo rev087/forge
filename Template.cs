@@ -43,9 +43,24 @@ namespace Forge {
 			Connect(f, ff, c2, c2r);
 		}
 
-		public void AddOperator(Operator op) {
+		public void AddOperator(Operator op, bool serialize = true) {
 			Operators.Add(op.GUID, op);
-			TemplateSerializer.Serialize(this);
+			if (serialize) {
+				TemplateSerializer.Serialize(this);
+			}
+		}
+
+		public void RemoveOperator(Operator op, bool serialize = true) {
+			for (int i = 0; i < Connections.Count; i++) {
+				if (Connections[i].From.GUID == op.GUID || Connections[i].To.GUID == op.GUID) {
+					Connections.Remove(Connections[i]);
+				}
+			}
+			Operators.Remove(op.GUID);
+
+			if (serialize) {
+				TemplateSerializer.Serialize(this);
+			}
 		}
 
 		public Operator OperatorWithGUID(string GUID) {
@@ -55,9 +70,11 @@ namespace Forge {
 			return null;
 		}
 
-		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input) {
+		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input, bool serialize = true) {
 			Connections.Add(new IOConnection() { From=outOp, Output=output, To=inOp, Input=input });
-			TemplateSerializer.Serialize(this);
+			if (serialize) {
+				TemplateSerializer.Serialize(this);
+			}
 		}
 
 		public void Clear() {
@@ -76,6 +93,9 @@ namespace Forge {
 		}
 
 		public virtual Geometry Build() {
+			// Reset the operators
+			TemplateSerializer.Deserialize(this);
+
 			var geoOutputOp = GetGeometryOutput();
 			if (geoOutputOp != null) {
 

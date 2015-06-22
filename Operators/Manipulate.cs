@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace Forge.Operators {
 
-	public class Manipulate {
+	public class Manipulate : Operator {
 
 		[Input] public Vector3 Position = Vector3.zero;
 		[Input] public Vector3 Rotation = Vector3.zero;
 		[Input] public Vector3 Scale = Vector3.one;
 
-		private Geometry _geometry;
+		private Geometry _geometry = Geometry.Empty;
 
 		public Manipulate() {}
 
@@ -20,7 +20,7 @@ namespace Forge.Operators {
 			_geometry = geometry.Copy();
 		}
 
-		[Input]
+		[Output]
 		public Geometry Output() {
 			Geometry geo = _geometry.Copy();
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
-	public class Reverse {
+	public class Reverse : Operator {
 
 		public bool FacesOnly = false;
 
@@ -15,10 +15,12 @@ namespace Forge.Operators {
 
 		private Geometry _geometry;
 
+		[Input]
 		public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}
 
+		[Output]
 		public Geometry Output() {
 
 			Geometry geo = _geometry.Copy();
