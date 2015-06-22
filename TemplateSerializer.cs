@@ -10,8 +10,6 @@ namespace Forge {
 	public static class TemplateSerializer {
 
 		public static void Serialize(this Template template) {
-			Debug.Log("Serialize");
-
 			// Template
 			var tplJs = new JSONObject(JSONObject.Type.OBJECT);
 
@@ -48,7 +46,6 @@ namespace Forge {
 		}
 
 		public static void Deserialize(this Template template) {
-			Debug.Log("Deserialize");
 			template.Clear();
 
 			var tplJs = new JSONObject(template.JSON);
