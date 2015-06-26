@@ -9,13 +9,13 @@ namespace Forge.Editor.Renderers {
 	// Draws the UI for the Node class
 	public static class NodeRenderer {
 
-		private static Color _txColor = new Color(0.182f, 0.194f, 0.202f);
-		private static Color _txAltColor = new Color(0.332f, 0.344f, 0.352f);
-		private static Color _bgColor = new Color(0.682f, 0.714f, 0.735f);
-		private static Color _bgAltColor = new Color(0.612f, 0.639f, 0.661f);
+		private static Color _TXTColor = new Color(0.182f, 0.194f, 0.202f);
+		private static Color _TXTAltColor = new Color(0.332f, 0.344f, 0.352f);
+		private static Color _BGColor = new Color(0.682f, 0.714f, 0.735f);
+		private static Color _BGAltColor = new Color(0.612f, 0.639f, 0.661f);
 
-		private static Texture2D _bg;
-		private static Texture2D _bgAlt;
+		private static Texture2D _BGTex = null;
+		private static Texture2D _BGAltTex = null;
 		private static GUIStyle _titleStyle;
 		private static GUIStyle _inputStyle;
 		private static GUIStyle _inputTypeStyle;
@@ -35,34 +35,38 @@ namespace Forge.Editor.Renderers {
 		private static bool _HasInitializedStyles = false;
 		public static void InitializeStyles() {
 			_titleStyle = new GUIStyle();
-			_titleStyle.normal.textColor = _txColor;
+			_titleStyle.normal.textColor = _TXTColor;
 			_titleStyle.alignment = TextAnchor.MiddleCenter;
 
 			_inputStyle = new GUIStyle();
-			_inputStyle.normal.textColor = _txColor;
+			_inputStyle.normal.textColor = _TXTColor;
 			_inputStyle.alignment = TextAnchor.MiddleLeft;
 
 			_inputTypeStyle = new GUIStyle();
-			_inputTypeStyle.normal.textColor = _txAltColor;
+			_inputTypeStyle.normal.textColor = _TXTAltColor;
 			_inputTypeStyle.alignment = TextAnchor.MiddleLeft;
 
 			_outputStyle = new GUIStyle();
-			_outputStyle.normal.textColor = _txColor;
+			_outputStyle.normal.textColor = _TXTColor;
 			_outputStyle.alignment = TextAnchor.MiddleRight;
 
 			_outputTypeStyle = new GUIStyle();
-			_outputTypeStyle.normal.textColor = _txAltColor;
+			_outputTypeStyle.normal.textColor = _TXTAltColor;
 			_outputTypeStyle.alignment = TextAnchor.MiddleRight;
 
-			_bg = new Texture2D(1, 1);
-			_bg.hideFlags = HideFlags.HideAndDontSave;
-			_bg.SetPixel(0, 0, _bgColor);
-			_bg.Apply();
+			if (_BGTex == null) {
+				_BGTex = new Texture2D(1, 1);
+				_BGTex.hideFlags = HideFlags.HideAndDontSave;
+				_BGTex.SetPixel(0, 0, _BGColor);
+				_BGTex.Apply();
+			}
 
-			_bgAlt = new Texture2D(1, 1);
-			_bgAlt.hideFlags = HideFlags.HideAndDontSave;
-			_bgAlt.SetPixel(0, 0, _bgAltColor);
-			_bgAlt.Apply();
+			if (_BGAltTex == null) {
+				_BGAltTex = new Texture2D(1, 1);
+				_BGAltTex.hideFlags = HideFlags.HideAndDontSave;
+				_BGAltTex.SetPixel(0, 0, _BGAltColor);
+				_BGAltTex.Apply();
+			}
 
 			// Outlets
 			_outletRenderer = new OutletRenderer();
@@ -91,7 +95,7 @@ namespace Forge.Editor.Renderers {
 
 			// Title box
 			string title = op.IsGeometryOutput ? op.Title + "*" : op.Title;
-			GUI.DrawTexture(new Rect(x, y, width, titleHeight), _bg);
+			GUI.DrawTexture(new Rect(x, y, width, titleHeight), _BGTex);
 			GUI.Label(new Rect(x, y, width, titleHeight), title, _titleStyle);
 
 			y += titleHeight + Node.TitleSeparator;
@@ -99,7 +103,7 @@ namespace Forge.Editor.Renderers {
 			// IO
 			int ioCount = Mathf.Max(op.Inputs.Length, op.Outputs.Length);
 			for (int i = 0; i < ioCount; i++) {
-				Texture2D bg = (i % 2 == 0) ? _bg : _bgAlt;
+				Texture2D bg = (i % 2 == 0) ? _BGTex : _BGAltTex;
 				GUI.DrawTexture(new Rect(x, y, width, ioHeight), bg);
 
 				if (i < op.Inputs.Length) {
