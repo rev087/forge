@@ -57,7 +57,11 @@ namespace Forge.Editor {
 
 		public static Node GetNode(string GUID) {
 			if (!_nodes.ContainsKey(GUID)) {
-				_nodes[GUID] = new Node(Template.Operators[GUID]);
+				if (Template.Operators.ContainsKey(GUID)) {
+					_nodes[GUID] = new Node(Template.Operators[GUID]);
+				} else {
+					Debug.LogWarningFormat("GraphEditor.GetNode error: Template does not contain an Operator with GUID {0}", GUID);
+				}
 			}
 			return _nodes[GUID];
 		}
