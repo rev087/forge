@@ -3,14 +3,14 @@ using Forge.Operators;
 
 namespace Forge.Operators {
 
-	public class Square {
+	public class Square : Operator {
 
-		public OrientationPreset Orientation = OrientationPreset.XZ;
-		public Vector2 Size = Vector2.one;
-		public Vector3 Center = Vector3.zero;
-		public Surface Surface = Surface.None;
+		[Input] public OrientationPreset Orientation = OrientationPreset.XZ;
+		[Input] public Vector2 Size = Vector2.one;
+		[Input] public Vector3 Center = Vector3.zero;
+		[Input] public Surface Surface = Surface.None;
 
-		public Geometry Output() {
+		[Output] public Geometry Output() {
 
 			Geometry geo = new Geometry();
 

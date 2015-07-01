@@ -4,11 +4,11 @@ using Forge.Extensions;
 
 namespace Forge.Operators {
 
-	public class Triangulate {
+	public class Triangulate : Operator {
 
-		public bool RecomputeNormals = true;
-		public int MaxIterations = -1; // Used to interactivelly visualize the algorithm
-		public string Error = null;
+		[Input] public bool RecomputeNormals = true;
+		[Input] public int MaxIterations = -1; // Used to interactivelly visualize the algorithm
+		[Input] public string Error = null;
 
 		public Triangulate() {}
 
@@ -18,11 +18,11 @@ namespace Forge.Operators {
 
 		private Geometry _geometry;
 
-		public void Input(Geometry geometry) {
+		[Input] public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}
 
-		public Geometry Output() {
+		[Output] public Geometry Output() {
 
 			int vertexCount = _geometry.Vertices.Length;
 			if (MaxIterations < 0) MaxIterations = vertexCount;
