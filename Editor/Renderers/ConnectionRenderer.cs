@@ -5,7 +5,7 @@ using Forge.Extensions;
 
 namespace Forge.Editor.Renderers {
 
-	public static class Connections {
+	public static class ConnectionRenderer {
 
 		private static GUIStyle _FloatingTextStyle = null;
 

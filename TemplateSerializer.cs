@@ -74,7 +74,7 @@ namespace Forge {
 					Operator toOp = template.Operators[connJs["To"].str];
 					IOOutlet input = toOp.GetInput(connJs["Input"].str);
 
-					template.Connect(fromOp, output, toOp, input, false);
+					template.Connections.Add(new IOConnection() { From=fromOp, Output=output, To=toOp, Input=input });
 				}
 			}
 		}

@@ -70,11 +70,9 @@ namespace Forge {
 			return null;
 		}
 
-		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input, bool serialize = true) {
+		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input) {
 			Connections.Add(new IOConnection() { From=outOp, Output=output, To=inOp, Input=input });
-			if (serialize) {
-				TemplateSerializer.Serialize(this);
-			}
+			TemplateSerializer.Serialize(this);
 		}
 
 		public void Clear() {
