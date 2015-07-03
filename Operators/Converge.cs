@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
-	public class Converge {
+	public class Converge : Operator {
 
-		public Vector3 Point = Vector3.zero;
-		public bool RecalculateNormals = false;
+		[Input] public Vector3 Point = Vector3.zero;
+		[Input] public bool RecalculateNormals = false;
 
 		private Geometry _geometry;
 
@@ -16,11 +16,11 @@ namespace Forge.Operators {
 			Input(geometry);
 		}
 
-		public void Input(Geometry geometry) {
+		[Input] public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}
 
-		public Geometry Output() {
+		[Output] public Geometry Output() {
 			int vertexCount = _geometry.Vertices.Length;
 
 			Geometry geo = new Geometry(vertexCount+1);
