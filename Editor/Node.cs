@@ -178,8 +178,14 @@ namespace Forge.Editor {
 
 					// Drag input
 					else if (GraphEditor.CurrentEvent.CanDragOutlet(this, GEContext.Input)) {
-						GraphEditor.CurrentEvent = new GraphEvent(GEType.Drag, GEContext.Input, this, GraphEditor.CurrentEvent.Outlet);
-						needsRepaint = true;
+						var connections = GraphEditor.Template.ConnectionsTo(Operator, GraphEditor.CurrentEvent.Outlet);
+						if (connections.Length > 0) {
+							var last = connections[connections.Length - 1];
+							var fromNode = GraphEditor.GetNode(last.From.GUID);
+							GraphEditor.CurrentEvent = new GraphEvent(GEType.Drag, GEContext.Output, fromNode, last.Output);
+							GraphEditor.Template.Disconnect(last);
+							needsRepaint = true;
+						}
 					}
 
 					// Drag output

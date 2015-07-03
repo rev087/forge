@@ -21,6 +21,24 @@ namespace Forge {
 			Type = outletType;
 		}
 
+		public override bool Equals(object obj) {
+			try {
+				return (bool)(this == (IOOutlet)obj);
+			} catch {
+				return false;
+			}
+		}
+		public static bool operator ==(IOOutlet a, IOOutlet b) {
+			return a.Member == b.Member && a.DataType == b.DataType && a.Type == b.Type;
+		}
+		public static bool operator !=(IOOutlet a, IOOutlet b) {
+			return a.Member != b.Member || a.DataType != b.DataType || a.Type == b.Type;
+		}
+		public override int GetHashCode() {
+			return Member.GetHashCode() * 17 + DataType.GetHashCode() + Type.GetHashCode();
+		}
+
+
 		public static IOOutlet None {
 			get { return new IOOutlet() { Member=null, DataType=null, Type=IOOutletType.None }; }
 		}

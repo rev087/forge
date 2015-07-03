@@ -75,6 +75,21 @@ namespace Forge {
 			TemplateSerializer.Serialize(this);
 		}
 
+		public void Disconnect(IOConnection conn) {
+			Connections.Remove(conn);
+			TemplateSerializer.Serialize(this);
+		}
+
+		public IOConnection[] ConnectionsTo(Operator toOp, IOOutlet input) {
+			var conns = new List<IOConnection>();
+			foreach (IOConnection conn in Connections) {
+				if (conn.To.GUID == toOp.GUID && conn.Input == input) {
+					conns.Add(conn);
+				}
+			}
+			return conns.ToArray();
+		}
+
 		public void Clear() {
 			Operators.Clear();
 			Connections.Clear();
