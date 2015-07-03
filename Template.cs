@@ -51,7 +51,7 @@ namespace Forge {
 		}
 
 		public void RemoveOperator(Operator op, bool serialize = true) {
-			for (int i = 0; i < Connections.Count; i++) {
+			for (int i = Connections.Count-1; i >= 0; i--) {
 				if (Connections[i].From.GUID == op.GUID || Connections[i].To.GUID == op.GUID) {
 					Connections.Remove(Connections[i]);
 				}
