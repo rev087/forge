@@ -7,8 +7,8 @@ namespace Forge.Operators {
 	public class Triangulate : Operator {
 
 		[Input] public bool RecomputeNormals = true;
-		[Input] public int MaxIterations = -1; // Used to interactivelly visualize the algorithm
-		[Input] public string Error = null;
+		public int MaxIterations = -1; // Used to interactivelly visualize the algorithm
+		public string Error = null;
 
 		public Triangulate() {}
 
