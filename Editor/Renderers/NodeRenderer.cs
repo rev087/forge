@@ -11,8 +11,8 @@ namespace Forge.Editor.Renderers {
 
 		private static Color _TXTColor = new Color(0.182f, 0.194f, 0.202f);
 		private static Color _TXTAltColor = new Color(0.332f, 0.344f, 0.352f);
-		private static Color _BGColor = new Color(0.682f, 0.714f, 0.735f);
-		private static Color _BGAltColor = new Color(0.612f, 0.639f, 0.661f);
+		private static Color _BGColor = new Color(0.682f, 0.714f, 0.735f, 0.85f);
+		private static Color _BGAltColor = new Color(0.612f, 0.639f, 0.661f, 0.85f);
 
 		private static Texture2D _BGTex = null;
 		private static Texture2D _BGAltTex = null;
