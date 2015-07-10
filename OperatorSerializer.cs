@@ -101,6 +101,14 @@ namespace Forge {
 					op.SetValue<int>(op.Inputs[i], (int) paramsJs[param].n);
 				}
 
+				// Vector2
+				else if (op.Inputs[i].DataType == typeof(Vector2)) {
+					op.SetValue<Vector2>(op.Inputs[i], new Vector2(
+						paramsJs[param][0].n,
+						paramsJs[param][1].n
+					));
+				}
+
 				// Vector3
 				else if (op.Inputs[i].DataType == typeof(Vector3)) {
 					op.SetValue<Vector3>(op.Inputs[i], new Vector3(
