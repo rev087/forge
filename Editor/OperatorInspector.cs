@@ -62,65 +62,73 @@ namespace Forge.Editor {
 
 			foreach (IOOutlet input in op.Inputs) {
 
+				var isConnectedInput = false;
+
 				// Value comes from outlet connection
 				foreach (IOConnection conn in GraphEditor.Template.Connections) {
 					if (op.GUID == conn.To.GUID && input.Name == conn.Input.Name) {
 						var valueFrom = System.String.Format("{0}.{1}", conn.From.Title, conn.Output.Name);
 						EditorGUILayout.LabelField(input.Name, valueFrom);
+						isConnectedInput = true;
 						continue;
 					}
 				}
 
-				// Float input
-				if (input.DataType == typeof(System.Single)) {
-					float newValue = EditorGUILayout.FloatField(input.Name, op.GetValue<float>(input));
-					op.SetValue<float>(input, newValue);
-				}
+				// Not connected, draw the input
+				if (!isConnectedInput) {
 
-				// Integer field
-				else if (input.DataType == typeof(System.Int32)) {
-					int newValue = EditorGUILayout.IntField(input.Name, op.GetValue<int>(input));
-					op.SetValue<int>(input, newValue);
-				}
-
-				// Boolean input
-				else if (input.DataType == typeof(System.Boolean)) {
-					bool newValue = EditorGUILayout.Toggle(input.Name, op.GetValue<bool>(input));
-					op.SetValue<bool>(input, newValue);
-				}
-
-				// Enum input
-				else if (input.DataType.IsEnum) {
-					if (input.Member is System.Reflection.FieldInfo) {
-						object objValue = ((System.Reflection.FieldInfo) input.Member).GetValue(op);
-						string[] enumNames = System.Enum.GetNames(input.DataType);
-						System.Array enumValues = System.Enum.GetValues(input.DataType);
-						int selectedIndex = System.Array.IndexOf(enumValues, objValue);
-
-						selectedIndex = EditorGUILayout.Popup(input.Name, selectedIndex, enumNames);
-
-						((System.Reflection.FieldInfo) input.Member).SetValue(op, enumValues.GetValue(selectedIndex));
-					} else {
-						Debug.LogFormat("Enum {0} is not a field", input.Name);
+					// Float input
+					if (input.DataType == typeof(System.Single)) {
+						float newValue = EditorGUILayout.FloatField(input.Name, op.GetValue<float>(input));
+						op.SetValue<float>(input, newValue);
 					}
-				}
 
-				// Vector2
-				else if (input.DataType == typeof(Vector2)) {
-					Vector2 newValue = EditorGUILayout.Vector2Field(input.Name, op.GetValue<Vector2>(input));
-					op.SetValue<Vector2>(input, newValue);
-				}
+					// Integer field
+					else if (input.DataType == typeof(System.Int32)) {
+						int newValue = EditorGUILayout.IntField(input.Name, op.GetValue<int>(input));
+						op.SetValue<int>(input, newValue);
+					}
 
-				// Vector3
-				else if (input.DataType == typeof(Vector3)) {
-					Vector3 newValue = EditorGUILayout.Vector3Field(input.Name, op.GetValue<Vector3>(input));
-					op.SetValue<Vector3>(input, newValue);
-				}
+					// Boolean input
+					else if (input.DataType == typeof(System.Boolean)) {
+						bool newValue = EditorGUILayout.Toggle(input.Name, op.GetValue<bool>(input));
+						op.SetValue<bool>(input, newValue);
+					}
 
-				// Unsupported
-				else {
-					EditorGUILayout.LabelField(input.Name, input.DataType.ToString());
-				}
+					// Enum input
+					else if (input.DataType.IsEnum) {
+						if (input.Member is System.Reflection.FieldInfo) {
+							object objValue = ((System.Reflection.FieldInfo) input.Member).GetValue(op);
+							string[] enumNames = System.Enum.GetNames(input.DataType);
+							System.Array enumValues = System.Enum.GetValues(input.DataType);
+							int selectedIndex = System.Array.IndexOf(enumValues, objValue);
+
+							selectedIndex = EditorGUILayout.Popup(input.Name, selectedIndex, enumNames);
+
+							((System.Reflection.FieldInfo) input.Member).SetValue(op, enumValues.GetValue(selectedIndex));
+						} else {
+							Debug.LogFormat("Enum {0} is not a field", input.Name);
+						}
+					}
+
+					// Vector2
+					else if (input.DataType == typeof(Vector2)) {
+						Vector2 newValue = EditorGUILayout.Vector2Field(input.Name, op.GetValue<Vector2>(input));
+						op.SetValue<Vector2>(input, newValue);
+					}
+
+					// Vector3
+					else if (input.DataType == typeof(Vector3)) {
+						Vector3 newValue = EditorGUILayout.Vector3Field(input.Name, op.GetValue<Vector3>(input));
+						op.SetValue<Vector3>(input, newValue);
+					}
+
+					// Unsupported
+					else {
+						EditorGUILayout.LabelField(input.Name, input.DataType.ToString());
+					}
+
+				} // !isCOnnectedInput
 			}
 
 			if (GUILayout.Button("Delete Selection")) {
