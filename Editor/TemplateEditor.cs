@@ -8,22 +8,6 @@ namespace Forge.Editor {
 
 		private bool _DisplayJson = false;
 
-		void OnEnable() {
-			if (GraphEditor.Selection != null) {
-				GraphEditor.Selection.SelectionChanged += OnSelectionChangedHandler;
-			}
-		}
-
-		void OnDisable() {
-			if (GraphEditor.Selection != null) {
-				GraphEditor.Selection.SelectionChanged -= OnSelectionChangedHandler;
-			}
-		}
-
-		void OnSelectionChangedHandler(GraphSelection graphSelection) {
-			Repaint();
-		}
-
 		public override void OnInspectorGUI() {
 			Template template = (Template) serializedObject.targetObject;
 
