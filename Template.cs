@@ -8,9 +8,17 @@ namespace Forge {
 	[System.Serializable]
 	public class Template : ScriptableObject {
 
+		public delegate void ChangedHandler(Template template);
+		public event ChangedHandler Changed;
+
 		public Dictionary<string, Operator> Operators = new Dictionary<string, Operator>();
 		public List<IOConnection> Connections = new List<IOConnection>();
 		public string JSON = "";
+
+		private void CommitChanges() {
+			TemplateSerializer.Serialize(this);
+			if (Changed != null) Changed(this);
+		}
 
 		void OnEnable() {
 			TemplateSerializer.Deserialize(this);
@@ -43,24 +51,19 @@ namespace Forge {
 			Connect(f, ff, c2, c2r);
 		}
 
-		public void AddOperator(Operator op, bool serialize = true) {
+		public void AddOperator(Operator op) {
 			Operators.Add(op.GUID, op);
-			if (serialize) {
-				TemplateSerializer.Serialize(this);
-			}
+			CommitChanges();
 		}
 
-		public void RemoveOperator(Operator op, bool serialize = true) {
+		public void RemoveOperator(Operator op) {
 			for (int i = Connections.Count-1; i >= 0; i--) {
 				if (Connections[i].From.GUID == op.GUID || Connections[i].To.GUID == op.GUID) {
 					Connections.Remove(Connections[i]);
 				}
 			}
 			Operators.Remove(op.GUID);
-
-			if (serialize) {
-				TemplateSerializer.Serialize(this);
-			}
+			CommitChanges();
 		}
 
 		public Operator OperatorWithGUID(string GUID) {
@@ -72,12 +75,12 @@ namespace Forge {
 
 		public void Connect(Operator outOp, IOOutlet output, Operator inOp, IOOutlet input) {
 			Connections.Add(new IOConnection() { From=outOp, Output=output, To=inOp, Input=input });
-			TemplateSerializer.Serialize(this);
+			CommitChanges();
 		}
 
 		public void Disconnect(IOConnection conn) {
 			Connections.Remove(conn);
-			TemplateSerializer.Serialize(this);
+			CommitChanges();
 		}
 
 		public IOConnection[] ConnectionsTo(Operator toOp, IOOutlet input) {

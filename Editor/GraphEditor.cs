@@ -17,8 +17,20 @@ namespace Forge.Editor {
 		public float Zoom = 1f;
 		public Rect Canvas;
 		private static Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
-		public static Template Template = null;
 		public const float SidebarWidth = 250f;
+
+		private static Template _template = null;
+		public static Template Template {
+			get { return _template; }
+			set {
+				_template = value;
+				if (value != null) {
+					_template.Changed += OnTemplateChange;
+				} else {
+					_template.Changed -= OnTemplateChange;
+				}
+			}
+		}
 
 		public static GraphSelection Selection = new GraphSelection();
 		public static GraphEvent CurrentEvent;
@@ -30,12 +42,22 @@ namespace Forge.Editor {
 			editor.Show();
 		}
 
+		public static void OnTemplateChange(Template template) {
+			var go = UnityEditor.Selection.activeObject as GameObject;
+			if (go != null) {
+				var asset = go.GetComponent<ProceduralAsset>();
+				if (asset != null) {
+					asset.Generate();
+				}
+			}
+		}
+
 		public void OnSelectionChange() {
 
 			// Selected a Template asset
-			var selected = UnityEditor.Selection.activeObject as Template;
-			if (selected != null) {
-				Template = selected;
+			var templateAsset = UnityEditor.Selection.activeObject as Template;
+			if (templateAsset != null) {
+				Template = templateAsset;
 				_nodes.Clear();
 				Selection.Clear();
 				Repaint();
@@ -52,7 +74,11 @@ namespace Forge.Editor {
 					Selection.Clear();
 					Repaint();
 				}
+				return;
 			}
+
+			// Non-template selection
+			Template = null;
 		}
 
 		public static Node GetNode(string GUID) {

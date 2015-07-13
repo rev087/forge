@@ -58,7 +58,7 @@ namespace Forge {
 					var type = System.Type.GetType(opJs["Type"].str);
 					var op = (Operator) System.Activator.CreateInstance(type);
 					op.Deserialize(opJs);
-					template.AddOperator(op, false);
+					template.Operators.Add(op.GUID, op);
 				}
 				foreach (var connJs in connsJs.list) {
 
