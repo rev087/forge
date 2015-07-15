@@ -3,41 +3,36 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
-	public class Polygonize {
+	public class Polygonize : Operator {
 
-		private List<Geometry> _geometries = new List<Geometry>();
-
-		private int _totalVerts = 0;
-		private int _totalTris = 0;
+		[Input] public List<Geometry> Input = new List<Geometry>();
 
 		public Polygonize() {}
 
 		public Polygonize(params Geometry[] geometries) {
-			foreach (Geometry geo in geometries) {
-				Input(geo);
+			Input.AddRange(geometries);
+		}
+
+		[Output] public Geometry Output() {
+
+			int totalVerts = 0;
+			foreach (Geometry geo in Input) {
+				totalVerts += geo.Vertices.Length;
 			}
-		}
 
-		public void Input(Geometry geometry) {
-			_totalVerts += geometry.Vertices.Length;
-			_totalTris += geometry.Triangles.Length;
-			_geometries.Add(geometry.Copy());
-		}
-
-		public Geometry Output() {
-			var result = new Geometry(_totalVerts, _totalTris);
+			var result = new Geometry(totalVerts);
 
 			int vCount = 0;
-			foreach (Geometry geo in _geometries) {
-
+			foreach (Geometry geo in Input) {
 				for (int v = 0; v < geo.Vertices.Length; v++) {
 					result.Vertices[vCount+v] = geo.Vertices[v];
 				}
-
 				vCount += geo.Vertices.Length;
 			}
 
-			result.Polygons = new int[] {0, vCount};
+			if (vCount > 0) {
+				result.Polygons = new int[] {0, totalVerts};
+			}
 
 			return result;
 		}
