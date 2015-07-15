@@ -6,43 +6,41 @@ namespace Forge.Operators {
 
 	public class Triangulate : Operator {
 
+		[Input] public Geometry Input = Geometry.Empty;
 		[Input] public bool RecomputeNormals = true;
+
 		public int MaxIterations = -1; // Used to interactivelly visualize the algorithm
 		public string Error = null;
 
 		public Triangulate() {}
 
 		public Triangulate(Geometry geometry) {
-			Input(geometry);
-		}
-
-		private Geometry _geometry;
-
-		[Input] public void Input(Geometry geometry) {
-			_geometry = geometry.Copy();
+			Input = geometry;
 		}
 
 		[Output] public Geometry Output() {
 
-			int vertexCount = _geometry.Vertices.Length;
+			Geometry geo = Input.Copy();
+
+			int vertexCount = geo.Vertices.Length;
 			if (MaxIterations < 0) MaxIterations = vertexCount;
 
-			Vector3 axisVariance = _geometry.AxisVariance();
+			Vector3 axisVariance = geo.AxisVariance();
 
 			// 3D shape
 			if (!Geometry.IsCoplanar(axisVariance)) {
 				Error = "Triangulate.Output error: input vertices are not coplanar";
-				return _geometry;
+				return geo;
 			}
 
 			// 1D and 0D shapes
 			var inv = Geometry.InvariantAxis(axisVariance);
 			if (inv < 0) {
 				Error = "Triangulate.Output error: input vertices are not a 2D polygon";
-				return _geometry;
+				return geo;
 			}
 			
-			var candidates = new List<int>(_geometry.Vertices.Length.ToRange());
+			var candidates = new List<int>(geo.Vertices.Length.ToRange());
 			var triangles = new List<int>();
 
 			int iterations = 0;
@@ -59,10 +57,10 @@ namespace Forge.Operators {
 					int iNext = candidates[c < candidates.Count-1 ? c+1 : 0];
 
 					// Convex
-					if (!IsReflex(_geometry.Vertices, iPrev, i, iNext, inv)) {
+					if (!IsReflex(geo.Vertices, iPrev, i, iNext, inv)) {
 
 						// Has no points inside
-						if (!TriangleOverlapsVertices(_geometry.Vertices, iPrev, i, iNext, inv)) {
+						if (!TriangleOverlapsVertices(geo.Vertices, iPrev, i, iNext, inv)) {
 							earFound = true;
 							candidates.RemoveAt(c);
 							triangles.AddRange(new int[] {iPrev, i, iNext});
@@ -80,20 +78,20 @@ namespace Forge.Operators {
 
 			// Last 3 vertices
 			if (candidates.Count == 3 && iterations < MaxIterations) {
-				if (!IsReflex(_geometry.Vertices, candidates[0], candidates[1], candidates[2], inv)) {
-					if (!TriangleOverlapsVertices(_geometry.Vertices, candidates[0], candidates[1], candidates[2], inv)) {
+				if (!IsReflex(geo.Vertices, candidates[0], candidates[1], candidates[2], inv)) {
+					if (!TriangleOverlapsVertices(geo.Vertices, candidates[0], candidates[1], candidates[2], inv)) {
 						triangles.AddRange(new int[] {candidates[0], candidates[1], candidates[2]});
 					}
 				}
 			}
 
-			_geometry.Triangles = triangles.ToArray();
+			geo.Triangles = triangles.ToArray();
 
 			if (RecomputeNormals) {
-				_geometry.RecalculateNormals();
+				geo.RecalculateNormals();
 			}
 
-			return _geometry;
+			return geo;
 		} // Output
 
 		private bool IsReflex(Vector3[] vertices, int i0, int i, int i1, int invariantAxis) {
