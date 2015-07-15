@@ -208,8 +208,14 @@ namespace Forge.EditorUtils {
 			if (geo.Polygons != null && (DisplayPolygons || DisplayPolygonIndex) && canDisplayVertexData) {
 				Handles.color = Color.yellow;
 				for (int p = 0; p < geo.Polygons.Length; p += 2) {
+
+					if (geo.Vertices.Length == 0) {
+						Debug.LogError("Geometry has at least a polygon, but zero vertices");
+					}
+
 					int start = geo.Polygons[p];
 					int count = geo.Polygons[p+1];
+
 					Vector3 origin = transform.TransformPoint(geo.Vertices[start]);
 
 					// Index
