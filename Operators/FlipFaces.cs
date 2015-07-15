@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
-	public class Reverse : Operator {
+	public class FlipFaces : Operator {
 
 		[Input] public Geometry Input = Geometry.Empty;
 		[Input] bool RecomputeNormals = false;
 
-		public Reverse() {}
+		public FlipFaces() {}
 
-		public Reverse(Geometry geometry) {
+		public FlipFaces(Geometry geometry) {
 			Input = geometry;
 		}
 
@@ -19,9 +19,13 @@ namespace Forge.Operators {
 
 			Geometry geo = Input.Copy();
 
-			if (geo.Vertices != null) {
-				System.Array.Reverse(geo.Vertices);
+			int[] revTriangles = new int[Input.Triangles.Length];
+			for (int t = 0; t < Input.Triangles.Length; t += 3) {
+				revTriangles[t+2] = Input.Triangles[t  ];
+				revTriangles[t+1] = Input.Triangles[t+1];
+				revTriangles[t  ] = Input.Triangles[t+2];
 			}
+			geo.Triangles = revTriangles;
 
 			// Normals
 			if (RecomputeNormals) {
@@ -32,7 +36,7 @@ namespace Forge.Operators {
 		}
 
 		public static Geometry Process(Geometry geometry) {
-			Reverse reverse = new Reverse();
+			FlipFaces reverse = new FlipFaces();
 			reverse.Input = geometry;
 			return reverse.Output();
 		}
