@@ -94,7 +94,7 @@ namespace Forge.EditorUtils {
 			if (geo.Triangles != null && (DisplayFaces || DisplayFaceIndex || DisplayFaceNormal || DisplayFaceOrder) && canDisplayVertexData) {
 
 				for (int i = 0; i <= geo.Triangles.Length - 3; i += 3) {
-					
+
 					Vector3 aVert = transform.TransformPoint(geo.Vertices[geo.Triangles[i]]);
 					Vector3 bVert = transform.TransformPoint(geo.Vertices[geo.Triangles[i+1]]);
 					Vector3 cVert = transform.TransformPoint(geo.Vertices[geo.Triangles[i+2]]);
@@ -130,6 +130,7 @@ namespace Forge.EditorUtils {
 
 					// Face Order
 					if (DisplayFaceOrder) {
+						Handles.color = Color.red;
 						Vector3 la = Vector3.Lerp(aVert, mid, 0.15f);
 						Vector3 lb = Vector3.Lerp(bVert, mid, 0.15f);
 						Vector3 lc = Vector3.Lerp(cVert, mid, 0.15f);
@@ -201,7 +202,7 @@ namespace Forge.EditorUtils {
 					}
 
 				} // vertices
-				
+
 			} // vertex display options
 
 			// Polygons
@@ -264,5 +265,5 @@ namespace Forge.EditorUtils {
 		} // DrawHandles
 
 	} // class
-	
+
 } // namespace
