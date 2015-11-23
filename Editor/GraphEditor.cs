@@ -40,7 +40,7 @@ namespace Forge.Editor {
 		[MenuItem ("Window/Forge/Graph Editor")]
 		public static void ShowEditor() {
 			GraphEditor editor = (GraphEditor) EditorWindow.GetWindow(typeof(GraphEditor));
-			editor.title = "Forge Graph";
+			editor.titleContent = new GUIContent("Forge Graph");
 			editor.Show();
 		}
 
