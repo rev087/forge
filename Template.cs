@@ -24,6 +24,11 @@ namespace Forge {
 			TemplateSerializer.Deserialize(this);
 		}
 
+        public bool HasChangedHandler()
+        {
+            return Changed != null;
+        }
+
 		public void LoadDemo() {
 
 			var c = new Circle();

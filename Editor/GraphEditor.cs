@@ -24,10 +24,12 @@ namespace Forge.Editor {
 			get { return _template; }
 			set {
 				_template = value;
-				if (value != null) {
+				if (_template != null) {
 					_template.Changed += OnTemplateChange;
 				} else {
-					_template.Changed -= OnTemplateChange;
+					if (_template != null && _template.HasChangedHandler()) {
+						_template.Changed -= OnTemplateChange;
+					}
 				}
 			}
 		}
