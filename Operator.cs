@@ -17,6 +17,8 @@ namespace Forge {
 		public Vector2 EditorPosition = Vector2.zero;
 		public bool IsGeometryOutput = false;
 
+		public string OperatorError = null;
+
 		private string _guid = null;
 		public string GUID {
 			get {

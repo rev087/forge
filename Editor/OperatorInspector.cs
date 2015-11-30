@@ -138,6 +138,10 @@ namespace Forge.Editor {
 				GraphEditor.Selection.Clear();
 			}
 
+			if (op != null && op.OperatorError != null) {
+				EditorGUILayout.HelpBox(op.OperatorError, MessageType.Error);
+			}
+
 		}
 
 	}
