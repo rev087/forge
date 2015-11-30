@@ -23,48 +23,48 @@ namespace Forge.Operators {
 				totalPolys += inputGeo.Polygons.Length;
 			}
 
-			Geometry result = new Geometry(totalVerts, totalTris, totalPolys);
+			Geometry outputGeo = new Geometry(totalVerts, totalTris, totalPolys);
 
 			int vCount = 0;
 			int tCount = 0;
 			int pCount = 0;
-			foreach (Geometry geo in Input) {
+			foreach (Geometry inputGeo in Input) {
 
 				// Vertices, Normals and UV
-				for (int v = 0; v < geo.Vertices.Length; v++) {
+				for (int v = 0; v < inputGeo.Vertices.Length; v++) {
 
-					result.Vertices[vCount + v] = geo.Vertices[v];
+					outputGeo.Vertices[vCount + v] = inputGeo.Vertices[v];
 
-					if (v < geo.Normals.Length) {
-						result.Normals[vCount + v] = geo.Normals[v];
+					if (v < inputGeo.Normals.Length) {
+						outputGeo.Normals[vCount + v] = inputGeo.Normals[v];
 					}
 
-					if (v < geo.Tangents.Length) {
-						result.Tangents[vCount + v] = geo.Tangents[v];
+					if (v < inputGeo.Tangents.Length) {
+						outputGeo.Tangents[vCount + v] = inputGeo.Tangents[v];
 					}
 
-					if (v < geo.UV.Length) {
-						result.UV[vCount + v] = geo.UV[v];
+					if (v < inputGeo.UV.Length) {
+						outputGeo.UV[vCount + v] = inputGeo.UV[v];
 					}
 				}
 
 				// Faces
-				for (int f = 0; f < geo.Triangles.Length; f++) {
-					result.Triangles[tCount + f] = geo.Triangles[f] + vCount;
+				for (int f = 0; f < inputGeo.Triangles.Length; f++) {
+					outputGeo.Triangles[tCount + f] = inputGeo.Triangles[f] + vCount;
 				}
 
 				// Polygons
-				for (int p = 0; p < geo.Polygons.Length; p+=2) {
-					result.Polygons[pCount+p] = geo.Polygons[p] + vCount;
-					result.Polygons[pCount+p+1] = geo.Polygons[p+1];
+				for (int p = 0; p < inputGeo.Polygons.Length; p+=2) {
+					outputGeo.Polygons[pCount+p] = inputGeo.Polygons[p] + vCount;
+					outputGeo.Polygons[pCount+p+1] = inputGeo.Polygons[p+1];
 				}
 
-				vCount += geo.Vertices.Length;
-				tCount += geo.Triangles.Length;
-				pCount += geo.Polygons.Length;
+				vCount += inputGeo.Vertices.Length;
+				tCount += inputGeo.Triangles.Length;
+				pCount += inputGeo.Polygons.Length;
 			}
 
-			return result;
+			return outputGeo;
 		}
 
 		public static Geometry Process(params Geometry[] geometries) {
