@@ -203,7 +203,7 @@ namespace Forge {
 		}
 
 		public override string ToString() {
-			return System.String.Format("vert:{0}, nor:{1}, tan:{2} uv:{3}, tri:{3} poly:{4}",
+			return System.String.Format("vert:{0}, nor:{1}, tan:{2} uv:{3}, tri:{4} poly:{5}",
 				Vertices != null ? Vertices.Length.ToString() : "-",
 				Normals != null ? Normals.Length.ToString() : "-",
 				Tangents != null ? Tangents.Length.ToString() : "-",
