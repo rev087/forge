@@ -138,7 +138,8 @@ namespace Forge {
 				}
 
 				// For now, we just retrieve the Output with the Geometry type in the
-				// Operator marked as IsGeometryOutput.
+				// Operator marked as IsGeometryOutput. In the future, the template will
+				// have specialized output nodes instead.
 				foreach (IOOutlet output in geoOutputOp.Outputs) {
 					if (output.DataType == typeof(Geometry)) {
 						return geoOutputOp.GetValue<Geometry>(output);
