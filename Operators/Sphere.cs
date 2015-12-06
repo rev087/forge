@@ -3,13 +3,14 @@ using Forge.Operators;
 
 namespace Forge.Operators {
 
-	public class Sphere {
+	public class Sphere : Operator {
 
-		public float Radius = 0.5f;
-		public Vector3 Center = Vector3.zero;
-		public int Segments = 8;
-		public OrientationPreset Orientation = OrientationPreset.XZ;
+		[Input] public float Radius = 0.5f;
+		[Input] public Vector3 Center = Vector3.zero;
+		[Input] public int Segments = 8;
+		[Input] public OrientationPreset Orientation = OrientationPreset.XZ;
 
+		[Output]
 		public Geometry Output() {
 
 			if (Segments < 3) {
