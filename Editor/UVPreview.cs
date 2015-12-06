@@ -8,7 +8,7 @@ namespace Forge.Editor {
 	public enum UEType { None, Unresolved, Click, Drag }
 	public enum UEContext { None, Background, Vector }
 
-	public class UVEditor : EditorWindow {
+	public class UVPReview : EditorWindow {
 
 		public Vector2 ScrollPoint = Vector2.zero;
 		public float Zoom = 1f;
@@ -26,12 +26,15 @@ namespace Forge.Editor {
 		private const float CanvasMarginTop = 40f;
 		private static Color BGColor = new Color(0.282f, 0.294f, 0.302f);
 		private static Texture2D BGTex = null;
+		private static GUIStyle FaceStyle = null;
+		private static GUIStyle VertexStyle = null;
+		private static GUIStyle ShadowStyle = null;
 
 		private bool _isDragging = false;
 
-		[MenuItem("Window/Forge/UV Editor")]
+		[MenuItem("Window/Forge/UV Preview")]
 		public static void ShowEditor() {
-			UVEditor editor = (UVEditor)EditorWindow.GetWindow(typeof(UVEditor));
+			UVPReview editor = (UVPReview)EditorWindow.GetWindow(typeof(UVPReview));
 			editor.titleContent = new GUIContent("Forge UV");
 			editor.Show();
 		}
@@ -57,14 +60,35 @@ namespace Forge.Editor {
 			wantsMouseMove = true;
 		}
 
+		private GUIStyle MakeStyle(Color textColor, float offset) {
+			var style = new GUIStyle();
+			style.normal.textColor = textColor;
+			style.fontSize = 14;
+			style.contentOffset = new Vector2(offset, offset);
+			style.alignment = TextAnchor.UpperCenter;
+			style.fixedHeight = 20f;
+			style.fixedWidth = 100f;
+			return style;
+		}
+
+		private void DrawLabel(float x, float y, string label, GUIStyle style) {
+			GUI.Label(new Rect(x - 50f, y + 2f, 0f, 0f), label, ShadowStyle);
+			GUI.Label(new Rect(x - 50f, y + 2f, 0f, 0f), label, style);
+		}
+
 		void OnGUI() {
 			// Initialize objects
 			if (IconLoader == null) IconLoader = new IconLoader();
-			if (UVEditor.BGTex == null) {
-				UVEditor.BGTex = new Texture2D(1, 1);
+			if (BGTex == null) {
+				BGTex = new Texture2D(1, 1);
 				BGTex.hideFlags = HideFlags.HideAndDontSave;
 				BGTex.SetPixel(0, 0, BGColor);
 				BGTex.Apply();
+			}
+			if (VertexStyle == null) {
+				VertexStyle = MakeStyle(Color.cyan, 0f);
+				FaceStyle = MakeStyle(Color.red, 0f);
+				ShadowStyle = MakeStyle(Color.black, 1f);
 			}
 
 			// Total canvas
@@ -130,6 +154,7 @@ namespace Forge.Editor {
 			DisplayFaces = GUI.Toggle(new Rect(225f, 10f, 30f, 20f), DisplayFaces, IconLoader.Icons["faceIndex"], "button");
 			TexInput = EditorGUI.Popup(new Rect(260f, 12f, 100f, 30f), TexInput, texInputsList.ToArray());
 
+			// Mesh data
 			if (go != null) {
 				var meshFilter = go.GetComponent<MeshFilter>();
 				if (meshFilter != null) {
@@ -148,7 +173,7 @@ namespace Forge.Editor {
 						for (int n = 0; n < 3; n++) {
 							verts[n] = new Vector3(
 								uvCanvas.x + uvSet[mesh.triangles[i + n]].x * uvCanvas.width,
-								uvCanvas.y + uvSet[mesh.triangles[i + n]].y * uvCanvas.height,
+								uvCanvas.y + (1 - uvSet[mesh.triangles[i + n]].y) * uvCanvas.height,
 								0f);
 						}
 
@@ -162,22 +187,19 @@ namespace Forge.Editor {
 						if (DisplayFaces) {
 							Handles.color = Color.red;
 							Vector3 mid = (verts[0] + verts[1] + verts[2]) / 3;
-							GUIStyle style = new GUIStyle();
-							style.normal.textColor = Color.red;
-							GUI.Label(new Rect(mid.x, mid.y, 20f, 20f), (i / 3).ToString(), style);
+							mid.y -= 10f;
+							DrawLabel(mid.x, mid.y, (i / 3).ToString(), FaceStyle);
 						}
 					}
 
 					// Vertices
 					for (int i = 0; i < uvSet.Length; i++) {
 						Vector2 uv = uvSet[i];
-						Vector3 point = new Vector3(uvCanvas.width * uv.x + uvCanvas.x, uvCanvas.height * uv.y + uvCanvas.y, 0);
+						Vector3 point = new Vector3(uvCanvas.width * uv.x + uvCanvas.x, uvCanvas.height * (1 - uv.y) + uvCanvas.y, 0);
 
 						// Draw vertex indices
 						if (DisplayVertexIndices) {
-							GUIStyle style = new GUIStyle();
-							style.normal.textColor = Color.cyan;
-							GUI.Label(new Rect(point.x - 7f, point.y + 4f, 20f, 20f), i.ToString(), style);
+							DrawLabel(point.x, point.y, i.ToString(), VertexStyle);
 						}
 
 						// Draw vertices
