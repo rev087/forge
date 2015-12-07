@@ -187,6 +187,9 @@ namespace Forge {
 			return opTypes.ToArray();
 		}
 
+		// Override if operator features gizmos
+		public virtual void OnDrawGizmos() {}
+
 	}
 
 }

@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 #if UNITY_EDITOR
 using Forge.EditorUtils;
@@ -12,6 +11,9 @@ namespace Forge {
 
 	[System.Serializable]
 	public class ProceduralAsset : MonoBehaviour {
+		
+		public delegate void OnDrawGizmosHandler();
+		public event OnDrawGizmosHandler OnDrawGizmos;
 
 		public Template Template = null;
 		[HideInInspector] public Mesh Mesh = null;
@@ -91,7 +93,8 @@ namespace Forge {
 
 		#if UNITY_EDITOR
 		void OnDrawGizmosSelected() {
-			if (!IsBuilt) Generate();
+			if (OnDrawGizmos != null) OnDrawGizmos();
+            if (!IsBuilt) Generate();
 			MeshDisplay.DrawHandles(this, transform);
 		}
 		#endif
