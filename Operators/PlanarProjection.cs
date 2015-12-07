@@ -61,24 +61,24 @@ namespace Forge.Operators {
 		private void DrawPlane(Vector3 origin, int u, int v, int w) {
 
 			// Bounds
-			float uSpan = _geometry.Span((Axis)u), vSpan = _geometry.Span((Axis)v), wSpan = _geometry.Span((Axis)w);
-			float uHalf = uSpan / 2, vHalf = vSpan / 2, wHalf = wSpan / 2;
+			float uMin = _geometry.Min((Axis)u), uMax = _geometry.Max((Axis)u);
+			float vMin = _geometry.Min((Axis)v), vMax = _geometry.Max((Axis)v);
 
 			// Preview geometry points
 			Vector3[] plane = new Vector3[4];
 			for (int i = 0; i < 4; i++) {
 				plane[i] = new Vector3(origin.x, origin.y, origin.z);
 			}
-			plane[0][u] -= uHalf; plane[0][v] -= vHalf;
-			plane[1][u] -= uHalf; plane[1][v] += vHalf;
-			plane[2][u] += uHalf; plane[2][v] += vHalf;
-			plane[3][u] += uHalf; plane[3][v] -= vHalf;
+			plane[0][u] += uMin; plane[0][v] += vMin;
+			plane[1][u] += uMin; plane[1][v] += vMax;
+			plane[2][u] += uMax; plane[2][v] += vMax;
+			plane[3][u] += uMax; plane[3][v] += vMin;
 
 			Vector3 front = Vector3.zero;
-			front[w] -= wHalf;
+			front[w] += _geometry.Min((Axis)w);
 
 			Vector3 back = Vector3.zero;
-			back[w] += wHalf;
+			back[w] += _geometry.Max((Axis)w);
 
 			Handles.color = PreviewFillColor;
 			Handles.DrawAAConvexPolygon(new Vector3[] { plane[0] + front, plane[1] + front, plane[2] + front, plane[3] + front, plane[0] + front });
