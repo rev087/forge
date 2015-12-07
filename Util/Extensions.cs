@@ -9,6 +9,16 @@ namespace Forge.Extensions {
 			return new Vector3(Mathf.Abs(v.x), Mathf.Abs(v.y), Mathf.Abs(v.z));
 		}
 
+		public static float Remap(this float original, float fromMin, float fromMax, float toMin, float toMax) {
+			return (((original - fromMin) * (toMax - toMin)) / (fromMax - fromMin)) + toMin;
+		}
+
+		public static float Clamp(this float value, float min, float max) {
+			if (value > max) return max;
+			else if (value < min) return min;
+			return value;
+		}
+
 		public static bool In(this int val, params int[] list) {
 			for (int i = 0; i < list.Length; i++) {
 				if (list[i] == val) return true;
