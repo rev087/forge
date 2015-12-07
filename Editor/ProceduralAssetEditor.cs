@@ -107,7 +107,7 @@ namespace Forge.Editor {
 			// Face Display
 			EditorGUI.BeginDisabledGroup(disableVertexData);
 			Asset.MeshDisplay.DisplayFaces = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaces, IconLoader.Icons["face"], "button");
-			Asset.MeshDisplay.DisplayFaceOrder = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceOrder, IconLoader.Icons["face"], "button");
+			//Asset.MeshDisplay.DisplayFaceOrder = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceOrder, IconLoader.Icons["face"], "button");
 			Asset.MeshDisplay.DisplayFaceNormal = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceNormal, IconLoader.Icons["faceNormal"], "button");
 			Asset.MeshDisplay.DisplayFaceIndex = GUILayout.Toggle(Asset.MeshDisplay.DisplayFaceIndex, IconLoader.Icons["faceIndex"], "button");
 			EditorGUI.EndDisabledGroup();

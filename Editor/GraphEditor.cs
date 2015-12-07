@@ -37,7 +37,7 @@ namespace Forge.Editor {
 		public static GraphSelection Selection = new GraphSelection();
 		public static GraphEvent CurrentEvent;
 
-		[MenuItem ("Window/Forge/Graph Editor")]
+		[MenuItem("Window/Forge/Graph Editor")]
 		public static void ShowEditor() {
 			GraphEditor editor = (GraphEditor) EditorWindow.GetWindow(typeof(GraphEditor));
 			editor.titleContent = new GUIContent("Forge Graph");
@@ -96,7 +96,7 @@ namespace Forge.Editor {
 
 		public void OnEnable() {
 			OnSelectionChange();
-			Canvas = new Rect(0, 0, position.width*2, position.height*2);
+			Canvas = new Rect(0, 0, position.width * 2, position.height * 2);
 			wantsMouseMove = true;
 		}
 

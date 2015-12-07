@@ -41,7 +41,7 @@ namespace Forge.Editor {
 
 		public static void OnTemplateChange(Template template) {
 			//Geometry geo = asset.Geometry;
-			var go = UnityEditor.Selection.activeObject as GameObject;
+			var go = Selection.activeObject as GameObject;
 			if (go != null) {
 				var asset = go.GetComponent<ProceduralAsset>();
 				if (asset != null) {
@@ -112,7 +112,7 @@ namespace Forge.Editor {
 			GUI.DrawTexture(new Rect(ScrollPoint.x, ScrollPoint.y, scrollViewRect.width, scrollViewRect.height), BGTex);
 
 			// Texture Inputs
-			GameObject go = UnityEditor.Selection.activeObject as GameObject;
+			GameObject go = Selection.activeObject as GameObject;
 			List<string> texInputsList = new List<string>();
 			texInputsList.Add("-");
 			Texture texPreview = null;
@@ -147,7 +147,7 @@ namespace Forge.Editor {
 			}
 
 			// UI
-			UVSet = EditorGUI.Popup(new Rect(10f, 12f, 100f, 30f), UVSet, new string[] { "uv0", "uv2" });
+			UVSet = EditorGUI.Popup(new Rect(10f, 12f, 100f, 30f), UVSet, new string[] { "uv0", "uv1" });
 			DisplayVertices = GUI.Toggle(new Rect(120f, 10f, 30f, 20f), DisplayVertices, IconLoader.Icons["vertex"], "button");
 			DisplayVertexIndices = GUI.Toggle(new Rect(155f, 10f, 30f, 20f), DisplayVertexIndices, IconLoader.Icons["vertexIndex"], "button");
 			DisplayEdges = GUI.Toggle(new Rect(190f, 10f, 30f, 20f), DisplayEdges, IconLoader.Icons["face"], "button");
