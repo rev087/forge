@@ -15,11 +15,43 @@ namespace Forge.Operators {
 		[Input] public Axis Axis = Axis.X;
 
 		[Output] public Geometry Output() {
-			return _geometry;
+
+			Geometry output = _geometry.Copy();
+
+			int u = 0, v = 0;
+
+			switch (Axis) {
+				case Axis.X:
+					u = (int)Axis.Z;
+					v = (int)Axis.Y;
+					break;
+				case Axis.Y:
+					u = (int)Axis.X;
+					v = (int)Axis.Z;
+					break;
+				case Axis.Z:
+					u = (int)Axis.X;
+					v = (int)Axis.Y;
+					break;
+			}
+
+			float uSpan = _geometry.Span((Axis) u), uHalf = uSpan / 2;
+			float vSpan = _geometry.Span((Axis) v), vHalf = vSpan / 2;
+
+			for (int i = 0; i < _geometry.Vertices.Length; i++) {
+				Vector3 vert = _geometry.Vertices[i];
+				output.UV[i] = new Vector2(
+					(vert[u] + uHalf) / uSpan,
+					(vert[v] + vHalf) / vSpan
+					
+				);
+			}
+
+			return output;
 		}
 
 #if UNITY_EDITOR
-		private static Color PreviewFillColor = new Color(0f, 1f, 1f, .15f);
+		private static Color PreviewFillColor = new Color(0f, 1f, 1f, .2f);
 		private static Color PreviewLineColor = new Color(0f, 1f, 1f, 1f);
 
 		private void DrawPlane(Vector3 origin, Axis u, Axis v, Axis w) {
