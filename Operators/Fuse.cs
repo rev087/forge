@@ -3,9 +3,12 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
-	public class Fuse {
+	public class Fuse : Operator {
 
+		[Input]
 		public float Threshold = 0f;
+
+		[Input]
 		public bool RecalculateNormals = false;
 
 		private Geometry _geometry;
@@ -16,16 +19,23 @@ namespace Forge.Operators {
 			Input(geometry);
 		}
 
+		[Input]
 		public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
 		}
 
+		[Output]
 		public Geometry Output() {
 			List<Vector3> vertices = new List<Vector3>();
-			List<Vector2> uv = new List<Vector2>();
+			List<Vector4> tangents = new List<Vector4>();
+			List<Vector2> uvs = new List<Vector2>();
+			List<Vector3> normals = new List<Vector3>();
 
-			for (int v = 0; v < _geometry.Vertices.Length; v++) {
-				Vector3 vertex = _geometry.Vertices[v];
+			Geometry output = _geometry.Copy();
+			output.Polygons = new int[0];
+
+			for (int v = 0; v < output.Vertices.Length; v++) {
+				Vector3 vertex = output.Vertices[v];
 
 				int index = vertices.FindIndex(delegate(Vector3 existing) {
 					if (Threshold <= 0)
@@ -37,26 +47,29 @@ namespace Forge.Operators {
 				if (index < 0) {
 					index = vertices.Count;
 					vertices.Add(vertex);
-					uv.Add(new Vector2(0f, 0f));
+					tangents.Add(output.Tangents[v]);
+					uvs.Add(output.UV[v]);
+					normals.Add(_geometry.Normals[v]);
 				}
 
-				for (int t = 0; t < _geometry.Triangles.Length; t++) {
-					if (_geometry.Triangles[t] == v) {
-						_geometry.Triangles[t] = index;
+				for (int t = 0; t < output.Triangles.Length; t++) {
+					if (v != index && output.Triangles[t] == v) {
+						output.Triangles[t] = index;
 					}
 				}
 			}
 
-			_geometry.Vertices = vertices.ToArray();
-			_geometry.UV = uv.ToArray();
+			output.Vertices = vertices.ToArray();
+			output.Tangents = tangents.ToArray();
+			output.UV = uvs.ToArray();
 
 			if (RecalculateNormals) {
-				_geometry.RecalculateNormals();
+				output.RecalculateNormals();
 			} else {
-				_geometry.Normals = new Vector3[0];
+				output.Normals = normals.ToArray();
 			}
 			
-			return _geometry;
+			return output;
 		}
 
 		public static Geometry Process(Geometry geometry) {
