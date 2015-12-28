@@ -29,27 +29,31 @@ namespace Forge.Editor {
 		}
 
 		public void OnSelectionChange(Node previous, Node current) {
-			ProceduralAsset pa = (ProceduralAsset) Selection.activeGameObject.GetComponent(typeof(ProceduralAsset));
+			if (Selection.activeGameObject) {
 
-			if (pa == null) return;
+				ProceduralAsset pa = (ProceduralAsset)Selection.activeGameObject.GetComponent(typeof(ProceduralAsset));
 
-			if (previous != null) {
-				Operator previousOp = previous.Operator;
-				MethodInfo onDrawGizmos = previousOp.GetType().GetMethod("OnDrawGizmos");
-				if (onDrawGizmos != null) {
-					pa.OnDrawGizmos -= previousOp.OnDrawGizmos;
+				if (pa == null) return;
+
+				if (previous != null) {
+					Operator previousOp = previous.Operator;
+					MethodInfo onDrawGizmos = previousOp.GetType().GetMethod("OnDrawGizmos");
+					if (onDrawGizmos != null) {
+						pa.OnDrawGizmos -= previousOp.OnDrawGizmos;
+					}
 				}
-			}
 
-			if (current != null) {
-				Operator currentOp = current.Operator;
-				MethodInfo onDrawGizmos = currentOp.GetType().GetMethod("OnDrawGizmos");
-				if (onDrawGizmos != null) {
-					pa.OnDrawGizmos += currentOp.OnDrawGizmos;
+				if (current != null) {
+					Operator currentOp = current.Operator;
+					MethodInfo onDrawGizmos = currentOp.GetType().GetMethod("OnDrawGizmos");
+					if (onDrawGizmos != null) {
+						pa.OnDrawGizmos += currentOp.OnDrawGizmos;
+					}
 				}
-			}
 
-			SceneView.RepaintAll();
+				SceneView.RepaintAll();
+
+			}
 		}
 
 	}
