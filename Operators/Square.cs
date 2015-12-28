@@ -42,12 +42,21 @@ namespace Forge.Operators {
 			geo.Polygons = new int[] {0, 4};
 
 			// UV
-			geo.UV = new Vector2 [] {
-				new Vector2(0f, 0f),
-				new Vector2(0f, 1f),
-				new Vector2(1f, 1f),
-				new Vector2(1f, 0f)
-			};
+			if (ori.Normal == Axis.Z) {
+				geo.UV = new Vector2[] {
+					new Vector2(1f, 0f),
+					new Vector2(1f, 1f),
+					new Vector2(0f, 1f),
+					new Vector2(0f, 0f)
+				};
+			} else {
+				geo.UV = new Vector2[] {
+					new Vector2(0f, 0f),
+					new Vector2(0f, 1f),
+					new Vector2(1f, 1f),
+					new Vector2(1f, 0f)
+				};
+			}
 
 			// Surface
 			switch (Surface) {
