@@ -29,15 +29,17 @@ namespace Forge.Operators {
 
 			// Add the converge point
 			geo.Vertices[vertexCount] = Point;
-			geo.Normals[vertexCount] = Point;
 			geo.UV[vertexCount] = new Vector2(.5f, .5f);
+
+			Vector3 normalSum = Vector3.zero;
 
 			for (int i = 0; i < vertexCount; i++) {
 				geo.Vertices[i] = _geometry.Vertices[i];
 				if (!RecalculateNormals && i < _geometry.Normals.Length) {
 					geo.Normals[i] = _geometry.Normals[i];
+					normalSum += geo.Normals[i];
 				}
-				geo.UV[i] = new Vector2((i % 2 == 0) ? 0f : 1f, 0f);
+				geo.UV[i] = _geometry.UV[i];
 
 				int a = (i == _geometry.Vertices.Length-1) ? 0 : i+1, b = vertexCount, c = i;
 
@@ -50,6 +52,8 @@ namespace Forge.Operators {
 				triangles.Add(b);
 				triangles.Add(c);
 			}
+
+			geo.Normals[vertexCount] = (normalSum / vertexCount).normalized;
 
 			geo.Triangles = triangles.ToArray();
 			geo.Polygons = _geometry.Polygons;
