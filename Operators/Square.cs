@@ -14,26 +14,39 @@ namespace Forge.Operators {
 
 			Geometry geo = new Geometry();
 
-			// Vertices and normals
-			geo.Vertices = new Vector3 [] {
-				new Vector3( Size.x / 2, 0, -Size.y / 2), // bottom right
-				new Vector3(-Size.x / 2, 0, -Size.y / 2), // bottom left
-				new Vector3(-Size.x / 2, 0,  Size.y / 2), // top left
-				new Vector3( Size.x / 2, 0,  Size.y / 2)  // top right
+			Orientation ori = Forge.Orientation.FromPreset(Orientation);
+
+			// Vertices
+			geo.Vertices = new Vector3[] {
+				ori.Vector3(- Size.x / 2, - Size.y / 2),
+				ori.Vector3(- Size.x / 2, + Size.y / 2),
+				ori.Vector3(+ Size.x / 2, + Size.y / 2),
+				ori.Vector3(+ Size.x / 2, - Size.y / 2)
 			};
 
-			Vector3 normal = new Vector3(0f, 1f, 0f);
-			geo.Normals = new Vector3 [] {normal, normal, normal, normal};
-			Vector4 tangent = new Vector4(1f, 0f, 0f, -1f);
+			// Normals
+			geo.Normals = new Vector3[] {
+				ori.Vector3(0f, 0f, 1f),
+				ori.Vector3(0f, 0f, 1f),
+				ori.Vector3(0f, 0f, 1f),
+				ori.Vector3(0f, 0f, 1f)
+			};
+
+			// Tangents
+			Vector4 tangent = Vector4.zero;
+			tangent[(int)ori.Horizontal] = 1f;
+			tangent.w = -1f;
 			geo.Tangents = new Vector4 [] {tangent, tangent, tangent, tangent};
+
+			// Polygons
 			geo.Polygons = new int[] {0, 4};
 
 			// UV
 			geo.UV = new Vector2 [] {
-				new Vector2(1f, 1f),
 				new Vector2(0f, 0f),
 				new Vector2(0f, 1f),
-				new Vector2(1f, 1f)
+				new Vector2(1f, 1f),
+				new Vector2(1f, 0f)
 			};
 
 			// Surface
@@ -42,23 +55,28 @@ namespace Forge.Operators {
 					geo.Triangles = new int[0];
 					break;
 				case Surface.Triangulate:
-					geo.Triangles = new int [] {
-						0, 1, 2,
-						2, 3, 0
-					};
+					if (ori.Normal == Axis.Z) {
+						geo.Triangles = new int[] {
+							2, 1, 0,
+							0, 3, 2
+						};
+					} else {
+						geo.Triangles = new int[] {
+							0, 1, 2,
+							2, 3, 0
+						};
+					}
 					break;
 				case Surface.Converge:
 					var conv = new Converge(geo);
 					conv.Point = Center;
-					conv.RecalculateNormals = false;
+					conv.RecalculateNormals = true;
 					geo = conv.Output();
 					break;
 			}
 			
-			geo.ApplyOrientation(Orientation);
 			geo.Offset(Center);
 
-			// Orientation
 			return geo;
 		}
 		
