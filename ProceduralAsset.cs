@@ -12,7 +12,7 @@ namespace Forge {
 	[System.Serializable]
 	public class ProceduralAsset : MonoBehaviour {
 		
-		public delegate void OnDrawGizmosHandler();
+		public delegate void OnDrawGizmosHandler(GameObject go);
 		public event OnDrawGizmosHandler OnDrawGizmos;
 
 		public Template Template = null;
@@ -93,9 +93,9 @@ namespace Forge {
 
 		#if UNITY_EDITOR
 		void OnDrawGizmosSelected() {
-			if (OnDrawGizmos != null) OnDrawGizmos();
             if (!IsBuilt) Generate();
 			MeshDisplay.DrawHandles(this, transform);
+			if (OnDrawGizmos != null) OnDrawGizmos(gameObject);
 		}
 		#endif
 

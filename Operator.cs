@@ -188,7 +188,7 @@ namespace Forge {
 		}
 
 		// Override if operator features gizmos
-		public virtual void OnDrawGizmos() {}
+		public virtual void OnDrawGizmos(GameObject go) {}
 
 	}
 
