@@ -93,8 +93,7 @@ namespace Forge.Operators {
 			}
 		}
 
-		public override void OnDrawGizmos() {
-			GameObject go = Selection.activeObject as GameObject;
+		public override void OnDrawGizmos(GameObject go) {
 			Vector3 pos = go.transform.position;
 
 			switch (Axis) {
