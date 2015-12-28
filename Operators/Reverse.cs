@@ -6,7 +6,6 @@ namespace Forge.Operators {
 	public class Reverse : Operator {
 
 		[Input] public Geometry Input = Geometry.Empty;
-		[Input] bool RecomputeNormals = false;
 
 		public Reverse() {}
 
@@ -17,18 +16,17 @@ namespace Forge.Operators {
 		[Output]
 		public Geometry Output() {
 
-			Geometry geo = Input.Copy();
+			Geometry output = Input.Copy();
 
-			if (geo.Vertices != null) {
-				System.Array.Reverse(geo.Vertices);
-			}
+			// Faces
+			System.Array.Reverse(output.Vertices);
 
 			// Normals
-			if (RecomputeNormals) {
-				geo.RecalculateNormals();
+			for (int i = 0; i < output.Vertices.Length; i++) {
+				output.Normals[i] *= - 1;
 			}
 
-			return geo;
+			return output;
 		}
 
 		public static Geometry Process(Geometry geometry) {
