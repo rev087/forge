@@ -38,6 +38,11 @@ namespace Forge {
 					paramsJs.AddField(outlet.Name, op.GetValue<int>(outlet));
 				}
 
+				// string
+				else if (outlet.DataType == typeof(System.String)) {
+					paramsJs.AddField(outlet.Name, op.GetValue<string>(outlet));
+				}
+
 				// Vector2
 				else if (outlet.DataType == typeof(Vector2)) {
 					var vJs = new JSONObject(JSONObject.Type.ARRAY);
@@ -99,6 +104,11 @@ namespace Forge {
 				// int
 				else if (op.Inputs[i].DataType == typeof(System.Int32)) {
 					op.SetValue<int>(op.Inputs[i], (int) paramsJs[param].n);
+				}
+
+				// string
+				else if (op.Inputs[i].DataType == typeof(System.String)) {
+					op.SetValue<string>(op.Inputs[i], (string) paramsJs[param].str);
 				}
 
 				// Vector2
