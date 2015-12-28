@@ -36,6 +36,8 @@ namespace Forge.Editor {
 
 		public static void DrawNodeInspector(Operator op) {
 
+			if (GraphEditor.Template == null) return;
+
 			if (_TitleStyle == null) {
 				_TitleStyle = new GUIStyle();
 				_TitleStyle.fontSize = 16;
@@ -87,6 +89,12 @@ namespace Forge.Editor {
 					else if (input.DataType == typeof(System.Int32)) {
 						int newValue = EditorGUILayout.IntField(input.Name, op.GetValue<int>(input));
 						op.SetValue<int>(input, newValue);
+					}
+
+					// String field
+					else if (input.DataType == typeof(System.String)) {
+						string newValue = EditorGUILayout.TextField(input.Name, op.GetValue<string>(input));
+						op.SetValue<string>(input, newValue);
 					}
 
 					// Boolean input
