@@ -11,7 +11,7 @@ namespace Forge.Editor {
 	public class UVPReview : EditorWindow {
 
 		public Vector2 ScrollPoint = Vector2.zero;
-		public float Zoom = 1f;
+		public float Zoom = 0.25f;
 		public Rect Canvas;
 
 		public bool DisplayVertices = true;
@@ -25,6 +25,7 @@ namespace Forge.Editor {
 		private const float CanvasMargin = 20f;
 		private const float CanvasMarginTop = 40f;
 		private static Color BGColor = new Color(0.282f, 0.294f, 0.302f);
+		private static Color UVBorderColor = new Color(0.15f, 0.15f, 0.15f);
 		private static Texture2D BGTex = null;
 		private static GUIStyle FaceStyle = null;
 		private static GUIStyle VertexStyle = null;
@@ -136,7 +137,7 @@ namespace Forge.Editor {
 			if (texPreview) {
 				GUI.DrawTexture(uvCanvas, texPreview);
 			} else {
-				Handles.color = new Color(0.1f, 0.1f, 0.1f);
+				Handles.color = UVBorderColor;
 				Handles.DrawPolyLine(new Vector3[] {
 					new Vector3(uvCanvas.x, uvCanvas.y),
 					new Vector3(uvCanvas.x + uvCanvas.width, uvCanvas.y),
