@@ -26,10 +26,6 @@ namespace Forge.Editor {
 				_template = value;
 				if (_template != null) {
 					_template.Changed += OnTemplateChange;
-				} else {
-					if (_template != null && _template.HasChangedHandler()) {
-						_template.Changed -= OnTemplateChange;
-					}
 				}
 			}
 		}
@@ -81,6 +77,7 @@ namespace Forge.Editor {
 
 			// Non-template selection
 			Template = null;
+			Repaint();
 		}
 
 		public static Node GetNode(string GUID) {
