@@ -11,6 +11,13 @@ namespace Forge {
 	[System.AttributeUsage(System.AttributeTargets.Method | System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple = false)]
 	public class InputAttribute : System.Attribute {}
 
+	[System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
+	public class OperatorMetadataAttribute : System.Attribute {
+		public string Title;
+		public string Category;
+		public string Description;
+	}
+
 	[System.Serializable]
 	public class Operator {
 
@@ -32,13 +39,21 @@ namespace Forge {
 			}
 		}
 
-		private string _title = null;
-		public string Title {
+		private OperatorMetadataAttribute _metadata = null;
+		public OperatorMetadataAttribute Metadata {
 			get {
-				if (_title == null) {
-					_title = GetType().Name;
+				if (_metadata != null) return _metadata;
+				System.Type opType = this.GetType();
+				var meta = System.Attribute.GetCustomAttribute(opType, typeof(OperatorMetadataAttribute)) as OperatorMetadataAttribute;
+				if (meta != null) {
+					_metadata = meta;
+					if (_metadata.Title == null) {
+						_metadata.Title = opType.Name;
+					}
+				} else {
+					_metadata = new OperatorMetadataAttribute() { Title = opType.Name };
 				}
-				return _title;
+				return _metadata;
 			}
 		}
 
@@ -88,14 +103,14 @@ namespace Forge {
 			foreach (IOOutlet input in Inputs) {
 				if (input.Name == name) return input;
 			}
-			throw new System.ArgumentException(System.String.Format("Operator {0} does not contain an input named {1}", Title, name));
+			throw new System.ArgumentException(System.String.Format("Operator {0} does not contain an input named {1}", Metadata.Title, name));
 		}
 
 		public IOOutlet GetOutput(string name) {
 			foreach (IOOutlet output in Outputs) {
 				if (output.Name == name) return output;
 			}
-			throw new System.ArgumentException(System.String.Format("Operator {0} does not contain an output named {1}", Title, name));
+			throw new System.ArgumentException(System.String.Format("Operator {0} does not contain an output named {1}", Metadata.Title, name));
 		}
 
 		public T GetValue<T>(IOOutlet outlet) {
@@ -109,7 +124,7 @@ namespace Forge {
 				return (T) ((MethodInfo)outlet.Member).Invoke(this, null);
 			}
 			else {
-				throw new System.ArgumentException(System.String.Format("Operator {0} could not retrieve the value of {1}", Title, outlet.Name));
+				throw new System.ArgumentException(System.String.Format("Operator {0} could not retrieve the value of {1}", Metadata.Title, outlet.Name));
 			}
 		}
 
@@ -124,7 +139,7 @@ namespace Forge {
 				return (object) ((MethodInfo)outlet.Member).Invoke(this, null);
 			}
 			else {
-				throw new System.ArgumentException(System.String.Format("Operator {0} could not retrieve the value of {1}", Title, outlet.Name));
+				throw new System.ArgumentException(System.String.Format("Operator {0} could not retrieve the value of {1}", Metadata.Title, outlet.Name));
 			}
 		}
 
@@ -140,7 +155,7 @@ namespace Forge {
 				((MethodInfo)outlet.Member).Invoke(this, new object[] {(object)val});
 			}
 			else {
-				throw new System.ArgumentException(System.String.Format("Operator {0} could not set the value of {1} to {2}", Title, outlet.Name, val));
+				throw new System.ArgumentException(System.String.Format("Operator {0} could not set the value of {1} to {2}", Metadata.Title, outlet.Name, val));
 			}
 		}
 
@@ -172,7 +187,7 @@ namespace Forge {
 				((MethodInfo)outlet.Member).Invoke(this, new object[] {val});
 			}
 			else {
-				throw new System.ArgumentException(System.String.Format("Operator {0} could not set the value of {1} to {2}", Title, outlet.Name, val));
+				throw new System.ArgumentException(System.String.Format("Operator {0} could not set the value of {1} to {2}", Metadata.Title, outlet.Name, val));
 			}
 		}
 

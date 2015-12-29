@@ -94,7 +94,7 @@ namespace Forge.Editor.Renderers {
 			_outputTypeStyle.fontSize = Mathf.CeilToInt(_IOAltFontSize * scale);
 
 			// Title box
-			string title = op.IsGeometryOutput ? op.Title + "*" : op.Title;
+			string title = op.IsGeometryOutput ? op.Metadata.Title + " *" : op.Metadata.Title;
 			GUI.DrawTexture(new Rect(x, y, width, titleHeight), _BGTex);
 			GUI.Label(new Rect(x, y, width, titleHeight), title, _titleStyle);
 

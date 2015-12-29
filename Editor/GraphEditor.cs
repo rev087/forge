@@ -169,8 +169,13 @@ namespace Forge.Editor {
 
 					var opTypes = Operator.GetAvailableOperators();
 					foreach (var opType in opTypes) {
+						string menuLabel = opType.Name;
+						var meta = System.Attribute.GetCustomAttribute(opType, typeof(OperatorMetadataAttribute)) as OperatorMetadataAttribute;
+						if (meta != null) {
+							menuLabel = meta.Category + "/" + opType.Name;
+						}
 						var payload = new MenuActionPayload() {OperatorType=opType, Position=currentEvent.mousePosition};
-						menu.AddItem(new GUIContent(opType.Name), false, MenuAction, payload);
+						menu.AddItem(new GUIContent(menuLabel), false, MenuAction, payload);
 					}
 
 					menu.ShowAsContext();

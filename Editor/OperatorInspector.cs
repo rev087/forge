@@ -44,7 +44,7 @@ namespace Forge.Editor {
 			}
 
 			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField(op.Title, _TitleStyle, GUILayout.Width(GraphEditor.SidebarWidth/2-20f));
+			EditorGUILayout.LabelField(op.Metadata.Title, _TitleStyle, GUILayout.Width(GraphEditor.SidebarWidth/2-20f));
 			if (op.IsGeometryOutput) {
 				EditorGUILayout.LabelField("(output)", GUILayout.Width(GraphEditor.SidebarWidth/2-20f));
 			} else {
@@ -69,7 +69,7 @@ namespace Forge.Editor {
 				// Value comes from outlet connection
 				foreach (IOConnection conn in GraphEditor.Template.Connections) {
 					if (op.GUID == conn.To.GUID && input.Name == conn.Input.Name) {
-						var valueFrom = System.String.Format("{0}.{1}", conn.From.Title, conn.Output.Name);
+						var valueFrom = System.String.Format("{0}.{1}", conn.From.Metadata.Title, conn.Output.Name);
 						EditorGUILayout.LabelField(input.Name, valueFrom);
 						isConnectedInput = true;
 						continue;
