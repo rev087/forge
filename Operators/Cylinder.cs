@@ -19,6 +19,13 @@ namespace Forge.Operators {
 		[Output]
 		public Geometry Output() {
 
+			if (Segments <= 1) {
+				OperatorError = "Segments must be greater than 1";
+				return Geometry.Empty;
+			} else {
+				OperatorError = null;
+			}
+
 			var bottom = new Circle();
 			bottom.Radius = Radius;
 			bottom.Segments = Segments;
