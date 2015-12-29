@@ -18,7 +18,7 @@ namespace Forge {
 		public Template Template = null;
 		[HideInInspector] public Mesh Mesh = null;
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		private MeshDisplay _meshDisplay = null;
 		public MeshDisplay MeshDisplay {
 			get {
@@ -29,12 +29,14 @@ namespace Forge {
 				return _meshDisplay;
 			}
 		}
-		#endif
+
+		[HideInInspector] [System.NonSerialized] public Mesh GhostMesh = null;
+
+#endif
 
 		private System.Diagnostics.Stopwatch Stopwatch = null;
 		[HideInInspector] public double LastBuildTime = 0;
 
-		[HideInInspector] [System.NonSerialized] public Mesh GhostMesh = null;
 		[HideInInspector] [System.NonSerialized] public Geometry Geometry = Geometry.Empty;
 		[HideInInspector] [System.NonSerialized] public bool IsBuilt = false;
 
@@ -47,11 +49,13 @@ namespace Forge {
 				Stopwatch = new System.Diagnostics.Stopwatch();
 			}
 
+#if UNITY_EDITOR
 			// Reset the ghost mesh
 			GhostMesh = null;
+#endif
 
 			// Statistics
-			#if UNITY_EDITOR
+#if UNITY_EDITOR
 			Stopwatch.Start();
 			#endif
 
@@ -81,6 +85,7 @@ namespace Forge {
 			IsBuilt = true;
 		}
 
+#if UNITY_EDITOR
 		public void Ghost(Geometry geo) {
 			GhostMesh = new Mesh();
 			GhostMesh.Clear();
@@ -91,13 +96,12 @@ namespace Forge {
 			GhostMesh.uv = geo.UV;
 		}
 
-		#if UNITY_EDITOR
 		void OnDrawGizmosSelected() {
-            if (!IsBuilt) Generate();
+			if (!IsBuilt) Generate();
 			MeshDisplay.DrawHandles(this, transform);
 			if (OnDrawGizmos != null) OnDrawGizmos(gameObject);
 		}
-		#endif
+#endif
 
 	}
 
