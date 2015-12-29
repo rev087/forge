@@ -6,9 +6,9 @@ using UnityEditor;
 
 namespace Forge.Operators {
 
-	[OperatorMetadata(Category = "UV")]
+	[OperatorMetadata(Category = "UV", Title = "Planar Projection")]
 	class PlanarProjection : Operator {
-		private Geometry _geometry;
+		private Geometry _geometry = Geometry.Empty;
 
 		[Input] public void Input(Geometry geometry) {
 			_geometry = geometry.Copy();
@@ -95,6 +95,8 @@ namespace Forge.Operators {
 		}
 
 		public override void OnDrawGizmos(GameObject go) {
+			if (_geometry.Vertices.Length == 0) return;
+
 			Vector3 pos = go.transform.position;
 
 			switch (Axis) {
@@ -109,7 +111,7 @@ namespace Forge.Operators {
 					break;
 			}
 		}
-	}
 #endif
+	}
 
 }
