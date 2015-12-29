@@ -14,12 +14,6 @@ namespace Forge.Editor {
 			EditorGUILayout.LabelField(template.ToString());
 			EditorGUILayout.LabelField("Operators", template.Operators.Count.ToString());
 			EditorGUILayout.LabelField("Connections", template.Connections.Count.ToString());
-			
-			if (GUILayout.Button("Load Demo")) {
-				template.Connections.Clear();
-				template.Operators.Clear();
-				template.LoadDemo();
-			}
 
 			if (GUILayout.Button("Serialize")) {
 				template.Serialize();
