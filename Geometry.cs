@@ -202,6 +202,22 @@ namespace Forge {
 			return Max(axis) - Min(axis);
 		}
 
+		public Vector3 Centroid() {
+			Vector3 sum = Vector3.zero;
+			for (int i = 0; i < Vertices.Length; i++) {
+				sum += Vertices[i];
+			}
+			return sum / Vertices.Length;
+		}
+
+		public Vector2 PlanarCentroid(Axis ignoredAxis) {
+			Vector2 sum = Vector2.zero;
+			for (int i = 0; i < Vertices.Length; i++) {
+				sum += PlanarCoordinates((int)ignoredAxis, Vertices[i]);
+			}
+			return sum / Vertices.Length;
+		}
+
 		public override string ToString() {
 			return System.String.Format("vert:{0}, nor:{1}, tan:{2} uv:{3}, tri:{4} poly:{5}",
 				Vertices != null ? Vertices.Length.ToString() : "-",
