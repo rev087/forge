@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
@@ -266,4 +267,6 @@ namespace Forge.EditorUtils {
 
 	} // class
 
+
 } // namespace
+#endif
