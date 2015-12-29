@@ -7,13 +7,6 @@ namespace Forge.Operators {
 	public class FlipFaces : Operator {
 
 		[Input] public Geometry Input = Geometry.Empty;
-		[Input] bool RecomputeNormals = false;
-
-		public FlipFaces() {}
-
-		public FlipFaces(Geometry geometry) {
-			Input = geometry;
-		}
 
 		[Output]
 		public Geometry Output() {
@@ -29,8 +22,8 @@ namespace Forge.Operators {
 			geo.Triangles = revTriangles;
 
 			// Normals
-			if (RecomputeNormals) {
-				geo.RecalculateNormals();
+			for (int i = 0; i < geo.Normals.Length; i++) {
+				geo.Normals[i] *= -1;
 			}
 
 			return geo;
