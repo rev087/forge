@@ -172,7 +172,7 @@ namespace Forge.Editor {
 						string menuLabel = opType.Name;
 						var meta = System.Attribute.GetCustomAttribute(opType, typeof(OperatorMetadataAttribute)) as OperatorMetadataAttribute;
 						if (meta != null) {
-							menuLabel = meta.Category + "/" + opType.Name;
+							menuLabel = meta.Category + "/" + (meta.Title != null ? meta.Title : opType.Name);
 						}
 						var payload = new MenuActionPayload() {OperatorType=opType, Position=currentEvent.mousePosition};
 						menu.AddItem(new GUIContent(menuLabel), false, MenuAction, payload);
