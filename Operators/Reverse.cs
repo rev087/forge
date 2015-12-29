@@ -3,29 +3,21 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
-	[OperatorMetadata(Category = "Geometry")]
+	[OperatorMetadata(Category = "Geometry", Title = "Reverse Vertices")]
 	public class Reverse : Operator {
 
 		[Input] public Geometry Input = Geometry.Empty;
-
-		public Reverse() {}
-
-		public Reverse(Geometry geometry) {
-			Input = geometry;
-		}
 
 		[Output]
 		public Geometry Output() {
 
 			Geometry output = Input.Copy();
 
-			// Faces
+			// Vertices
 			System.Array.Reverse(output.Vertices);
-
-			// Normals
-			for (int i = 0; i < output.Vertices.Length; i++) {
-				output.Normals[i] *= - 1;
-			}
+			System.Array.Reverse(output.UV);
+			System.Array.Reverse(output.Normals);
+			System.Array.Reverse(output.Tangents);
 
 			return output;
 		}
