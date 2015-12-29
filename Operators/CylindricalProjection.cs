@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Forge.Extensions;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -7,7 +8,7 @@ using UnityEditor;
 
 namespace Forge.Operators {
 
-	[OperatorMetadata(Category = "UV")]
+	[OperatorMetadata(Category = "UV", Title = "Cylindrical Projection")]
 	class CylindricalProjection : Operator {
 		private Geometry _geometry;
 
@@ -43,16 +44,16 @@ namespace Forge.Operators {
 			// The height z is the signed distance from the chosen plane to the point P.
 
 			float vMin = _geometry.Min((Axis)v), vMax = _geometry.Max((Axis)v);
-			float uMin = Mathf.Infinity, uMax = 0f; // Debugging
+			//float uMin = Mathf.Infinity, uMax = 0f; // Debugging
 			float minAngle = -90f * Mathf.Deg2Rad, maxAngle = 270f * Mathf.Deg2Rad;
 
-			float prevAngle = 0f;
-
+			// Loop through vertices to find their heights and azimuths (V and U respectively)
 			for (int i = 0; i < _geometry.Vertices.Length; i++) {
 				Vector3 vert = _geometry.Vertices[i];
+
+				float height = vert[v].Remap(vMin, vMax, 0f, 1f);
 				float radius = Mathf.Sqrt(vert[u] * vert[u] + vert[w] * vert[w]);
 				float azimuth = Mathf.Atan2(vert[u], vert[w]);
-				float height = vert[v].Remap(vMin, vMax, 0f, 1f);
 
 				if (vert[u] == 0 && vert[w] == 0) {
 					azimuth = 0;
@@ -62,28 +63,94 @@ namespace Forge.Operators {
 					azimuth = -Mathf.Asin(vert[w] / radius) + Mathf.PI;
 				}
 
-				if (azimuth == minAngle) azimuth = maxAngle;
+				//if (azimuth < uMin) uMin = azimuth;
+				//if (azimuth > uMax) uMax = azimuth;
+
 
 				output.UV[i] = new Vector2(azimuth.Remap(minAngle, maxAngle, 0f, 1f), height);
-
-				if (azimuth < uMin) uMin = azimuth;
-				if (azimuth > uMax) uMax = azimuth;
-
-				float delta = Mathf.Abs(prevAngle - azimuth);
-
-				if (delta >= maxAngle) {
-					Debug.LogFormat("Right seam at {0}, p:{1} c:{2}", i, prevAngle * Mathf.Rad2Deg, azimuth * Mathf.Rad2Deg);
-				}
-				else if (delta == 0) {
-					Debug.LogFormat("Left seam at {0}, p:{1} c:{2}", i, prevAngle * Mathf.Rad2Deg, azimuth * Mathf.Rad2Deg);
-				}
-
-				Debug.LogFormat("[{0}] deg:{1} delta:{2}", i, (azimuth * Mathf.Rad2Deg), Mathf.Round(delta * Mathf.Rad2Deg));
-				if (azimuth != prevAngle) prevAngle = azimuth;
 			}
-			Debug.LogFormat("aMin:{0} aMax:{1}", uMin, uMax);
-			Debug.LogFormat("minDeg:{0}, maxDeg{1}", uMin * Mathf.Rad2Deg, uMax * Mathf.Rad2Deg);
-			Debug.LogFormat("uMin:{0}, uMax:{1}", uMin.Remap(minAngle, maxAngle, 0f, 1f), uMax.Remap(minAngle, maxAngle, 0f, 1f));
+
+			//Debug.LogFormat("uMin:{0} uMax:{1}", uMin * Mathf.Rad2Deg, uMax * Mathf.Rad2Deg);
+
+			List<Vector3> vertices = new List<Vector3>();
+			vertices.AddRange(output.Vertices);
+
+			List<Vector2> uvs = new List<Vector2>();
+			uvs.AddRange(output.UV);
+
+			List<Vector3> normals = new List<Vector3>();
+			normals.AddRange(output.Normals);
+
+			List<Vector4> tangents = new List<Vector4>();
+			tangents.AddRange(output.Tangents);
+
+			Dictionary<int, int> splits = new Dictionary<int, int>();
+
+			// Split vertices at seams when the face in the UV mapping is laid out counter-clockwise
+			for (int i = 0; i < _geometry.Triangles.Length; i += 3) {
+				int i0 = _geometry.Triangles[i + 0];
+				int i1 = _geometry.Triangles[i + 1];
+				int i2 = _geometry.Triangles[i + 2];
+
+				Vector2 uv0 = output.UV[i0];
+				Vector2 uv1 = output.UV[i1];
+				Vector2 uv2 = output.UV[i2];
+
+				// http://stackoverflow.com/questions/1165647/how-to-determine-if-a-list-of-polygon-points-are-in-clockwise-order
+				// https://en.wikipedia.org/wiki/Shoelace_formula
+				float edge0 = (uv1.x - uv0.x) * (uv1.y + uv0.y);
+				float edge1 = (uv2.x - uv1.x) * (uv2.y + uv1.y);
+				float edge2 = (uv0.x - uv2.x) * (uv0.y + uv2.y);
+				float areaTimesTwo = edge0 + edge1 + edge2;
+
+				// If areaTimesTwo is negative, the triangle is laid out counter-clockwise
+				if (areaTimesTwo < 0) {
+
+					// We split the left-most vertices
+					if (uv0.x < 0.5f) {
+						int newIndex;
+						if (!splits.TryGetValue(i0, out newIndex)) {
+							newIndex = vertices.Count;
+							vertices.Add(_geometry.Vertices[i0]);
+							uvs.Add(output.UV[i0] + new Vector2(1f, 0f));
+							normals.Add(_geometry.Normals[i0]);
+							tangents.Add(_geometry.Tangents[i0]);
+						}
+						output.Triangles[i + 0] = newIndex;
+					}
+
+					if (uv1.x < 0.5f) {
+						int newIndex;
+						if (!splits.TryGetValue(i1, out newIndex)) {
+							newIndex = vertices.Count;
+							vertices.Add(_geometry.Vertices[i1]);
+							uvs.Add(output.UV[i1] + new Vector2(1f, 0f));
+							normals.Add(_geometry.Normals[i1]);
+							tangents.Add(_geometry.Tangents[i1]);
+						}
+						output.Triangles[i + 1] = newIndex;
+					}
+
+					if (uv2.x < 0.5f) {
+						int newIndex;
+						if (!splits.TryGetValue(i2, out newIndex)) {
+							newIndex = vertices.Count;
+							vertices.Add(_geometry.Vertices[i2]);
+							uvs.Add(output.UV[i2] + new Vector2(1f, 0f));
+							normals.Add(_geometry.Normals[i2]);
+							tangents.Add(_geometry.Tangents[i2]);
+						}
+						output.Triangles[i + 2] = newIndex;
+					}
+
+				}
+
+			}
+
+			output.Vertices = vertices.ToArray();
+			output.Normals = normals.ToArray();
+			output.UV = uvs.ToArray();
+			output.Tangents = tangents.ToArray();
 
 			return output;
 		}
@@ -166,7 +233,7 @@ namespace Forge.Operators {
 					break;
 			}
 		}
-	}
 #endif
+	}
 
 }
