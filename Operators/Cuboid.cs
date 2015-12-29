@@ -3,6 +3,7 @@ using Forge.Operators;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Primitives")]
 	public class Cuboid : Operator {
 
 		[Input] public Vector3 Size = Vector3.one;

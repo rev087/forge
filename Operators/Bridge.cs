@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Forge.Operators {
 	
+	[OperatorMetadata(Category = "Geometry")]
 	public class Bridge : Operator {
 
 		[Input] public bool RecalculateNormals = false;

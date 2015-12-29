@@ -3,6 +3,7 @@ using Forge.Operators;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Primitives")]
 	public class Circle : Operator {
 
 		public enum OpeningType {Sector, Segment};

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Geometry")]
 	public class FlipFaces : Operator {
 
 		[Input] public Geometry Input = Geometry.Empty;

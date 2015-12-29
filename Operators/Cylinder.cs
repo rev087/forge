@@ -3,6 +3,7 @@ using Forge.Operators;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Primitives")]
 	public class Cylinder : Operator {
 
 		[Input] public float Radius = 0.5f;

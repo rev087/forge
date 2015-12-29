@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Geometry")]
 	public class Manipulate : Operator {
 
 		[Input] public Vector3 Position = Vector3.zero;

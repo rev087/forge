@@ -3,6 +3,7 @@ using Forge.Operators;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Primitives")]
 	public class Square : Operator {
 
 		[Input] public OrientationPreset Orientation = OrientationPreset.XZ;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Geometry")]
 	public class Mirror : Operator {
 
 		[Input] public Geometry Input;

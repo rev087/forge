@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Values")]
 	public class FloatValue : Operator {
 
 		[Input][Output]

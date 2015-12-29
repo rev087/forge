@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Geometry")]
 	public class Converge : Operator {
 
 		[Input] public Vector3 Point = Vector3.zero;

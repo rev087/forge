@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Geometry")]
 	public class Polygonize : Operator {
 
 		[Input] public List<Geometry> Input = new List<Geometry>();

@@ -4,6 +4,7 @@ using Forge.Extensions;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Geometry")]
 	public class Triangulate : Operator {
 
 		[Input] public Geometry Input = Geometry.Empty;

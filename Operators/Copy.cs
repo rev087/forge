@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Geometry")]
 	public class Copy : Operator {
 
 		[Input] public int Copies = 1;

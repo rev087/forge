@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "Math")]
 	public class MultiplyInteger : Operator {
 
 		[Input] public int A = 0;
@@ -14,6 +15,7 @@ namespace Forge.Operators {
 
 	}
 
+	[OperatorMetadata(Category = "Math")]
 	public class MultiplyFloat : Operator {
 
 		[Input] public float A = 0.0f;

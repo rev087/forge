@@ -6,6 +6,7 @@ using UnityEditor;
 
 namespace Forge.Operators {
 
+	[OperatorMetadata(Category = "UV")]
 	class PlanarProjection : Operator {
 		private Geometry _geometry;
 
