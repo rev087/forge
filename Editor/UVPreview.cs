@@ -103,7 +103,7 @@ namespace Forge.Editor {
 			// Zoom with the mouse wheel
 			if (Event.current.type == EventType.ScrollWheel) {
 				Zoom += -Event.current.delta.y / 50;
-				if (Zoom < 0.25f) Zoom = 0.25f;
+				if (Zoom < 0.1f) Zoom = 0.1f;
 				if (Zoom > 1f) Zoom = 1f;
 				needsRepaint = true;
 				Event.current.Use();
