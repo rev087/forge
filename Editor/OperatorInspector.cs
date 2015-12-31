@@ -69,8 +69,20 @@ namespace Forge.Editor {
 				// Value comes from outlet connection
 				foreach (IOConnection conn in GraphEditor.Template.Connections) {
 					if (op.GUID == conn.To.GUID && input.Name == conn.Input.Name) {
-						var valueFrom = System.String.Format("{0}.{1}", conn.From.Metadata.Title, conn.Output.Name);
-						EditorGUILayout.LabelField(input.Name, valueFrom);
+
+						var val = conn.From.GetValue(conn.Output);
+
+						string valueDescription;
+						if (val is System.Int32 || val is System.Single || val is System.String || val is System.Boolean
+							|| val is Vector3 || val is Vector3 || val is Vector4) {
+							// If the value is printable, print it
+							valueDescription = val.ToString();
+						} else {
+							// Otherwise print the outlet description
+							valueDescription = System.String.Format("{0}.{1}", conn.From.Metadata.Title, conn.Output.Name);
+						}
+
+						EditorGUILayout.LabelField(input.Name, valueDescription);
 						isConnectedInput = true;
 						continue;
 					}
