@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Forge.Operators {
 
-	[OperatorMetadata(Category = "Values")]
+	[OperatorMetadata(Category = "Values", Title = "Float")]
 	public class FloatValue : Operator {
 
 		[Input][Output]
