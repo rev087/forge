@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using Forge.Editor.Renderers;
 using System.Collections.Generic;
+using Forge.Extensions;
 
 namespace Forge.Editor {
 
@@ -18,6 +19,8 @@ namespace Forge.Editor {
 		public Rect Canvas;
 		private static Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
 		public const float SidebarWidth = 250f;
+		private const float MaxZoom = 1f;
+		private const float MinZoom = 0.25f;
 
 		private static Template _template = null;
 		public static Template Template {
@@ -93,7 +96,6 @@ namespace Forge.Editor {
 
 		public void OnEnable() {
 			OnSelectionChange();
-			Canvas = new Rect(0, 0, position.width * 2, position.height * 2);
 			wantsMouseMove = true;
 		}
 
@@ -111,10 +113,23 @@ namespace Forge.Editor {
 			bool needsRepaint = false;
 
 			if (currentEvent.type == EventType.ScrollWheel) {
-				Zoom += -currentEvent.delta.y / 50;
-				if (Zoom < 0.25f) Zoom = 0.25f;
-				if (Zoom > 1f) Zoom = 1f;
-				needsRepaint = true;
+
+				float delta = -currentEvent.delta.y / 50;
+
+				if (currentEvent.delta.y < 0 && Zoom + delta < MaxZoom
+					|| currentEvent.delta.y > 0 && Zoom + delta > MinZoom) {
+
+					Zoom += delta;
+
+					float xPercent = (ScrollPoint.x / (Canvas.width - scrollViewRect.width)).Clamp(0f, 1f);
+					ScrollPoint.x = xPercent * ((position.width * 4 * Zoom) - scrollViewRect.width);
+
+					float yPercent = (ScrollPoint.y / (Canvas.height - scrollViewRect.height)).Clamp(0f, 1f);
+					ScrollPoint.y = yPercent * ((position.height * 4 * Zoom) - scrollViewRect.height);
+
+					needsRepaint = true;
+				}
+
 				currentEvent.Use();
 			}
 
