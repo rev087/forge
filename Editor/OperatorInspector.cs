@@ -70,15 +70,21 @@ namespace Forge.Editor {
 				foreach (IOConnection conn in GraphEditor.Template.Connections) {
 					if (op.GUID == conn.To.GUID && input.Name == conn.Input.Name) {
 
-						var val = conn.From.GetValue(conn.Output);
-
 						string valueDescription;
-						if (val is System.Int32 || val is System.Single || val is System.String || val is System.Boolean
-							|| val is Vector3 || val is Vector3 || val is Vector4) {
-							// If the value is printable, print it
-							valueDescription = val.ToString();
-						} else {
-							// Otherwise print the outlet description
+
+						// If the value is printable, print it
+						if (conn.Output.DataType == typeof(System.Int32)
+							|| conn.Output.DataType == typeof(System.Single)
+							|| conn.Output.DataType == typeof(System.String)
+							|| conn.Output.DataType == typeof(System.Boolean)
+							|| conn.Output.DataType == typeof(Vector2)
+							|| conn.Output.DataType == typeof(Vector3)
+							|| conn.Output.DataType == typeof(Vector4)) {
+							valueDescription = conn.From.GetValue(conn.Output).ToString();
+						}
+
+						// Otherwise print the outlet description
+						else {
 							valueDescription = System.String.Format("{0}.{1}", conn.From.Metadata.Title, conn.Output.Name);
 						}
 
