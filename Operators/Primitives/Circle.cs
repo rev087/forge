@@ -19,6 +19,13 @@ namespace Forge.Operators {
 
 		[Output]
 		public Geometry Output() {
+			if (Segments <= 0) {
+				OperatorError = "Segments must be a positive integer";
+				return Geometry.Empty;
+			} else {
+				OperatorError = null;
+			}
+
 			bool isOpen = Mathf.Abs(EndAngle - StartAngle) < 360;
 			bool hasMidPoint = (Opening == OpeningType.Sector && isOpen) ||
 				(Opening == OpeningType.Sector && Surface);
