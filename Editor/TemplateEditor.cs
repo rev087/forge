@@ -23,6 +23,10 @@ namespace Forge.Editor {
 				template.Deserialize();
 			}
 
+			if (GUILayout.Button("Clear")) {
+				template.Clear();
+			}
+
 			EditorGUILayout.Space();
 
 			string jsonTitle = System.String.Format("JSON ({0})", template.JSON.Length);
