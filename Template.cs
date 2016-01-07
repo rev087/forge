@@ -83,7 +83,7 @@ namespace Forge {
 
 		public virtual Geometry Build() {
 
-			// Reset multi imputs
+			// Reset multi inputs
 			foreach (var kvp in Operators) {
 				foreach (IOOutlet input in kvp.Value.Inputs) {
 					if (input.DataType.IsCollection()) {
