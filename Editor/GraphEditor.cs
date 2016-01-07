@@ -21,6 +21,8 @@ namespace Forge.Editor {
 		public const float SidebarWidth = 250f;
 		private const float MaxZoom = 1f;
 		private const float MinZoom = 0.25f;
+		private const float CanvasWidth = 4000f;
+		private const float CanvasHeight = 4000f;
 
 		private static Template _template = null;
 		public static Template Template {
@@ -112,28 +114,30 @@ namespace Forge.Editor {
 
 			bool needsRepaint = false;
 
+			// Mouse wheel event to control zoom
 			if (currentEvent.type == EventType.ScrollWheel) {
 
-				float delta = -currentEvent.delta.y / 50;
+				// Dampen the wheel delta by a factor of 100
+				float wheelDelta = -Event.current.delta.y / 100;
+				float previousZoom = Zoom;
 
-				if (currentEvent.delta.y < 0 && Zoom + delta < MaxZoom
-					|| currentEvent.delta.y > 0 && Zoom + delta > MinZoom) {
+				// Apply the delta to the zoom level and clamp to min and max
+				Zoom = (Zoom + wheelDelta).Clamp(MinZoom, MaxZoom);
+				
+				if (previousZoom != Zoom) {
+					// Keep the viewport anchored to the position of the mouse cursor
+					float effectiveZoomDelta = Zoom - previousZoom;
+					Vector2 pivotDelta = Event.current.mousePosition * effectiveZoomDelta;
+					ScrollPoint += pivotDelta / Zoom;
 
-					Zoom += delta;
-
-					float xPercent = (ScrollPoint.x / (Canvas.width - scrollViewRect.width)).Clamp(0f, 1f);
-					ScrollPoint.x = xPercent * ((position.width * 4 * Zoom) - scrollViewRect.width);
-
-					float yPercent = (ScrollPoint.y / (Canvas.height - scrollViewRect.height)).Clamp(0f, 1f);
-					ScrollPoint.y = yPercent * ((position.height * 4 * Zoom) - scrollViewRect.height);
-
+					// Repaint if there was a zoom change (after clamping)
 					needsRepaint = true;
 				}
 
 				currentEvent.Use();
 			}
 
-			Canvas = new Rect(0f, 0f, position.width*4*Zoom, position.height*4*Zoom);
+			Canvas = new Rect(0f, 0f, CanvasWidth * Zoom, CanvasHeight * Zoom);
 
 			_gridRenderer.Draw(ScrollPoint, Zoom, Canvas);
 
@@ -189,7 +193,7 @@ namespace Forge.Editor {
 						if (meta != null) {
 							menuLabel = meta.Category + "/" + (meta.Title != null ? meta.Title : opType.Name);
 						}
-						var payload = new MenuActionPayload() {OperatorType=opType, Position=currentEvent.mousePosition};
+						var payload = new MenuActionPayload() {OperatorType=opType, Position=currentEvent.mousePosition / Zoom};
 						menu.AddItem(new GUIContent(menuLabel), false, MenuAction, payload);
 					}
 
