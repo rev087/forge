@@ -13,7 +13,7 @@ namespace Forge.Operators {
 		[Input]
 		public bool CloseLoop = false;
 
-		private Geometry _geometry;
+		private Geometry _geometry = Geometry.Empty;
 
 		public Bridge() {}
 
