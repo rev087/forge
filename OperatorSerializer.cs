@@ -91,6 +91,11 @@ namespace Forge {
 			for (int i = 0; i < op.Inputs.Length; i++) {
 				string param = op.Inputs[i].Name;
 
+				if (paramsJs[param] == null) {
+					Debug.LogWarningFormat("Serializer warning: `{0}.{1}` not found in serialized format", op.GetType().Name, param);
+					continue;
+				}
+
 				// float
 				if (op.Inputs[i].DataType == typeof(System.Single)) {
 					op.SetValue<float>(op.Inputs[i], paramsJs[param].n);

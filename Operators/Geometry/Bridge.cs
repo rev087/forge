@@ -60,6 +60,9 @@ namespace Forge.Operators {
 
 			Geometry closeLoopPass;
 
+			// CloseLoop is achieved by adding a new polygon of the appropriate length,
+			// with its vertices at the same positions as the vertices in the first polygon
+			// in the input geometry
 			if (CloseLoop) {
 				var newLength = _geometry.Vertices.Length + polyLength;
 				Vector3[] vertices = new Vector3[newLength];
@@ -72,6 +75,7 @@ namespace Forge.Operators {
 				_geometry.UV.CopyTo(uvs, 0);
 				_geometry.Tangents.CopyTo(tangents, 0);
 
+				// Copy all the geometry data from the first polygon
 				for (int i = _geometry.Vertices.Length; i < newLength; i++) {
 					var f = i - _geometry.Vertices.Length;
 					vertices[i] = _geometry.Vertices[f];
@@ -80,11 +84,13 @@ namespace Forge.Operators {
 					tangents[i] = _geometry.Tangents[f];
 				}
 
+				// Create the new polygon
 				int[] polygons = new int[_geometry.Polygons.Length + 2];
 				_geometry.Polygons.CopyTo(polygons, 0);
 				polygons[_geometry.Polygons.Length] = _geometry.Vertices.Length;
 				polygons[_geometry.Polygons.Length + 1] = polyLength;
 
+				// Assemble the geometry for this pass
 				closeLoopPass = Geometry.Empty;
 				closeLoopPass.Vertices = vertices;
 				closeLoopPass.Normals = normals;
@@ -95,7 +101,7 @@ namespace Forge.Operators {
 				closeLoopPass = _geometry;
 			}
 
-			var polyCount = _geometry.Polygons.Length / 2;
+			var polyCount = closeLoopPass.Polygons.Length / 2;
 			polyLength += ClosePolygons ? 1 : 0;
 			var vertexCount = polyLength * polyCount;
 			var triCount = (polyLength - 1) * (polyCount - 1) * 6;
@@ -116,6 +122,8 @@ namespace Forge.Operators {
 
 			Geometry closePolygonsPass = Geometry.Empty;
 
+			// ClosePolygons is achieved by adding a new vertex a the end of each polygon,
+			// at the same position as the first vertex in that polygon
 			if (ClosePolygons) {
 
 				// Polygons need one additional vertex if CloseLoop is true
@@ -188,6 +196,8 @@ namespace Forge.Operators {
 					}
 
 					if (p > 0) {
+						Debug.LogFormat("{0}/{1}", tCount, result.Triangles.Length);
+
 						// Lower-right triangle
 						result.Triangles[tCount++] = v;
 						result.Triangles[tCount++] = v - polyLength;
