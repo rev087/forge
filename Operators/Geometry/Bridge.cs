@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Forge.Operators {
 	
@@ -55,8 +56,47 @@ namespace Forge.Operators {
 				lastIndex = _geometry.Polygons[i] + _geometry.Polygons[i + 1];
 			}
 
-			var polyCount = _geometry.Polygons.Length / 2;
 			var polyLength = GetBridgeLength(_geometry.Polygons);
+
+			Geometry closeLoopPass;
+
+			if (CloseLoop) {
+				var newLength = _geometry.Vertices.Length + polyLength;
+				Vector3[] vertices = new Vector3[newLength];
+				Vector3[] normals = new Vector3[newLength];
+				Vector2[] uvs = new Vector2[newLength];
+				Vector4[] tangents = new Vector4[newLength];
+
+				_geometry.Vertices.CopyTo(vertices, 0);
+				_geometry.Normals.CopyTo(normals, 0);
+				_geometry.UV.CopyTo(uvs, 0);
+				_geometry.Tangents.CopyTo(tangents, 0);
+
+				for (int i = _geometry.Vertices.Length; i < newLength; i++) {
+					var f = i - _geometry.Vertices.Length;
+					vertices[i] = _geometry.Vertices[f];
+					normals[i] = _geometry.Normals[f];
+					uvs[i] = _geometry.UV[f];
+					tangents[i] = _geometry.Tangents[f];
+				}
+
+				int[] polygons = new int[_geometry.Polygons.Length + 2];
+				_geometry.Polygons.CopyTo(polygons, 0);
+				polygons[_geometry.Polygons.Length] = _geometry.Vertices.Length;
+				polygons[_geometry.Polygons.Length + 1] = polyLength;
+
+				closeLoopPass = Geometry.Empty;
+				closeLoopPass.Vertices = vertices;
+				closeLoopPass.Normals = normals;
+				closeLoopPass.UV = uvs;
+				closeLoopPass.Tangents = tangents;
+				closeLoopPass.Polygons = polygons;
+			} else {
+				closeLoopPass = _geometry;
+			}
+
+			var polyCount = _geometry.Polygons.Length / 2;
+			polyLength += ClosePolygons ? 1 : 0;
 			var vertexCount = polyLength * polyCount;
 			var triCount = (polyLength - 1) * (polyCount - 1) * 6;
 
@@ -66,30 +106,80 @@ namespace Forge.Operators {
 
 			if (CloseLoop) {
 				triCount += (polyLength - 1) * 6;
+				vertexCount += polyLength;
 
 				if (ClosePolygons) {
 					triCount += 6;
+					vertexCount += 1;
 				}
 			}
 
-			var geo = new Geometry(vertexCount, triCount, polyCount);
+			Geometry closePolygonsPass = Geometry.Empty;
+
+			if (ClosePolygons) {
+
+				// Polygons need one additional vertex if CloseLoop is true
+				closePolygonsPass.Polygons = (int[])closeLoopPass.Polygons.Clone();
+
+				// Temporary lists
+				List<Vector3> vertexList = new List<Vector3>();
+				List<Vector3> normalList = new List<Vector3>();
+				List<Vector2> uvList = new List<Vector2>();
+				List<Vector4> tangentList = new List<Vector4>();
+
+				for (int p = 0; p < closeLoopPass.Polygons.Length; p += 2) {
+					int start = closeLoopPass.Polygons[p];
+					int length = closeLoopPass.Polygons[p + 1];
+
+					// Add one vertex to each polygon
+					closePolygonsPass.Polygons[p] = p / 2 * polyLength;
+					closePolygonsPass.Polygons[p + 1] = length + 1;
+
+					// Add existing vertices
+					for (int v = 0; v < length; v++) {
+						vertexList.Add(closeLoopPass.Vertices[start + v]);
+						normalList.Add(closeLoopPass.Normals[start + v]);
+						uvList.Add(closeLoopPass.UV[start + v]);
+						tangentList.Add(closeLoopPass.Tangents[start + v]);
+					}
+
+					// Add the additional vertex
+					vertexList.Add(closeLoopPass.Vertices[start]);
+					normalList.Add(closeLoopPass.Normals[start]);
+					uvList.Add(closeLoopPass.UV[start]);
+					tangentList.Add(closeLoopPass.Tangents[start]);
+				}
+
+				// Prepare the subject geometry
+				closePolygonsPass.Vertices = vertexList.ToArray();
+				closePolygonsPass.Normals = normalList.ToArray();
+				closePolygonsPass.UV = uvList.ToArray();
+				closePolygonsPass.Tangents = tangentList.ToArray();
+
+			}
+			else {
+				closePolygonsPass = closeLoopPass.Copy();
+			}
+
+			var result = new Geometry(vertexCount, triCount);
 
 			int vCount = 0;
 			int tCount = 0;
 
-			for (var p = 0; p < _geometry.Polygons.Length; p+=2) {
-				var start = _geometry.Polygons[p];
-				
-				if (_geometry.Polygons[p+1] != polyLength) {
-					Debug.LogErrorFormat("Bridge error: input polygons have different numbers of vertices\nGot {0}, expected {1}", _geometry.Polygons[p+1], polyLength);
+			for (var p = 0; p < closePolygonsPass.Polygons.Length; p+=2) {
+				var start = closePolygonsPass.Polygons[p];
+
+				if (closePolygonsPass.Polygons[p+1] != polyLength) {
+					Debug.LogErrorFormat("Bridge error: input polygons have different numbers of vertices\nGot {0}, expected {1}", closePolygonsPass.Polygons[p+1], polyLength);
 					return Geometry.Empty;
 				}
 
 				for (var v = start; v < start + polyLength; v++) {
-					geo.Vertices[vCount] = _geometry.Vertices[v];
-					geo.Normals[vCount] = _geometry.Normals[v];
-					geo.Tangents[vCount] = _geometry.Tangents[v];
-					geo.UV[vCount] = _geometry.UV[v];
+					//Debug.LogFormat("{0} - {1}", vCount, v);
+					result.Vertices[vCount] = closePolygonsPass.Vertices[v];
+					result.Normals[vCount] = closePolygonsPass.Normals[v];
+					result.Tangents[vCount] = closePolygonsPass.Tangents[v];
+					result.UV[vCount] = closePolygonsPass.UV[v];
 					vCount++;
 
 					// Skip the last vertex of each polygon if ClosePolygons is fale
@@ -97,56 +187,27 @@ namespace Forge.Operators {
 						continue;
 					}
 
-					// 2nd to nth polygons require no special cases
 					if (p > 0) {
 						// Lower-right triangle
-						geo.Triangles[tCount++] = v;
-						geo.Triangles[tCount++] = v - polyLength;
-						geo.Triangles[tCount++] = (v - polyLength + 1 == start) ? start - polyLength : v - polyLength + 1;
+						result.Triangles[tCount++] = v;
+						result.Triangles[tCount++] = v - polyLength;
+						result.Triangles[tCount++] = (v - polyLength + 1 == start) ? start - polyLength : v - polyLength + 1;
 
 						// Upper-left triangle
-						geo.Triangles[tCount++] = (v - polyLength + 1 == start) ? start - polyLength : v - polyLength + 1;
-						geo.Triangles[tCount++] = v + 1 < start + polyLength ? v + 1 : start;
-						geo.Triangles[tCount++] = v;
-					}
-
-					// First polygon is skipped if CloseLoop is false
-					else if (p == 0 && CloseLoop) {
-
-						// The last vertex of the first polygon
-						if (v == polyLength - 1 && ClosePolygons) {
-							geo.Triangles[tCount++] = v;
-							geo.Triangles[tCount++] = vertexCount - 1;
-							geo.Triangles[tCount++] = vertexCount - polyLength;
-							Debug.LogFormat("{0}: {1}, {2}, {3}", v, geo.Triangles[tCount - 3], geo.Triangles[tCount - 2], geo.Triangles[tCount - 1]);
-
-							geo.Triangles[tCount++] = vertexCount - polyLength;
-							geo.Triangles[tCount++] = 0;
-							geo.Triangles[tCount++] = v;
-							Debug.LogFormat("{0}: {1}, {2}, {3}", v, geo.Triangles[tCount - 3], geo.Triangles[tCount - 2], geo.Triangles[tCount - 1]);
-						}
-
-						// The first to second-to-last vertices of the first polygon
-						else {
-							geo.Triangles[tCount++] = v;
-							geo.Triangles[tCount++] = polyCount * polyLength - polyLength + v;
-							geo.Triangles[tCount++] = polyCount * polyLength - polyLength + v + 1;
-
-							geo.Triangles[tCount++] = polyCount * polyLength - polyLength + v + 1;
-							geo.Triangles[tCount++] = v + 1;
-							geo.Triangles[tCount++] = v;
-						}
+						result.Triangles[tCount++] = (v - polyLength + 1 == start) ? start - polyLength : v - polyLength + 1;
+						result.Triangles[tCount++] = v + 1 < start + polyLength ? v + 1 : start;
+						result.Triangles[tCount++] = v;
 					}
 				}
 			}
 
-			geo.Polygons = _geometry.Polygons;
+			result.Polygons = closePolygonsPass.Polygons;
 
 			if (RecalculateNormals) {
-				geo.RecalculateNormals();
+				result.RecalculateNormals();
 			}
 
-			return geo;
+			return result;
 		}
 
 	}
