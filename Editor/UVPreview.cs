@@ -121,12 +121,14 @@ namespace Forge.Editor {
 				Renderer renderer = go.GetComponent<MeshRenderer>();
 				if (renderer != null) {
 					Material mat = renderer.sharedMaterial;
-					for (int p = 0; p < ShaderUtil.GetPropertyCount(mat.shader); p++) {
-						if (ShaderUtil.GetPropertyType(mat.shader, p) == ShaderUtil.ShaderPropertyType.TexEnv) {
-							if (TexInput > 0 && TexInput == texInputsList.Count) {
-								texPreview = mat.GetTexture(ShaderUtil.GetPropertyName(mat.shader, p));
+					if (mat != null) {
+						for (int p = 0; p < ShaderUtil.GetPropertyCount(mat.shader); p++) {
+							if (ShaderUtil.GetPropertyType(mat.shader, p) == ShaderUtil.ShaderPropertyType.TexEnv) {
+								if (TexInput > 0 && TexInput == texInputsList.Count) {
+									texPreview = mat.GetTexture(ShaderUtil.GetPropertyName(mat.shader, p));
+								}
+								texInputsList.Add(ShaderUtil.GetPropertyDescription(mat.shader, p));
 							}
-							texInputsList.Add(ShaderUtil.GetPropertyDescription(mat.shader, p));
 						}
 					}
 				}
