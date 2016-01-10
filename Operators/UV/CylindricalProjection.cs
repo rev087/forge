@@ -10,7 +10,7 @@ namespace Forge.Operators {
 
 	[OperatorMetadata(Category = "UV", Title = "Cylindrical Projection")]
 	class CylindricalProjection : Operator {
-		private Geometry _geometry;
+		private Geometry _geometry = Geometry.Empty;
 
 		[Input]
 		public void Input(Geometry geometry) {

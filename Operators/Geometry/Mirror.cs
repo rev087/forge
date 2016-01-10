@@ -6,7 +6,7 @@ namespace Forge.Operators {
 	[OperatorMetadata(Category = "Geometry")]
 	public class Mirror : Operator {
 
-		[Input] public Geometry Input;
+		[Input] public Geometry Input = Geometry.Empty;
 		[Input] public Axis Axis = Axis.X;
 		[Input] public bool Reverse = true;
 

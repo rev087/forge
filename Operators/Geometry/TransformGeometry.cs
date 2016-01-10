@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Forge.Operators {
 
 	[OperatorMetadata(Category = "Geometry")]
-	public class Manipulate : Operator {
+	public class TransformGeometry : Operator {
 
 		[Input] public Vector3 Position = Vector3.zero;
 		[Input] public Vector3 Rotation = Vector3.zero;
@@ -11,9 +11,9 @@ namespace Forge.Operators {
 
 		private Geometry _geometry = Geometry.Empty;
 
-		public Manipulate() {}
+		public TransformGeometry() {}
 
-		public Manipulate(Geometry geometry) {
+		public TransformGeometry(Geometry geometry) {
 			Input(geometry);
 		}
 

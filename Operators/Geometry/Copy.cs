@@ -34,14 +34,14 @@ namespace Forge.Operators {
 			var merge = new Merge();
 
 			for (int i = 0; i < Copies; i++) {
-				var manipulate = new Manipulate(_geometry);
+				var trans = new TransformGeometry(_geometry);
 				if (i > 0) {
-					manipulate.Rotation = rotation;
-					manipulate.Position = position;
-					manipulate.Scale = scale;
+					trans.Rotation = rotation;
+					trans.Position = position;
+					trans.Scale = scale;
 				}
 
-				merge.Input.Add(manipulate.Output());
+				merge.Input.Add(trans.Output());
 
 				if (i > 0) {
 					position += Position;

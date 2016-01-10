@@ -18,7 +18,7 @@ namespace Forge.Operators {
 			top.Surface = Surface.Triangulate;
 
 			// Bottom
-			var bottom = new Manipulate(top.Output());
+			var bottom = new TransformGeometry(top.Output());
 			bottom.Position = new Vector3(0f, -Size.y, 0f);
 
 			// Right wall
@@ -29,7 +29,7 @@ namespace Forge.Operators {
 			right.Surface = Surface.Triangulate;
 
 			// Left wall
-			var left = new Manipulate(right.Output());
+			var left = new TransformGeometry(right.Output());
 			left.Position = new Vector3(-Size.x, 0f, 0f);
 
 			// Front wall
@@ -40,7 +40,7 @@ namespace Forge.Operators {
 			front.Surface = Surface.Triangulate;
 
 			// Back wall
-			var back = new Manipulate(front.Output());
+			var back = new TransformGeometry(front.Output());
 			back.Position = new Vector3(0f, 0f, -Size.z);
 
 			// Merge all sides
