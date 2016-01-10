@@ -106,20 +106,6 @@ namespace Forge.Operators {
 			var vertexCount = polyLength * polyCount;
 			var triCount = (polyLength - 1) * (polyCount - 1) * 6;
 
-			if (ClosePolygons) {
-				triCount += (polyCount - 1) * 6;
-			}
-
-			if (CloseLoop) {
-				triCount += (polyLength - 1) * 6;
-				vertexCount += polyLength;
-
-				if (ClosePolygons) {
-					triCount += 6;
-					vertexCount += 1;
-				}
-			}
-
 			Geometry closePolygonsPass = Geometry.Empty;
 
 			// ClosePolygons is achieved by adding a new vertex a the end of each polygon,
@@ -183,21 +169,14 @@ namespace Forge.Operators {
 				}
 
 				for (var v = start; v < start + polyLength; v++) {
-					//Debug.LogFormat("{0} - {1}", vCount, v);
 					result.Vertices[vCount] = closePolygonsPass.Vertices[v];
 					result.Normals[vCount] = closePolygonsPass.Normals[v];
 					result.Tangents[vCount] = closePolygonsPass.Tangents[v];
 					result.UV[vCount] = closePolygonsPass.UV[v];
 					vCount++;
-
-					// Skip the last vertex of each polygon if ClosePolygons is fale
-					if (v == start + polyLength - 1 && !ClosePolygons) {
-						continue;
-					}
-
-					if (p > 0) {
-						Debug.LogFormat("{0}/{1}", tCount, result.Triangles.Length);
-
+					
+					// Skip the first polygon and the last vertex of each polygon
+					if (p > 0 &&  v != start + polyLength - 1) {
 						// Lower-right triangle
 						result.Triangles[tCount++] = v;
 						result.Triangles[tCount++] = v - polyLength;
