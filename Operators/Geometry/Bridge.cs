@@ -179,6 +179,9 @@ namespace Forge.Operators {
 					float v = (pIndex / 2f) / (polyCount - 1f); // V progresses along the polygons
 					result.UV[vCount] = new Vector2(u, v);
 
+					// Tangents
+					result.Tangents[vCount] = new Vector4(0, 1f, 0f, 1f);
+
 					vCount++;
 					
 					// Skip the first polygon and the last vertex of each polygon
