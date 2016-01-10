@@ -155,37 +155,43 @@ namespace Forge.Operators {
 				closePolygonsPass = closeLoopPass.Copy();
 			}
 
+			// Build the surface
 			var result = new Geometry(vertexCount, triCount);
 
 			int vCount = 0;
 			int tCount = 0;
 
-			for (var p = 0; p < closePolygonsPass.Polygons.Length; p+=2) {
-				var start = closePolygonsPass.Polygons[p];
+			for (var pIndex = 0; pIndex < closePolygonsPass.Polygons.Length; pIndex+=2) {
+				var start = closePolygonsPass.Polygons[pIndex];
 
-				if (closePolygonsPass.Polygons[p+1] != polyLength) {
-					Debug.LogErrorFormat("Bridge error: input polygons have different numbers of vertices\nGot {0}, expected {1}", closePolygonsPass.Polygons[p+1], polyLength);
+				if (closePolygonsPass.Polygons[pIndex+1] != polyLength) {
+					Debug.LogErrorFormat("Bridge error: input polygons have different numbers of vertices\nGot {0}, expected {1}", closePolygonsPass.Polygons[pIndex+1], polyLength);
 					return Geometry.Empty;
 				}
 
-				for (var v = start; v < start + polyLength; v++) {
-					result.Vertices[vCount] = closePolygonsPass.Vertices[v];
-					result.Normals[vCount] = closePolygonsPass.Normals[v];
-					result.Tangents[vCount] = closePolygonsPass.Tangents[v];
-					result.UV[vCount] = closePolygonsPass.UV[v];
+				for (var vIndex = start; vIndex < start + polyLength; vIndex++) {
+					result.Vertices[vCount] = closePolygonsPass.Vertices[vIndex];
+					result.Normals[vCount] = closePolygonsPass.Normals[vIndex];
+					result.Tangents[vCount] = closePolygonsPass.Tangents[vIndex];
+
+					// UV
+					float u = (vIndex - start) / (polyLength - 1f); // U progresses along the vertices in the polygons
+					float v = (pIndex / 2f) / (polyCount - 1f); // V progresses along the polygons
+					result.UV[vCount] = new Vector2(u, v);
+
 					vCount++;
 					
 					// Skip the first polygon and the last vertex of each polygon
-					if (p > 0 &&  v != start + polyLength - 1) {
+					if (pIndex > 0 &&  vIndex != start + polyLength - 1) {
 						// Lower-right triangle
-						result.Triangles[tCount++] = v;
-						result.Triangles[tCount++] = v - polyLength;
-						result.Triangles[tCount++] = (v - polyLength + 1 == start) ? start - polyLength : v - polyLength + 1;
+						result.Triangles[tCount++] = vIndex;
+						result.Triangles[tCount++] = vIndex - polyLength;
+						result.Triangles[tCount++] = (vIndex - polyLength + 1 == start) ? start - polyLength : vIndex - polyLength + 1;
 
 						// Upper-left triangle
-						result.Triangles[tCount++] = (v - polyLength + 1 == start) ? start - polyLength : v - polyLength + 1;
-						result.Triangles[tCount++] = v + 1 < start + polyLength ? v + 1 : start;
-						result.Triangles[tCount++] = v;
+						result.Triangles[tCount++] = (vIndex - polyLength + 1 == start) ? start - polyLength : vIndex - polyLength + 1;
+						result.Triangles[tCount++] = vIndex + 1 < start + polyLength ? vIndex + 1 : start;
+						result.Triangles[tCount++] = vIndex;
 					}
 				}
 			}
