@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Forge.Operators {
 
-	[OperatorMetadata(Category = "Geometry")]
+	[OperatorMetadata(Category = "Geometry", Title = "Transform Geometry")]
 	public class TransformGeometry : Operator {
 
 		[Input] public Vector3 Position = Vector3.zero;
@@ -24,6 +24,8 @@ namespace Forge.Operators {
 		[Output]
 		public Geometry Output() {
 			Geometry geo = _geometry.Copy();
+
+			if (geo.Vertices == null) return Geometry.Empty;
 
 			if (Position != Vector3.zero) {
 				for (int i = 0; i < geo.Vertices.Length; i++) {
