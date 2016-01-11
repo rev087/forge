@@ -57,7 +57,7 @@ namespace Forge {
 			// Statistics
 #if UNITY_EDITOR
 			Stopwatch.Start();
-			#endif
+#endif
 
 			// Build it
 			if (Template != null)
