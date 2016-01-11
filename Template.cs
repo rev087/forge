@@ -15,6 +15,8 @@ namespace Forge {
 		public List<IOConnection> Connections = new List<IOConnection>();
 		public string JSON = "";
 
+		private Dictionary<IOConnection, int> _connectionPriorities;
+
 		private void CommitChanges() {
 			TemplateSerializer.Serialize(this);
 			if (Changed != null) Changed(this);
@@ -56,6 +58,12 @@ namespace Forge {
 			CommitChanges();
 		}
 
+		public void MoveConnection(IOConnection conn, int newIndex) {
+			Connections.Remove(conn);
+			Connections.Insert(newIndex, conn);
+			CommitChanges();
+		}
+
 		public IOConnection[] ConnectionsTo(Operator toOp, IOOutlet input) {
 			var conns = new List<IOConnection>();
 			foreach (IOConnection conn in Connections) {
@@ -81,9 +89,37 @@ namespace Forge {
 			return null;
 		}
 
+		private int GetPriority(IOConnection conn) {
+			if (_connectionPriorities.ContainsKey(conn)) {
+				return _connectionPriorities[conn];
+			} else {
+				var priority = 0;
+				foreach (var input in conn.From.Inputs) {
+					IOConnection[] conns = ConnectionsTo(conn.From, input);
+					foreach (var prior in conns) {
+						priority++;
+						priority += GetPriority(prior);
+					}
+				}
+				_connectionPriorities.Add(conn, priority);
+				return priority;
+			}
+		}
+
+		private int CompareConnectionPriority(IOConnection a, IOConnection b) {
+			int priorityA = _connectionPriorities[a];
+			int priorityB = _connectionPriorities[b];
+
+			if (priorityA < priorityB) return -1;
+			else if (priorityA > priorityB) return 1;
+			else return 0;
+		}
+
 		public virtual Geometry Build() {
 
-			// Reset multi inputs
+			//TemplateSerializer.Deserialize(this);
+
+			// Reset multi imputs
 			foreach (var kvp in Operators) {
 				foreach (IOOutlet input in kvp.Value.Inputs) {
 					if (input.DataType.IsCollection()) {
@@ -96,11 +132,20 @@ namespace Forge {
 				}
 			}
 
+			// Sort the connections by build priority
+			List<IOConnection> buildOrder = new List<IOConnection>();
+			_connectionPriorities = new Dictionary<IOConnection, int>();
+			foreach (var conn in Connections) {
+				GetPriority(conn);
+				buildOrder.Add(conn);
+			}
+			buildOrder.Sort(CompareConnectionPriority);
+
 			var geoOutputOp = GetGeometryOutput();
 			if (geoOutputOp != null) {
 
 				// Connections
-				foreach (IOConnection conn in Connections) {
+				foreach (IOConnection conn in buildOrder) {
 					object val = conn.From.GetValue(conn.Output);
 					conn.To.SetValue(conn.Input, val);
 				}

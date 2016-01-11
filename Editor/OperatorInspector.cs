@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
+using System.Collections.Generic;
 
 namespace Forge.Editor {
 
@@ -18,6 +20,12 @@ namespace Forge.Editor {
 				DrawNodeInspector(node.Operator);
 				EditorGUILayout.Space();
 			}
+			if (GraphEditor.Selection.Nodes.Count > 0 && GUILayout.Button("Delete Selection")) {
+				foreach (var node in GraphEditor.Selection.Nodes) {
+					GraphEditor.Template.RemoveOperator(node.Operator);
+				}
+				GraphEditor.Selection.Clear();
+			}
 			GUILayout.EndScrollView();
 			GUILayout.EndArea();
 
@@ -33,6 +41,8 @@ namespace Forge.Editor {
 				}
 			}
 		}
+
+		private static Dictionary<string, ReorderableList> _geoReorderableLists = new Dictionary<string, ReorderableList>();
 
 		public static void DrawNodeInspector(Operator op) {
 
@@ -52,6 +62,7 @@ namespace Forge.Editor {
 					foreach (var kvp in GraphEditor.Template.Operators) {
 						kvp.Value.IsGeometryOutput = kvp.Value.GUID == op.GUID;
 					}
+					GraphEditor.Template.Serialize();
 				}
 			}
 			EditorGUILayout.EndHorizontal();
@@ -66,35 +77,73 @@ namespace Forge.Editor {
 
 				var isConnectedInput = false;
 
+				// Collections
+				if (input.DataType.GetInterface("ICollection") != null) {
+
+					// http://va.lent.in/unity-make-your-lists-functional-with-reorderablelist/
+					ReorderableList geoList;
+					string listKey = op.GUID + "." + input.Name;
+
+					IOConnection[] inputConnections = GraphEditor.Template.ConnectionsTo(op, input);
+
+					if (!_geoReorderableLists.TryGetValue(listKey, out geoList)) {
+						geoList = new ReorderableList(inputConnections, typeof(string), true, true, false, true);
+						_geoReorderableLists.Add(listKey, geoList);
+					}
+
+					// Update list
+					geoList.list = inputConnections;
+
+					geoList.drawHeaderCallback = (Rect rect) => {
+						EditorGUI.LabelField(rect, input.Name);
+					};
+					geoList.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
+						string title = index + ": " + inputConnections[index].From.Metadata.Title;
+						title += " (" + inputConnections[index].From.GUID.Substring(0, 5) + ")";
+						EditorGUI.LabelField(rect, title);
+					};
+					geoList.onReorderCallback = (ReorderableList list) => {
+						GraphEditor.Template.MoveConnection(inputConnections[list.index], list.index);
+					};
+					geoList.onRemoveCallback = (ReorderableList list) => {
+						GraphEditor.Template.Disconnect(inputConnections[list.index]);
+						list.list = GraphEditor.Template.ConnectionsTo(op, input);
+					};
+					geoList.DoLayoutList();
+					isConnectedInput = true;
+
 				// Value comes from outlet connection
-				foreach (IOConnection conn in GraphEditor.Template.Connections) {
-					if (op.GUID == conn.To.GUID && input.Name == conn.Input.Name) {
+				} else {
+					foreach (IOConnection conn in GraphEditor.Template.Connections) {
+						if (op.GUID == conn.To.GUID && input.Name == conn.Input.Name) {
 
-						string valueDescription;
+							string valueDescription;
 
-						// If the value is printable, print it
-						if (conn.Output.DataType == typeof(System.Int32)
-							|| conn.Output.DataType == typeof(System.Single)
-							|| conn.Output.DataType == typeof(System.String)
-							|| conn.Output.DataType == typeof(System.Boolean)
-							|| conn.Output.DataType == typeof(Vector2)
-							|| conn.Output.DataType == typeof(Vector3)
-							|| conn.Output.DataType == typeof(Vector4)) {
-							valueDescription = conn.From.GetValue(conn.Output).ToString();
+							// If the value is printable, print it
+							if (conn.Output.DataType == typeof(System.Int32)
+								|| conn.Output.DataType == typeof(System.Single)
+								|| conn.Output.DataType == typeof(System.String)
+								|| conn.Output.DataType == typeof(System.Boolean)
+								|| conn.Output.DataType == typeof(Vector2)
+								|| conn.Output.DataType == typeof(Vector3)
+								|| conn.Output.DataType == typeof(Vector4)) {
+								valueDescription = conn.From.GetValue(conn.Output).ToString();
+							}
+
+							// Otherwise print the outlet description
+							else {
+								valueDescription = System.String.Format("{0}.{1}", conn.From.Metadata.Title, conn.Output.Name);
+							}
+
+							EditorGUILayout.LabelField(input.Name, valueDescription);
+
+							isConnectedInput = true;
+							continue;
 						}
-
-						// Otherwise print the outlet description
-						else {
-							valueDescription = System.String.Format("{0}.{1}", conn.From.Metadata.Title, conn.Output.Name);
-						}
-
-						EditorGUILayout.LabelField(input.Name, valueDescription);
-						isConnectedInput = true;
-						continue;
 					}
 				}
 
-				// Not connected, draw the input
+				// Not a List<Geometry>, and not a connected input outlet: draw the input
 				if (!isConnectedInput) {
 
 					// Float input
@@ -155,13 +204,6 @@ namespace Forge.Editor {
 					}
 
 				} // !isCOnnectedInput
-			}
-
-			if (GUILayout.Button("Delete Selection")) {
-				foreach (var node in GraphEditor.Selection.Nodes) {
-					GraphEditor.Template.RemoveOperator(node.Operator);
-				}
-				GraphEditor.Selection.Clear();
 			}
 
 			if (op != null && op.OperatorError != null) {
