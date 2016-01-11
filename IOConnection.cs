@@ -12,6 +12,10 @@ namespace Forge {
 			To = b;
 			Input = i;
 		}
+
+		public override string ToString() {
+			return string.Format("{0}.{1} \n{2}.{3}", From.Metadata.Title, Output, To.Metadata.Title, Input);
+		}
 	}
 	
 }
