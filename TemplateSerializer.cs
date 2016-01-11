@@ -62,6 +62,8 @@ namespace Forge {
 						var op = (Operator)System.Activator.CreateInstance(type);
 						op.Deserialize(opJs);
 						template.Operators.Add(op.GUID, op);
+					} else {
+						Debug.LogWarningFormat("Discarding unknown serialized operator `{0}`", type.Name);
 					}
 				}
 
