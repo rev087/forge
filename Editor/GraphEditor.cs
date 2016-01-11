@@ -147,8 +147,10 @@ namespace Forge.Editor {
 				Template.DrawConnections();
 
 				// Draw the nodes
-				foreach (var kvp in Template.Operators) {
-					Node node = GetNode(kvp.Key); // kvp.Key = GUID
+				string[] guids = new string[Template.Operators.Count];
+				Template.Operators.Keys.CopyTo(guids, 0);
+				for (int i = 0; i < guids.Length; i++) {
+					Node node = GetNode(guids[i]); // kvp.Key = GUID
 					needsRepaint = needsRepaint || node.EventsNeedRepaint(Zoom, this);
 					node.Draw(Zoom);
 				}
