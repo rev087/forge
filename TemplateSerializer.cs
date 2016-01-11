@@ -54,14 +54,19 @@ namespace Forge {
 			if (tplJs.HasField("Operators") && tplJs.HasField("Connections")) {
 				var opsJs = tplJs.GetField("Operators");
 				var connsJs = tplJs.GetField("Connections");
+
+				// Operators
 				foreach (var opJs in opsJs.list) {
 					var type = System.Type.GetType(opJs["Type"].str);
-					var op = (Operator) System.Activator.CreateInstance(type);
-					op.Deserialize(opJs);
-					template.Operators.Add(op.GUID, op);
+					if (type != null) {
+						var op = (Operator)System.Activator.CreateInstance(type);
+						op.Deserialize(opJs);
+						template.Operators.Add(op.GUID, op);
+					}
 				}
-				foreach (var connJs in connsJs.list) {
 
+				// Connections
+				foreach (var connJs in connsJs.list) {
 					// Discard connections with invalid Operator GUIDs
 					if (!template.Operators.ContainsKey(connJs["From"].str) || !template.Operators.ContainsKey(connJs["To"].str)) {
 						Debug.LogWarning("Discarding connection in template due to an invalid Operator GUID");
