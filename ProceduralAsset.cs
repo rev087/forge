@@ -17,7 +17,6 @@ namespace Forge {
 
 		public event OnDrawGizmosHandler OnDrawGizmos;
 
-		public string Teste;
 		public Template Template = null;
 		[HideInInspector][SerializeField] private List<ParameterValue> ParameterValues = new List<ParameterValue>();
 
