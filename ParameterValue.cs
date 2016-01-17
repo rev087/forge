@@ -2,6 +2,13 @@
 
 namespace Forge {
 
+	/*
+	Parameter values are serialized with the ProceduralAsset instance. Because the generic type `object`
+	cant be serialized by Unity, we use this struct instead.
+	Possible optimization: replace string _serializedValue by multiple value fields for different types
+	ex. FloatValue, IntegerValue etc.
+	*/
+
 	public enum ParameterType { Float, Integer, String, Boolean, Vector2, Vector3, Vector4, Color }
 
 	[System.Serializable]
