@@ -74,6 +74,18 @@ namespace Forge {
 			return conns.ToArray();
 		}
 
+		public Parameter[] Parameters {
+			get {
+				List<Parameter> inputs = new List<Parameter>();
+				foreach (KeyValuePair<string, Operator> op in Operators) {
+					if (op.Value is Parameter) {
+						inputs.Add(op.Value as Parameter);
+					}
+				}
+				return inputs.ToArray();
+			}
+		}
+
 		public void Clear() {
 			Operators.Clear();
 			Connections.Clear();
@@ -115,9 +127,7 @@ namespace Forge {
 			else return 0;
 		}
 
-		public virtual Geometry Build() {
-
-			//TemplateSerializer.Deserialize(this);
+		public virtual Geometry Build(ProceduralAsset asset) {
 
 			// Reset multi imputs
 			foreach (var kvp in Operators) {
@@ -144,6 +154,11 @@ namespace Forge {
 			var geoOutputOp = GetGeometryOutput();
 			if (geoOutputOp != null) {
 
+				// Asset Parameters
+				foreach (Parameter par in Parameters) {;
+					par.SetValue(par.ParameterInput, asset.GetParameter(par.GUID));
+				}
+
 				// Connections
 				foreach (IOConnection conn in buildOrder) {
 					object val = conn.From.GetValue(conn.Output);
@@ -160,6 +175,7 @@ namespace Forge {
 				}
 
 			}
+
 			return Geometry.Empty;
 		}
 

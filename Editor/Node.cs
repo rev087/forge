@@ -27,7 +27,7 @@ namespace Forge.Editor {
 		private float _cachedScale = -1f;
 
 		public void RecalculateBounds(float scale) {
-			int ioCount = Mathf.Max(Operator.Inputs.Length, Operator.Outputs.Length);
+			int ioCount = Mathf.Max(Operator is Parameter ? 0 : Operator.Inputs.Length, Operator.Outputs.Length);
 			Vector2 pos = Operator.EditorPosition;
 
 			float titleHeight = TitleHeight * scale + TitleSeparator;

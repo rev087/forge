@@ -1,8 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using Forge.EditorUtils;
 
 namespace Forge.Editor {
@@ -12,6 +9,7 @@ namespace Forge.Editor {
 
 		private static IconLoader IconLoader = null;
 
+		private static bool ShowParameters = true;
 		private static bool ShowStatistics = true;
 		private static bool ShowDataFile = true;
 
@@ -22,6 +20,23 @@ namespace Forge.Editor {
 				Asset = (ProceduralAsset) serializedObject.targetObject;
 
 			DrawDefaultInspector();
+
+			// Parameters
+			ShowParameters = EditorGUILayout.Foldout(ShowParameters, "Parameters");
+			if (ShowParameters) {
+				if (Asset.Template != null) {
+					Parameter[] parameters = Asset.Template.Parameters;
+					for (int i = 0; i <  parameters.Length; i++) {
+						Parameter param = parameters[i];
+						var parameterGUI = param.ParameterGUI;
+						if (parameterGUI != null) {
+							object paramValue = Asset.GetParameter(param.GUID);
+							paramValue = param.ParameterGUI.Invoke(param, new object[] { paramValue });
+							Asset.SetParameterByGUID(param.GUID, paramValue);
+						}
+					}
+				}
+			}
 
 			if (GUI.changed || GUILayout.Button("Rebuild")) {
 				Asset.Generate();

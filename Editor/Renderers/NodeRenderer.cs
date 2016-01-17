@@ -101,12 +101,12 @@ namespace Forge.Editor.Renderers {
 			y += titleHeight + Node.TitleSeparator;
 
 			// IO
-			int ioCount = Mathf.Max(op.Inputs.Length, op.Outputs.Length);
+			int ioCount = Mathf.Max(op is Parameter ? 0 : op.Inputs.Length, op.Outputs.Length);
 			for (int i = 0; i < ioCount; i++) {
 				Texture2D bg = (i % 2 == 0) ? _BGTex : _BGAltTex;
 				GUI.DrawTexture(new Rect(x, y, width, ioHeight), bg);
 
-				if (i < op.Inputs.Length) {
+				if (i < op.Inputs.Length && !(op is Parameter)) {
 					_outletRenderer.Draw(x, y + ioHeight/2, scale, node.InputHover == i);
 					if (node.ShowType) {
 						GUI.Label(new Rect(x + ioMargin, y, width, ioHeight/2), op.Inputs[i].GetNiceName(), _inputStyle);

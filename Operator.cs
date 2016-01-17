@@ -11,11 +11,18 @@ namespace Forge {
 	[System.AttributeUsage(System.AttributeTargets.Method | System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple = false)]
 	public class InputAttribute : System.Attribute {}
 
+	[System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = false)]
+	public class ParameterGUIAttribute : System.Attribute { }
+
+	[System.AttributeUsage(System.AttributeTargets.Method | System.AttributeTargets.Field | System.AttributeTargets.Property, AllowMultiple = false)]
+	public class ParameterInputAttribute : System.Attribute { }
+
 	[System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
 	public class OperatorMetadataAttribute : System.Attribute {
 		public string Title;
 		public string Category;
 		public string Description;
+		public System.Type DataType;
 	}
 
 	[System.Serializable]
