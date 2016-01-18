@@ -8,6 +8,8 @@ namespace Forge.Operators {
 
 		[Input] public Geometry Input = Geometry.Empty;
 
+		[Input] public bool FlipNormals = true;
+
 		[Output]
 		public Geometry Output() {
 
@@ -22,8 +24,10 @@ namespace Forge.Operators {
 			geo.Triangles = revTriangles;
 
 			// Normals
-			for (int i = 0; i < geo.Normals.Length; i++) {
-				geo.Normals[i] *= -1;
+			if (FlipNormals) {
+				for (int i = 0; i < geo.Normals.Length; i++) {
+					geo.Normals[i] *= -1;
+				}
 			}
 
 			return geo;
