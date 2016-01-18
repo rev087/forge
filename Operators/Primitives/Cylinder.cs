@@ -39,6 +39,7 @@ namespace Forge.Operators {
 			var scaffold = new Merge(bottom.Output(), top.Output());
 
 			var bridge = new Bridge(scaffold.Output());
+			bridge.ClosePolygons = true;
 
 			var cylinder = new Merge(bridge.Output());
 
