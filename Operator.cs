@@ -202,7 +202,7 @@ namespace Forge {
 			var opTypes = new List<System.Type>();
 			var allTypes = typeof(Operator).Assembly.GetTypes();
 			foreach (var type in allTypes) {
-				if (type.IsSubclassOf(typeof(Operator))) {
+				if (type.IsSubclassOf(typeof(Operator)) && type != typeof(Parameter)) {
 					opTypes.Add(type);
 				}
 			}
