@@ -45,11 +45,11 @@ namespace Forge.Operators {
 
 			// Merge all sides
 			Merge merge = new Merge();
-			merge.Input.Add(Reverse.Process(bottom.Output()));
+			merge.Input.Add(FlipFaces.Process(bottom.Output()));
 			merge.Input.Add(right.Output());
-			merge.Input.Add(Reverse.Process(left.Output()));
+			merge.Input.Add(FlipFaces.Process(left.Output()));
 			merge.Input.Add(front.Output());
-			merge.Input.Add(Reverse.Process(back.Output()));
+			merge.Input.Add(FlipFaces.Process(back.Output()));
 			merge.Input.Add(top.Output());
 
 			return merge.Output();
