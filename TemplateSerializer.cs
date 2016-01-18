@@ -63,7 +63,7 @@ namespace Forge {
 						op.Deserialize(opJs);
 						template.Operators.Add(op.GUID, op);
 					} else {
-						Debug.LogWarningFormat("Discarding unknown serialized operator `{0}`", type.Name);
+						Debug.LogWarningFormat("Discarding unknown serialized operator `{0}`", opJs["Type"].str);
 					}
 				}
 
