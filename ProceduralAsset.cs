@@ -18,7 +18,7 @@ namespace Forge {
 		public event OnDrawGizmosHandler OnDrawGizmos;
 
 		public Template Template = null;
-		[HideInInspector][SerializeField] private List<ParameterValue> ParameterValues = new List<ParameterValue>();
+		[SerializeField] private List<ParameterValue> ParameterValues = new List<ParameterValue>();
 
 		[HideInInspector] public Mesh Mesh = null;
 
@@ -44,6 +44,7 @@ namespace Forge {
 		[HideInInspector] public Geometry Geometry = Geometry.Empty;
 		[HideInInspector] [System.NonSerialized] public bool IsBuilt = false;
 
+		// Retrieves the value of a parameter by its GUID
 		public object GetParameter(string GUID) {
 			for (int i = 0; i < ParameterValues.Count; i++) {
 				if (ParameterValues[i].GUID == GUID) {
@@ -66,7 +67,7 @@ namespace Forge {
 
 		// Sets a parameter by its GUID
 		public void SetParameterByGUID(string GUID, object value) {
-			ParameterValue newParam = new ParameterValue() { GUID = GUID, Value = value };
+			ParameterValue newParam = new ParameterValue(GUID, value);
 			for (int i = 0; i < ParameterValues.Count; i++) {
 				if (ParameterValues[i].GUID == GUID) {
 					ParameterValues[i] = newParam;
