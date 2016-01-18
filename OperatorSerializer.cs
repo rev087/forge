@@ -133,6 +133,16 @@ namespace Forge {
 					));
 				}
 
+				// Vector4
+				else if (op.Inputs[i].DataType == typeof(Vector4)) {
+					op.SetValue<Vector4>(op.Inputs[i], new Vector4(
+						paramsJs[param][0].n,
+						paramsJs[param][1].n,
+						paramsJs[param][2].n,
+						paramsJs[param][3].n
+					));
+				}
+
 				// Enum
 				else if (op.Inputs[i].DataType.IsEnum) {
 					object val = System.Enum.Parse(op.Inputs[i].DataType, paramsJs[param].str);

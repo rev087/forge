@@ -198,6 +198,12 @@ namespace Forge.Editor {
 						op.SetValue<Vector3>(input, newValue);
 					}
 
+					// Vector4
+					else if (input.DataType == typeof(Vector4)) {
+						Vector4 newValue = EditorGUILayout.Vector4Field(input.Name, op.GetValue<Vector4>(input));
+						op.SetValue<Vector4>(input, newValue);
+					}
+
 					// Unsupported
 					else {
 						EditorGUILayout.LabelField(input.Name, input.DataType.ToString());
