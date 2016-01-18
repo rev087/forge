@@ -9,9 +9,6 @@ namespace Forge.Operators {
 	public class FloatInput : Parameter {
 
 		[Input]
-		public new string Label = "Float";
-
-		[Input]
 		public float Min = 0f;
 
 		[Input]
