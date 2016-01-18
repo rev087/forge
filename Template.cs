@@ -155,7 +155,7 @@ namespace Forge {
 			if (geoOutputOp != null) {
 
 				// Asset Parameters
-				foreach (Parameter par in Parameters) {;
+				foreach (Parameter par in Parameters) {
 					par.SetValue(par.ParameterInput, asset.GetParameter(par.GUID));
 				}
 
