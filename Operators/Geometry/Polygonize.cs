@@ -26,7 +26,9 @@ namespace Forge.Operators {
 			int vCount = 0;
 			foreach (Geometry geo in Input) {
 				for (int v = 0; v < geo.Vertices.Length; v++) {
-					result.Vertices[vCount+v] = geo.Vertices[v];
+					result.Vertices[vCount + v] = geo.Vertices[v];
+					result.Normals[vCount + v] = geo.Normals[v];
+					result.Tangents[vCount + v] = geo.Tangents[v];
 				}
 				vCount += geo.Vertices.Length;
 			}
