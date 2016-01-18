@@ -15,8 +15,9 @@ namespace Forge.Operators {
 		public Geometry Output() {
 
 			if (Segments < 3) {
-				Debug.LogError("Sphere error: Spheres must have at least 3 segments");
-			}
+				OperatorError = "Sphere error: Spheres must have at least 3 segments";
+				return Geometry.Empty;
+			} else OperatorError = null;
 
 			Geometry geo = new Geometry(
 				Segments*(Segments+1),
