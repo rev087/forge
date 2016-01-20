@@ -160,7 +160,7 @@ namespace Forge.Editor {
 
 					// MouseDown
 					if (currentEvent.type == EventType.MouseDown && CurrentEvent.Type == GEType.None) {
-						CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Grid, null, IOOutlet.None);
+						CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Grid, null, IOOutlet.None, currentEvent.mousePosition);
 					}
 
 					// MouseDrag

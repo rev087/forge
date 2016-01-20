@@ -9,12 +9,22 @@ namespace Forge.Editor {
 		public GEContext Context;
 		public Node Node;
 		public IOOutlet Outlet;
+		public Vector2 PositionData;
+
+		public GraphEvent(GEType type, GEContext context, Node node, IOOutlet outlet, Vector2 positionData) {
+			Type = type;
+			Context = context;
+			Node = node;
+			Outlet = outlet;
+			PositionData = positionData;
+		}
 
 		public GraphEvent(GEType type, GEContext context, Node node, IOOutlet outlet) {
 			Type = type;
 			Context = context;
 			Node = node;
 			Outlet = outlet;
+			PositionData = Vector2.zero;
 		}
 
 		public void Empty() {
@@ -27,7 +37,7 @@ namespace Forge.Editor {
 			foreach (GEType type in types) {
 				if (Type == type) return true;
 			}
-			return false;;
+			return false;
 		}
 
 		public bool IsConnecting() {

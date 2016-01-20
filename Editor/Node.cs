@@ -143,7 +143,7 @@ namespace Forge.Editor {
 
 					// Mouse Down
 					if (ev.type == EventType.MouseDown) {
-						GraphEditor.CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Node, this, IOOutlet.None);
+						GraphEditor.CurrentEvent = new GraphEvent(GEType.Unresolved, GEContext.Node, this, IOOutlet.None, (ev.mousePosition / scale) - Operator.EditorPosition);
 					}
 
 					// Mouse Up
@@ -169,8 +169,10 @@ namespace Forge.Editor {
 
 					// Drag node
 					if (GraphEditor.CurrentEvent.IsNodeDrag(this)) {
-						Operator.EditorPosition.x += ev.delta.x / scale;
-						Operator.EditorPosition.y += ev.delta.y / scale;
+						Vector2 newPosition = (ev.mousePosition / scale) - GraphEditor.CurrentEvent.PositionData;
+						float scaledGridStep = GridRenderer.StepSize * scale;
+						Vector2 snapOffset = new Vector2(newPosition.x % scaledGridStep, newPosition.y % scaledGridStep);
+						Operator.EditorPosition = newPosition - snapOffset;
 						RecalculateBounds(scale);
 						GraphEditor.CurrentEvent.Type = GEType.Drag;
 						needsRepaint = true;
