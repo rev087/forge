@@ -66,6 +66,7 @@ namespace Forge.Editor {
 		public bool EventsNeedRepaint(float scale, GraphEditor graphEditor) {
 			bool needsRepaint = false, showType = false;
 			int inputHover = -1, outputHover = -1;
+			var scaledIOHeight = IOHeight * scale;
 
 			if (scale != _cachedScale) RecalculateBounds(scale);
 
@@ -81,13 +82,13 @@ namespace Forge.Editor {
 			}
 
 			// MouseOver inputs
-			int inputIndex = Mathf.FloorToInt((ev.mousePosition.y - InputsRect.y) / IOHeight);
+			int inputIndex = Mathf.FloorToInt((ev.mousePosition.y - InputsRect.y) / scaledIOHeight);
 			if (mouseInInputs) {
 				inputHover = inputIndex;
 			}
 
 			// MouseOver outputs
-			int outputIndex = Mathf.FloorToInt((ev.mousePosition.y - OutputsRect.y) / IOHeight);
+			int outputIndex = Mathf.FloorToInt((ev.mousePosition.y - OutputsRect.y) / scaledIOHeight);
 			if (mouseInOutputs) {
 				outputHover = outputIndex;
 			}
@@ -170,8 +171,7 @@ namespace Forge.Editor {
 					// Drag node
 					if (GraphEditor.CurrentEvent.IsNodeDrag(this)) {
 						Vector2 newPosition = (ev.mousePosition / scale) - GraphEditor.CurrentEvent.PositionData;
-						float scaledGridStep = GridRenderer.StepSize * scale;
-						Vector2 snapOffset = new Vector2(newPosition.x % scaledGridStep, newPosition.y % scaledGridStep);
+						Vector2 snapOffset = new Vector2(newPosition.x % GridRenderer.StepSize, newPosition.y % GridRenderer.StepSize);
 						Operator.EditorPosition = newPosition - snapOffset;
 						RecalculateBounds(scale);
 						GraphEditor.CurrentEvent.Type = GEType.Drag;
