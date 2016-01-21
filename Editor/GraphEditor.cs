@@ -18,11 +18,12 @@ namespace Forge.Editor {
 		public float Zoom = 1f;
 		public Rect Canvas;
 		private static Dictionary<string, Node> _nodes = new Dictionary<string, Node>();
+		private static GUIStyle LabelStyle = null;
 		public const float SidebarWidth = 250f;
 		private const float MaxZoom = 1f;
 		private const float MinZoom = 0.25f;
-		private const float CanvasWidth = 4000f;
-		private const float CanvasHeight = 4000f;
+		private const float CanvasWidth = 5000f;
+		private const float CanvasHeight = 5000f;
 
 		private static Template _template = null;
 		public static Template Template {
@@ -123,6 +124,7 @@ namespace Forge.Editor {
 
 				// Apply the delta to the zoom level and clamp to min and max
 				Zoom = (Zoom + wheelDelta).Clamp(MinZoom, MaxZoom);
+				Zoom = (float) System.Math.Round(Zoom, 2);
 				
 				if (previousZoom != Zoom) {
 					// Keep the viewport anchored to the position of the mouse cursor
@@ -209,6 +211,17 @@ namespace Forge.Editor {
 			}
 
 			GUI.EndScrollView();
+
+			// Current Zoom level
+			float zoomLabelWidth = 150f;
+			float zoomLabelHeight = 20f;
+			Rect zoomLabelRect = new Rect(position.width - SidebarWidth - zoomLabelWidth - 20f, position.height - zoomLabelHeight - 20f, zoomLabelWidth, zoomLabelHeight);
+			if (LabelStyle == null) {
+				LabelStyle = new GUIStyle();
+				LabelStyle.normal.textColor = Color.white;
+				LabelStyle.alignment = TextAnchor.LowerRight;
+			}
+			GUI.Label(zoomLabelRect, string.Format("Zoom: {0}%", Zoom * 100f), LabelStyle);
 
 		} // OnGUI
 
