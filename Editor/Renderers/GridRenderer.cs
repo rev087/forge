@@ -8,7 +8,7 @@ namespace Forge.Editor.Renderers {
 		private static Texture2D _GridTex = null;
 		private static float _CachedScale = 1f;
 
-		private const float _TileSize = 120f;
+		private const float _TileSize = 100f;
 		public const float StepSize = 10f;
 		
 		// Generates a single tile of the grid texture
