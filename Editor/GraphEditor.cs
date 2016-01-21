@@ -187,6 +187,7 @@ namespace Forge.Editor {
 
 				} // Left mouse down/drag/up
 
+				// Right mouse button
 				if (currentEvent.button == 1 && currentEvent.type == EventType.MouseUp) {
 					var menu = new GenericMenu();
 
@@ -202,6 +203,14 @@ namespace Forge.Editor {
 					}
 
 					menu.ShowAsContext();
+				}
+
+				if (currentEvent.isKey && currentEvent.keyCode == KeyCode.Delete) {
+					foreach (var node in Selection.Nodes) {
+						Template.RemoveOperator(node.Operator);
+					}
+					Selection.Clear();
+					needsRepaint = true;
 				}
 
 			}

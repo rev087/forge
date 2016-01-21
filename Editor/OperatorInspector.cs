@@ -17,14 +17,8 @@ namespace Forge.Editor {
 			for (int i = 0; i < GraphEditor.Selection.Nodes.Count; i++) {
 				Node node = GraphEditor.Selection.Nodes[i];
 				EditorGUILayout.LabelField(node.Operator.GUID);
-				DrawNodeInspector(node.Operator);
+				DrawOperatorInspector(node.Operator);
 				EditorGUILayout.Space();
-			}
-			if (GraphEditor.Selection.Nodes.Count > 0 && GUILayout.Button("Delete Selection")) {
-				foreach (var node in GraphEditor.Selection.Nodes) {
-					GraphEditor.Template.RemoveOperator(node.Operator);
-				}
-				GraphEditor.Selection.Clear();
 			}
 			GUILayout.EndScrollView();
 			GUILayout.EndArea();
@@ -44,7 +38,7 @@ namespace Forge.Editor {
 
 		private static Dictionary<string, ReorderableList> _geoReorderableLists = new Dictionary<string, ReorderableList>();
 
-		public static void DrawNodeInspector(Operator op) {
+		public static void DrawOperatorInspector(Operator op) {
 
 			if (GraphEditor.Template == null) return;
 
