@@ -19,14 +19,14 @@ namespace Forge.Editor.Renderers {
 			Texture2D gridTex = new Texture2D(tileSize, tileSize);
 			gridTex.hideFlags = HideFlags.DontSave;
 			
-			Color bg = new Color(0.282f, 0.294f, 0.302f);
+			Color bg = new Color(0.364f, 0.364f, 0.368f);
 
-			Color dark = Color.Lerp(bg, Color.black, 0.15f);
-			Color darkIntersection = Color.Lerp(bg, Color.black, 0.2f);
+			Color dark = new Color(0.278f, 0.278f, 0.282f);
+			Color darkIntersection = new Color(0.215f, 0.215f, 0.219f);
 
-			Color light = Color.Lerp(bg, Color.black, 0.05f);
-			Color lightIntersection = Color.Lerp(bg, Color.black, 0.1f);
-			
+			Color light = new Color(0.329f, 0.329f, 0.329f);
+			Color lightIntersection = new Color(0.298f, 0.298f, 0.302f);
+
 			for (int x = 0; x < tileSize; x ++) {
 
 				for (int y = 0; y < tileSize; y ++) {

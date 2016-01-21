@@ -44,10 +44,12 @@ namespace Forge.Editor {
 
 			if (_TitleStyle == null) {
 				_TitleStyle = new GUIStyle();
-				_TitleStyle.fontSize = 16;
+				_TitleStyle.fontStyle = FontStyle.Bold;
+				_TitleStyle.fontSize = 13;
 			}
 
 			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.Space();
 			EditorGUILayout.LabelField(op.Metadata.Title, _TitleStyle, GUILayout.Width(GraphEditor.SidebarWidth/2-20f));
 			if (op.IsGeometryOutput) {
 				EditorGUILayout.LabelField("(output)", GUILayout.Width(GraphEditor.SidebarWidth/2-20f));

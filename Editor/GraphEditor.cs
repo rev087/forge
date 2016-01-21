@@ -21,9 +21,9 @@ namespace Forge.Editor {
 		private static GUIStyle LabelStyle = null;
 		public const float SidebarWidth = 250f;
 		private const float MaxZoom = 1f;
-		private const float MinZoom = 0.25f;
-		private const float CanvasWidth = 5000f;
-		private const float CanvasHeight = 5000f;
+		private const float MinZoom = 0.2f;
+		private const float CanvasWidth = 6000f;
+		private const float CanvasHeight = 6000f;
 
 		private static Template _template = null;
 		public static Template Template {
@@ -118,9 +118,9 @@ namespace Forge.Editor {
 			// Mouse wheel event to control zoom
 			if (currentEvent.type == EventType.ScrollWheel) {
 
-				// Dampen the wheel delta by a factor of 100
-				float wheelDelta = -Event.current.delta.y / 100;
 				float previousZoom = Zoom;
+				Vector2 pivotPoint = currentEvent.mousePosition / Zoom;
+				float wheelDelta = Event.current.delta.y > 0 ? -0.1f : 0.1f;
 
 				// Apply the delta to the zoom level and clamp to min and max
 				Zoom = (Zoom + wheelDelta).Clamp(MinZoom, MaxZoom);
@@ -128,9 +128,8 @@ namespace Forge.Editor {
 				
 				if (previousZoom != Zoom) {
 					// Keep the viewport anchored to the position of the mouse cursor
-					float effectiveZoomDelta = Zoom - previousZoom;
-					Vector2 pivotDelta = Event.current.mousePosition * effectiveZoomDelta;
-					ScrollPoint += pivotDelta / Zoom;
+					float zoomDelta = Zoom - previousZoom;
+					ScrollPoint += pivotPoint * zoomDelta;
 
 					// Repaint if there was a zoom change (after clamping)
 					needsRepaint = true;
@@ -188,7 +187,7 @@ namespace Forge.Editor {
 				} // Left mouse down/drag/up
 
 				// Right mouse button
-				if (currentEvent.button == 1 && currentEvent.type == EventType.MouseUp) {
+				if (currentEvent.type == EventType.ContextClick) {
 					var menu = new GenericMenu();
 
 					var opTypes = Operator.GetAvailableOperators();
