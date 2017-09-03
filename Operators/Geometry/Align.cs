@@ -33,8 +33,7 @@ namespace Forge.Operators{
 					transf.Position[(int)Axis] = - (Input.Max(Axis) - Value);
 					break;
 				case AlignmentType.Center:
-					transf.Position[(int)Axis] = (Value - Input.Span(Axis)) / - 2f;
-					Debug.Log(transf.Position);
+					transf.Position[(int)Axis] = Value - (Input.Min(Axis) + Input.Span(Axis) / 2f);
 					break;
 			}
 

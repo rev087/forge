@@ -34,4 +34,20 @@ namespace Forge.Operators {
 
 	}
 
+	[OperatorMetadata(Category = "Math", Title = "Add Vector3")]
+	public class AddVector3 : Operator {
+
+		[Input]
+		public Vector3 A = Vector3.zero;
+
+		[Input]
+		public Vector3 B = Vector3.zero;
+
+		[Output]
+		public Vector3 Output() {
+			return A + B;
+		}
+
+	}
+
 }

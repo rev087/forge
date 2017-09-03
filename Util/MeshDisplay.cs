@@ -138,6 +138,8 @@ namespace Forge.EditorUtils {
 						Handles.DrawLine(la, Vector3.Lerp(la, lb, 0.25f));
 						Handles.DrawLine(lb, Vector3.Lerp(lb, lc, 0.25f));
 						Handles.DrawLine(lc, Vector3.Lerp(lc, la, 0.25f));
+
+						// Uncomment to display triangle order
 						// Handles.Label(la, geo.Triangles[i].ToString(), _faceStyle);
 						// Handles.Label(lb, geo.Triangles[i+1].ToString(), _faceStyle);
 						// Handles.Label(lc, geo.Triangles[i+2].ToString(), _faceStyle);

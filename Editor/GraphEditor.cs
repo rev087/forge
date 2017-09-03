@@ -135,7 +135,9 @@ namespace Forge.Editor {
 					needsRepaint = true;
 				}
 
+				Debug.LogFormat("Before Zoom: {0}", currentEvent.type);
 				currentEvent.Use();
+				Debug.LogFormat("After Zoom: {0}", currentEvent.type);
 			}
 
 			Canvas = new Rect(0f, 0f, CanvasWidth * Zoom, CanvasHeight * Zoom);
