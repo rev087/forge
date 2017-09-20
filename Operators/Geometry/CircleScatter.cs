@@ -14,7 +14,7 @@ namespace Forge.Operators {
 
 			Geometry geo = new Geometry();
 
-			Random.seed = Seed;
+			Random.InitState(Seed);
 
 			// Vertices
 			geo.Vertices = new Vector3 [Count];
