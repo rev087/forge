@@ -85,7 +85,7 @@ namespace Forge.Editor {
 				if (!AssetDatabase.Contains(Asset.Mesh)) {
 					AssetDatabase.CreateAsset(Asset.Mesh, assetPath);
 				}
-				Asset.Mesh.Optimize();
+				
 				AssetDatabase.SaveAssets();
 			} else {
 				Debug.Log("No mesh data");
