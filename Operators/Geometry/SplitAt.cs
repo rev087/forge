@@ -8,7 +8,7 @@ using UnityEditor;
 
 namespace Forge.Operators {
 
-	[OperatorMetadata(Title = "Split At")]
+	[OperatorMetadata(Category = "Geometry", Title = "Split At")]
 	class SplitAt : Operator {
 
 		private Geometry _geometry;
