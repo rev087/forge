@@ -118,7 +118,7 @@ namespace Forge.EditorUtils {
 
 						Handles.color = new Color(1f, 0f, 0f, 0.6f);
 						int id = geo.Vertices.Length + nth;
-						Handles.DotCap(id, mid, Quaternion.identity, camDist / 220);
+						Handles.DotHandleCap(id, mid, Quaternion.identity, camDist / 220, EventType.Ignore);
 					}
 
 					// Normals
@@ -169,7 +169,7 @@ namespace Forge.EditorUtils {
 
 					// Vertices
 					if (DisplayVertices) {
-						Handles.DotCap(i * 2, origin, Quaternion.identity, camDist / 220);
+						Handles.DotHandleCap(i * 2, origin, Quaternion.identity, camDist / 220, EventType.Ignore);
 					}
 
 					// Normals
@@ -232,7 +232,7 @@ namespace Forge.EditorUtils {
 
 						// Cap
 						float camDist = Vector3.Distance(origin, camPos);
-						Handles.DotCap(GUIUtility.GetControlID (FocusType.Passive), origin, Quaternion.identity, camDist / 220);
+						Handles.DotHandleCap(GUIUtility.GetControlID (FocusType.Passive), origin, Quaternion.identity, camDist / 220, EventType.Ignore);
 
 						// Lines
 						for (int v = start; v < start + count; v++) {
@@ -256,7 +256,7 @@ namespace Forge.EditorUtils {
 				Vector3 origin = transform.TransformPoint(Vector3.zero);
 				int originId = geo.Vertices.Length + geo.Triangles.Length / 3 + 1;
 				float camDist = Vector3.Distance(origin, camPos);
-				Handles.DotCap(originId, origin, Quaternion.identity, camDist / 180);
+				Handles.DotHandleCap(originId, origin, Quaternion.identity, camDist / 180, EventType.Ignore);
 			}
 
 			// Misc: Ghost Mesh

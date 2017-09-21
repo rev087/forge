@@ -120,7 +120,7 @@ namespace Forge.Operators {
 			for (int i = 0; i < _vertexIndices.Length; i++) {
 				Vector3 vertex = mesh.vertices[_vertexIndices[i]];
 				float camDist = Vector3.Distance(vertex, camPos);
-				Handles.DotCap(GUIUtility.GetControlID(FocusType.Passive), vertex, Quaternion.identity, camDist / 150);
+				Handles.DotHandleCap(GUIUtility.GetControlID(FocusType.Passive), vertex, Quaternion.identity, camDist / 150, EventType.Ignore);
 				//vertices[i] = vertex;
 			}
 			//Handles.DrawPolyLine(vertices);
